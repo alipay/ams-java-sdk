@@ -1,0 +1,13 @@
+.classpath
+.project
+.settings
+.DS_Store
+*.class
+*.log
+*.xml.bak
+_book
+.idea
+*.iml
+target/
+test-output/
+src/main/resources/config.properties
