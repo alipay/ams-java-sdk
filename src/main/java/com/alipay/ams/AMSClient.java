@@ -121,8 +121,6 @@ public abstract class AMSClient {
         //1. Load response headers
         ResponseHeader responseHeader = new ResponseHeader(headerMap);
 
-        responseHeader.validate();
-
         //2. Load http response body content
         String responseBody;
         try {
@@ -136,9 +134,10 @@ public abstract class AMSClient {
             responseBody, responseHeader);
 
         //3. Signature verification.
-        if (SignatureUtil.verify(request.getRequestURI(), responseHeader.getClientId(),
-            responseHeader.getResponseTime(), request.getSettings().alipayPublicKey, responseBody,
-            responseHeader.getSignature().getSignature())) {
+        if (responseHeader.validate()
+            && SignatureUtil.verify(request.getRequestURI(), responseHeader.getClientId(),
+                responseHeader.getResponseTime(), request.getSettings().alipayPublicKey,
+                responseBody, responseHeader.getSignature().getSignature())) {
 
             processResponseBody(request, callback, responseHeader, responseBody);
 

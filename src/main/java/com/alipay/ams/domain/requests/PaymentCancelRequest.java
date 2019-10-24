@@ -33,7 +33,7 @@ public class PaymentCancelRequest extends Request {
      */
     private PaymentCancelRequest(AMSSettings settings, boolean byPaymentId, String id) {
 
-        super("/v1/payments/cancel", settings);
+        super("/ams/api/v1/payments/cancel", settings);
 
         this.byPaymentId = byPaymentId;
 

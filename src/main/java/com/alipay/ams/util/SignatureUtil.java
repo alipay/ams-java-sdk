@@ -4,6 +4,7 @@
  */
 package com.alipay.ams.util;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -91,6 +92,11 @@ public class SignatureUtil {
                                  String alipayPublicKey, String responseBody,
                                  String signatureToBeVerified) {
 
+        //signatureToBeVerified would not be present in the response when AMS returns a SIGNATURE_INVALID
+        if (StringUtil.isBlank(signatureToBeVerified)) {
+            return false;
+        }
+
         String content = String.format("POST %s\n%s.%s.%s", requestURI, clientId, reponseTime,
             responseBody);
 
@@ -104,8 +110,8 @@ public class SignatureUtil {
             signature.initVerify(pubKey);
             signature.update(content.getBytes("UTF-8"));
 
-            //            return signature.verify(signatureToBeVerified.getBytes("UTF-8"));
-            return true;
+            return signature.verify(Base64.decodeBase64(URLDecoder.decode(signatureToBeVerified,
+                "UTF-8").getBytes("UTF-8")));
 
         } catch (Exception e) {
             throw new RuntimeException(e);

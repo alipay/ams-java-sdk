@@ -4,8 +4,6 @@
  */
 package com.alipay.ams.domain.requests;
 
-import java.util.Map;
-
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Request;
 
@@ -35,7 +33,7 @@ public class PaymentInquiryRequest extends Request {
      */
     private PaymentInquiryRequest(AMSSettings settings, boolean byPaymentId, String id) {
 
-        super("/v1/payments/inquiry", settings);
+        super("/ams/api/v1/payments/inquiryPayment", settings);
 
         this.byPaymentId = byPaymentId;
 
@@ -61,16 +59,6 @@ public class PaymentInquiryRequest extends Request {
             body.put("paymentRequestId", paymentRequestId);
         }
 
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#needExtraHeaders()
-     */
-    @Override
-    protected Map<String, String> needExtraHeaders() {
-        Map<String, String> extraHeaders = super.needExtraHeaders();
-        extraHeaders.put("original_host", "open-sea.alipay.com");
-        return extraHeaders;
     }
 
     /** 

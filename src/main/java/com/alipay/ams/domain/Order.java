@@ -10,9 +10,10 @@ package com.alipay.ams.domain;
  * @version $Id: Order.java, v 0.1 2019年10月16日 下午7:37:20 guangling.zgl Exp $
  */
 public class Order {
-    private String referenceOrderId;
-    private String orderDescription;
-    private Amount orderAmount;
+    private String   referenceOrderId;
+    private String   orderDescription;
+    private Amount   orderAmount;
+    private Merchant merchant;
 
     /**
      * Getter method for property <tt>referenceOrderId</tt>.
@@ -66,6 +67,24 @@ public class Order {
      */
     public void setOrderAmount(Amount orderAmount) {
         this.orderAmount = orderAmount;
+    }
+
+    /**
+     * Getter method for property <tt>merchant</tt>.
+     * 
+     * @return property value of merchant
+     */
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    /**
+     * Setter method for property <tt>merchant</tt>.
+     * 
+     * @param merchant value to be assigned to property merchant
+     */
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
     }
 
 }

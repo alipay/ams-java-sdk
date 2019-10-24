@@ -30,7 +30,7 @@ public class PaymentRefundRequest extends Request {
     public PaymentRefundRequest(AMSSettings settings, String paymentId, String refundRequestId,
                                 Amount refundAmount, String refundRequestTime) {
 
-        super("/v1/payments/refund", settings);
+        super("/ams/api/v1/payments/refund", settings);
         this.paymentId = paymentId;
         this.refundRequestId = refundRequestId;
         this.refundAmount = refundAmount;

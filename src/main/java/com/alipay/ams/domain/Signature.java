@@ -17,6 +17,19 @@ public class Signature {
     String keyVersion = "2";
     String signature;
 
+    public Signature() {
+
+    }
+
+    /**
+     * @param headString - something like 'algorithm=RSA256,keyVersion=2,signature=Lv06x'
+     */
+    public Signature(String headString) {
+        this.algorithm = StringUtil.substringBetween(headString, "algorithm=", ",");
+        this.keyVersion = StringUtil.substringBetween(headString, "keyVersion=", ",");
+        this.signature = StringUtil.substringAfter(headString, "signature=");
+    }
+
     public String toString() {
         return String.format("algorithm=%s,keyVersion=%s,signature=%s", algorithm, keyVersion,
             signature);

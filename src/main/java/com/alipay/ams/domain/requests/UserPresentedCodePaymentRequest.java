@@ -65,7 +65,6 @@ public class UserPresentedCodePaymentRequest extends Request {
     @Override
     protected Map<String, String> needExtraHeaders() {
         Map<String, String> extraHeaders = super.needExtraHeaders();
-        extraHeaders.put("original_host", "open-sea.alipay.com");
 
         if (StringUtil.isNotBlank(this.agentToken)) {
             extraHeaders.put("Agent-Token", this.agentToken);
@@ -103,6 +102,7 @@ public class UserPresentedCodePaymentRequest extends Request {
 
         body.put("productCode", "IN_STORE_PAYMENT");
         body.put("paymentRequestId", paymentRequestId);
+
         if (order != null) {
             body.put("order", order);
         }
@@ -118,8 +118,9 @@ public class UserPresentedCodePaymentRequest extends Request {
         paymentMethod.put("paymentMethodId", paymentCode);
         body.put("paymentMethod", paymentMethod);
 
-        Map<String, Boolean> paymentFactor = new HashMap<String, Boolean>();
+        Map<String, Object> paymentFactor = new HashMap<String, Object>();
         paymentFactor.put("isPaymentCode", true);
+        paymentFactor.put("inStorePaymentScenario", "PaymentCode");
         body.put("paymentFactor", paymentFactor);
     }
 

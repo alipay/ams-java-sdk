@@ -11,11 +11,13 @@ import com.alipay.ams.AMS;
 import com.alipay.ams.AMSClient;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.Merchant;
 import com.alipay.ams.domain.NotifyCallback;
 import com.alipay.ams.domain.NotifyRequestHeader;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.ResponseResult;
+import com.alipay.ams.domain.Store;
 import com.alipay.ams.domain.callbacks.PaymentCancelCallback;
 import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
@@ -88,9 +90,9 @@ public class Demo {
     public static void main(String[] args) {
         Demo demo = new Demo();
 
-        demo.pay();
+        //        demo.pay();
 
-        //        demo.inquiry();
+        demo.inquiry();
         //
         //        demo.refund();
         //
@@ -102,12 +104,14 @@ public class Demo {
 
     void pay() {
         Order order = new Order();
-        Currency currency = Currency.getInstance("USD");
+        Currency currency = Currency.getInstance("JPY");
         order.setOrderAmount(new Amount(currency, 1000l));//10.00USD
         order.setOrderDescription("New White Lace Sleeveless");
         order.setReferenceOrderId("0000000001");
+        order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
+            "Some_store", "store231117459", "7011")));
 
-        String paymentRequestId = "PR20190000000001";
+        String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
         String buyerPaymentCode = "288888888812345678";
         long amountInCents = 1000l;
 
@@ -174,8 +178,9 @@ public class Demo {
      * 
      */
     void inquiry() {
-        AMS.with(cfg)
-            .execute(PaymentInquiryRequest.byPaymentId(cfg, "xxx"), paymentInquiryCallback);
+        AMS.with(cfg).execute(
+            PaymentInquiryRequest.byPaymentRequestId(cfg, "PR20190000000001_1571936707820"),
+            paymentInquiryCallback);
     }
 
     void cancel() {
