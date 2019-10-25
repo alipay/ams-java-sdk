@@ -41,8 +41,9 @@ public class SignatureUtil {
      * @return
      */
     public static String sign(Request request, String privateKey) {
-        return sign(request.getRequestURI(), request.getRequestHeader().getClientId(), request
-            .getRequestHeader().getRequestTime(), privateKey, request.getBody().toString());
+
+        return sign(request.getRequestURI(), request.getSettings().clientId,
+            request.getRequestTime(), privateKey, request.buildBody().toString());
     }
 
     /**

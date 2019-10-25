@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.Request;
 import com.alipay.ams.util.StringUtil;
@@ -47,6 +48,7 @@ public class UserPresentedCodePaymentRequest extends Request {
     public UserPresentedCodePaymentRequest(AMSSettings settings, String paymentRequestId,
                                            Order order, Currency currency, Long amountInCents,
                                            String paymentCode, String agentToken) {
+
         super("/ams/api/v1/payments/pay", settings);
         this.paymentRequestId = paymentRequestId;
         this.order = order;
@@ -54,17 +56,15 @@ public class UserPresentedCodePaymentRequest extends Request {
         this.amountInCents = amountInCents;
         this.paymentCode = paymentCode;
         this.agentToken = agentToken;
-
-        updateBody();
-        updateSignature();
     }
 
     /** 
-     * @see com.alipay.ams.domain.Request#needExtraHeaders()
+     * @see com.alipay.ams.domain.Request#getExtraHeaders()
      */
     @Override
-    protected Map<String, String> needExtraHeaders() {
-        Map<String, String> extraHeaders = super.needExtraHeaders();
+    protected Map<String, String> getExtraHeaders() {
+
+        Map<String, String> extraHeaders = super.getExtraHeaders();
 
         if (StringUtil.isNotBlank(this.agentToken)) {
             extraHeaders.put("Agent-Token", this.agentToken);
@@ -97,8 +97,13 @@ public class UserPresentedCodePaymentRequest extends Request {
         return "1.0.20191016";
     }
 
+    /** 
+     * @see com.alipay.ams.domain.Request#buildBody()
+     */
     @Override
-    protected void updateBody() {
+    public Body buildBody() {
+
+        Body body = new Body();
 
         body.put("productCode", "IN_STORE_PAYMENT");
         body.put("paymentRequestId", paymentRequestId);
@@ -122,6 +127,8 @@ public class UserPresentedCodePaymentRequest extends Request {
         paymentFactor.put("isPaymentCode", true);
         paymentFactor.put("inStorePaymentScenario", "PaymentCode");
         body.put("paymentFactor", paymentFactor);
+
+        return body;
     }
 
     /** 

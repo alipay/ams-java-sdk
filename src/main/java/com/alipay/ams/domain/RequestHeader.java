@@ -5,7 +5,6 @@
 package com.alipay.ams.domain;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 
@@ -25,18 +24,21 @@ public class RequestHeader extends Header {
      */
     @Override
     public Map<String, String> toMap() {
+
         Map<String, String> map = super.toMap();
         map.put("Request-Time", requestTime);
         map.put("sdkVersion", sdkVersion);
         map.put("ext", ext);
 
-        if (extraHeaders != null) {
-            for (Entry<String, String> e : extraHeaders.entrySet()) {
-                map.put(e.getKey(), e.getValue());
-            }
-        }
-
         return map;
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.Header#extraHeaders()
+     */
+    @Override
+    public Map<String, String> extraHeaders() {
+        return extraHeaders;
     }
 
     /**

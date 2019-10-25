@@ -90,7 +90,7 @@ see `amsSdkDemo.Demo` for detailed usage.
     
 ```
 
-#### 2. To make a inquiry:
+#### 2. To make an inquiry:
 
 ```java
 

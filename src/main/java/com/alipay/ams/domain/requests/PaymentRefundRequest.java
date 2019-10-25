@@ -6,6 +6,7 @@ package com.alipay.ams.domain.requests;
 
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Request;
 
 /**
@@ -36,20 +37,20 @@ public class PaymentRefundRequest extends Request {
         this.refundAmount = refundAmount;
         this.refundRequestTime = refundRequestTime;
 
-        updateBody();
-        updateSignature();
-
     }
 
     /** 
-     * @see com.alipay.ams.domain.Request#updateBody()
+     * @see com.alipay.ams.domain.Request#buildBody()
      */
     @Override
-    protected void updateBody() {
+    public Body buildBody() {
+
+        Body body = new Body();
         body.put("paymentId", paymentId);
         body.put("refundRequestId", refundRequestId);
         body.put("refundAmount", refundAmount);
         body.put("refundRequestTime", refundRequestTime);
+        return body;
 
     }
 

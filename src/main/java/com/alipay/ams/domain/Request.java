@@ -19,31 +19,27 @@ import com.alipay.ams.util.SignatureUtil;
  */
 public abstract class Request extends AMSMessage {
 
-    private RequestHeader requestHeader = new RequestHeader();
-    private Signature     signature     = new Signature();
-
-    protected Body        body          = new Body();
+    private String requestTime = DateUtil.getISODateTimeStr(new Date());
 
     public Request(String requestURI, AMSSettings settings) {
         super(requestURI, settings);
-        requestHeader.setClientId(settings.clientId);
-        requestHeader.setRequestTime(DateUtil.getISODateTimeStr(new Date()));
-        requestHeader.setSignature(signature);
+    }
 
+    public RequestHeader buildRequestHeader() {
+
+        RequestHeader requestHeader = new RequestHeader();
+
+        requestHeader.setClientId(getSettings().clientId);
+        requestHeader.setRequestTime(requestTime);
         requestHeader.setSdkVersion(getSdkVersion());
         requestHeader.setExt(getExt());
+        requestHeader.setExtraHeaders(getExtraHeaders());
 
-        requestHeader.setExtraHeaders(needExtraHeaders());
-    }
-
-    /**
-     * 
-     */
-    protected void updateSignature() {
+        Signature signature = new Signature();
+        requestHeader.setSignature(signature);
+        //make sure this is the last call after everything is ready.
         signature.setSignature(SignatureUtil.sign(this, getSettings()));
-    }
 
-    public RequestHeader getRequestHeader() {
         return requestHeader;
     }
 
@@ -56,18 +52,14 @@ public abstract class Request extends AMSMessage {
 
     /** 
      */
-    public Body getBody() {
-        return body;
-    }
-
-    protected abstract void updateBody();
+    public abstract Body buildBody();
 
     /**
      * Give sub-requests a chance to supply extra request headers.
      * 
      * @return
      */
-    protected Map<String, String> needExtraHeaders() {
+    protected Map<String, String> getExtraHeaders() {
         return new HashMap<String, String>();
     }
 
@@ -90,6 +82,24 @@ public abstract class Request extends AMSMessage {
      */
     protected String getSdkVersion() {
         return "";
+    }
+
+    /**
+     * Getter method for property <tt>requestTime</tt>.
+     * 
+     * @return property value of requestTime
+     */
+    public String getRequestTime() {
+        return requestTime;
+    }
+
+    /**
+     * Setter method for property <tt>requestTime</tt>.
+     * 
+     * @param requestTime value to be assigned to property requestTime
+     */
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
     }
 
 }

@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Callback;
 import com.alipay.ams.domain.Request;
+import com.alipay.ams.domain.RequestHeader;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.util.HeaderUtil;
 
@@ -49,14 +50,16 @@ public class ApacheHttpPostAMSClient extends AMSClient {
 
             httpPost = new HttpPost(request.getSettings().gatewayUrl + request.getRequestURI());
 
+            String body = request.buildBody().toString();
+            RequestHeader requestHeader = request.buildRequestHeader();
+
             getSettings().logger.debug("Request[%s][%s]: body->[%s], header->[%s]",
                 request.getBizIdentifier(),
-                request.getSettings().gatewayUrl + request.getRequestURI(), request.getBody(),
-                request.getRequestHeader());
+                request.getSettings().gatewayUrl + request.getRequestURI(), body, requestHeader);
 
-            httpPost.setEntity(new ByteArrayEntity(request.getBody().toString().getBytes("UTF-8")));
+            httpPost.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
 
-            for (Entry<String, String> e : request.getRequestHeader().toMap().entrySet()) {
+            for (Entry<String, String> e : requestHeader.toMap().entrySet()) {
                 httpPost.setHeader(e.getKey(), e.getValue());
             }
 

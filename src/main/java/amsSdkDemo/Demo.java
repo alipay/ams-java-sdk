@@ -94,13 +94,13 @@ public class Demo {
 
         //        demo.pay();
 
-        demo.inquiry();
+        //        demo.inquiry();
         //
         //        demo.refund();
         //
         //        demo.onNotify();
         //
-        //        demo.cancel();
+        demo.cancel();
 
     }
 
@@ -118,7 +118,7 @@ public class Demo {
         long amountInCents = 1000l;
 
         final UserPresentedCodePaymentRequest request = new UserPresentedCodePaymentRequest(cfg,
-            paymentRequestId, order, currency, amountInCents, buyerPaymentCode);
+            paymentRequestId, order, currency, amountInCents, buyerPaymentCode, "some_token");
 
         AMS.with(cfg).execute(request,
             new UserPresentedCodePaymentCallback(paymentInquiryCallback) {
@@ -165,7 +165,8 @@ public class Demo {
      * 
      */
     void refund() {
-        PaymentRefundRequest paymentRefundRequest = null;
+        PaymentRefundRequest paymentRefundRequest = new PaymentRefundRequest(cfg, "some_id",
+            "some_id", new Amount(Currency.getInstance("JPY"), 111l), "some_time");
         AMS.with(cfg).execute(paymentRefundRequest, new PaymentRefundCallback() {
 
             @Override
