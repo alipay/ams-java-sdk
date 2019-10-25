@@ -11,13 +11,16 @@ import com.alipay.ams.AMS;
 import com.alipay.ams.AMSClient;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.AuthNotifyModel;
 import com.alipay.ams.domain.Merchant;
 import com.alipay.ams.domain.NotifyCallback;
 import com.alipay.ams.domain.NotifyRequestHeader;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.PaymentContext;
+import com.alipay.ams.domain.PaymentResultModel;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.Store;
+import com.alipay.ams.domain.callbacks.InMemoryPaymentContextCallback;
 import com.alipay.ams.domain.callbacks.PaymentCancelCallback;
 import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
@@ -26,7 +29,6 @@ import com.alipay.ams.domain.callbacks.UserPresentedCodePaymentCallback;
 import com.alipay.ams.domain.reponses.PaymentCancelResponse;
 import com.alipay.ams.domain.reponses.PaymentInquiryResponse;
 import com.alipay.ams.domain.reponses.PaymentRefundResponse;
-import com.alipay.ams.domain.reponses.PaymentResultModel;
 import com.alipay.ams.domain.reponses.UserPresentedCodePaymentResponse;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
@@ -42,7 +44,7 @@ public class Demo {
 
     AMSSettings                    cfg                    = new AMSSettings();
 
-    private PaymentContextCallback paymentContextCallback = new PaymentContextCallback();
+    private PaymentContextCallback paymentContextCallback = new InMemoryPaymentContextCallback();
 
     private PaymentCancelCallback  paymentCancelCallback  = new PaymentCancelCallback(
                                                               paymentContextCallback) {
@@ -150,6 +152,12 @@ public class Demo {
                 String paymentId = paymentResultModel.getPaymentId();
 
             }
+
+            @Override
+            protected void onAuthNotify(AMSSettings settings,
+                                        NotifyRequestHeader notifyRequestHeader,
+                                        AuthNotifyModel authNotifyModel) {
+            }
         });
     }
 
@@ -180,10 +188,43 @@ public class Demo {
     void inquiry() {
         AMS.with(cfg).execute(
             PaymentInquiryRequest.byPaymentRequestId(cfg, "PR20190000000001_1571936707820"),
-            paymentInquiryCallback);
+            new PaymentInquiryCallback(paymentCancelCallback, paymentContextCallback) {
+
+                @Override
+                public void scheduleALaterInquiry(PaymentContext context, AMSSettings amsSettings) {
+                }
+
+                @Override
+                public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
+                }
+
+                @Override
+                public void onPaymentFailure(PaymentInquiryResponse inquiryResponse) {
+                }
+            });
     }
 
     void cancel() {
-        AMS.with(cfg).execute(PaymentCancelRequest.byPaymentId(cfg, "yy"), paymentCancelCallback);
+        AMS.with(cfg).execute(
+            PaymentCancelRequest.byPaymentId(cfg, "PR20190000000001_1571936707820"),
+            new PaymentCancelCallback(paymentContextCallback) {
+
+                @Override
+                protected void scheduleALaterCancel(PaymentContext context, AMSSettings settings) {
+                }
+
+                @Override
+                protected void reportCancelResultUnknown(AMSClient client,
+                                                         PaymentCancelRequest request) {
+                }
+
+                @Override
+                protected void onCancelSuccess(PaymentCancelResponse cancelResponse) {
+                }
+
+                @Override
+                protected void onCancelFailure(ResponseResult responseResult) {
+                }
+            });
     }
 }

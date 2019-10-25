@@ -7,6 +7,7 @@ package com.alipay.ams.domain.reponses;
 import java.util.HashMap;
 
 import com.alipay.ams.cfg.AMSSettings;
+import com.alipay.ams.domain.PaymentResultModel;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 

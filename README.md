@@ -47,6 +47,8 @@ gatewayUrl=the_alipay_gateway_endpoint
 
 Please see the [developer docs](https://#) for help with getting the above information.
 
+see `amsSdkDemo.Demo` for detailed usage.
+
 #### 1. To make a payment:
 
 ```java
@@ -58,51 +60,31 @@ Please see the [developer docs](https://#) for help with getting the above infor
         AMSSettings cfg = new AMSSettings();
 
         Order order = new Order();
-        Currency currency = Currency.getInstance("USD");
-        order.setOrderAmount(new Amount(currency, 1000l));
-        order.setOrderDescription("New White Lace Sleeveless");
-        order.setReferenceOrderId("0000000001");
-
-        String paymentRequestId = "PR20190000000001";
-        String buyerPaymentCode = "288888888812345678";
         long amountInCents = 1000l;
+        order.setOrderAmount(new Amount(Currency.getInstance("USD"), amountInCents));
+        order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
+            "Some_store", "store231117459", "7011")));
 
-        UserPresentedCodePaymentRequest request = new UserPresentedCodePaymentRequest(cfg,
+        String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
+        String buyerPaymentCode = "288888888812345678"; // from the scanner
+        
+        final UserPresentedCodePaymentRequest request = new UserPresentedCodePaymentRequest(cfg,
             paymentRequestId, order, currency, amountInCents, buyerPaymentCode);
 
-        AMS.with(cfg).execute(request, new UserPresentedCodePaymentRequestCallback() {
+        AMS.with(cfg).execute(request,
+            new UserPresentedCodePaymentCallback(paymentInquiryCallback) {
 
-            @Override
-            public void onDirectSuccess(UserPresentedCodePaymentResponse paymentResponse) {
-                String alipayPaymentId = paymentResponse.getPaymentId();
-                String paymentTime = paymentResponse.getPaymentTime();
-                String pspCustomerId = paymentResponse.getPspCustomerId();
+                @Override
+                public void onDirectSuccess(UserPresentedCodePaymentResponse paymentResponse) {
+                    System.out.println(paymentResponse.toString());
+                }
 
-                //Now payment is done successfully. 
-                //Go ahead let POS device print the receipt.....
-            }
-
-            @Override
-            public void onInprocessing() {
-                //Request initiated, but didn't get the final result yet. The buyer might be submitting his/her payment password as required on Alipay APP
-                //Poll the result using the inquery API ...
-
-            }
-
-            @Override
-            public void onFailure(ResponseResult responseResult) {
-                //Payment failed. 
-                //Display failure message on the POS device...
-            }
-
-            @Override
-            public void onCancelled() {
-
-                //Payment cancelled after result polling timeout. Display failure message on the POS device
-                //...
-
-            }
-        });
+                @Override
+                public void onFailure(ResponseResult responseResult) {
+                    System.out.println(responseResult.toString());
+                }
+            });
+    
 
     }
     
@@ -111,18 +93,97 @@ Please see the [developer docs](https://#) for help with getting the above infor
 #### 2. To make a inquiry:
 
 ```java
-String a = null;
+
+        AMS.with(cfg).execute(
+            PaymentInquiryRequest.byPaymentRequestId(cfg, "PR20190000000001_1571936707820"),
+            new PaymentInquiryCallback(paymentCancelCallback, paymentContextCallback) {
+
+                @Override
+                public void scheduleALaterInquiry(PaymentContext context, AMSSettings amsSettings) {
+                }
+
+                @Override
+                public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
+                }
+
+                @Override
+                public void onPaymentFailure(PaymentInquiryResponse inquiryResponse) {
+                }
+            });
+    
 ```
 #### 3. To make a refund:
 
 ```java
-String a = null;
+
+        PaymentRefundRequest paymentRefundRequest = null; // Build the refund request.
+        AMS.with(cfg).execute(paymentRefundRequest, new PaymentRefundCallback() {
+
+            @Override
+            protected void onRefundSuccess(PaymentRefundResponse cancelResponse) {
+            }
+
+            @Override
+            protected void onRefundFailure(ResponseResult responseResult) {
+            }
+
+            @Override
+            protected void onRefundCallFailure() {
+            }
+        });
+    
 ```
 
-#### 1. To make a cancellation:
+#### 4. To make a cancellation:
 
 ```java
-String a = null;
+
+        AMS.with(cfg).execute(
+            PaymentCancelRequest.byPaymentId(cfg, "PR20190000000001_1571936707820"),
+            new PaymentCancelCallback(paymentContextCallback) {
+
+                @Override
+                protected void scheduleALaterCancel(PaymentContext context, AMSSettings settings) {
+                }
+
+                @Override
+                protected void reportCancelResultUnknown(AMSClient client,
+                                                         PaymentCancelRequest request) {
+                }
+
+                @Override
+                protected void onCancelSuccess(PaymentCancelResponse cancelResponse) {
+                }
+
+                @Override
+                protected void onCancelFailure(ResponseResult responseResult) {
+                }
+            });
+    
+```
+
+#### 5. To process a notify SPI request:
+
+```java
+
+
+        AMS.with(cfg).onNotify(requestURI, notifyRequestheaders, bodyContent, new NotifyCallback() {
+
+            @Override
+            protected void onPaymentSuccess(AMSSettings settings,
+                                            NotifyRequestHeader notifyRequestHeader,
+                                            PaymentResultModel paymentResultModel) {
+                String paymentId = paymentResultModel.getPaymentId();
+
+            }
+
+            @Override
+            protected void onAuthNotify(AMSSettings settings,
+                                        NotifyRequestHeader notifyRequestHeader,
+                                        AuthNotifyModel authNotifyModel) {
+            }
+        });
+    
 ```
 
 

@@ -198,7 +198,11 @@ public abstract class AMSClient {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> body = gson.fromJson(requestBody, HashMap.class);
 
-        //TODO 区别支付结果notify和授权notify
+        // No result element in the body, treat it as a non-payment notify.
+        if (body.get("result") == null) {
+            notifyCallback.onNonPaymentNotify(settings, notifyRequestHeader, body);
+            return;
+        }
 
         @SuppressWarnings("unchecked")
         ResponseResult notifyResult = ResponseResult.fromMap((Map<String, String>) body
@@ -222,5 +226,4 @@ public abstract class AMSClient {
                 break;
         }
     }
-
 }

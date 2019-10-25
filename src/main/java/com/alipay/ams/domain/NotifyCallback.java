@@ -7,7 +7,6 @@ package com.alipay.ams.domain;
 import java.util.HashMap;
 
 import com.alipay.ams.cfg.AMSSettings;
-import com.alipay.ams.domain.reponses.PaymentResultModel;
 
 /**
  * 
@@ -59,5 +58,34 @@ public abstract class NotifyCallback {
     protected abstract void onPaymentSuccess(AMSSettings settings,
                                              NotifyRequestHeader notifyRequestHeader,
                                              PaymentResultModel paymentResultModel);
+
+    /**
+     * 
+     * @param settings
+     * @param notifyRequestHeader
+     * @param authNotifyModel
+     */
+    protected abstract void onAuthNotify(AMSSettings settings,
+                                         NotifyRequestHeader notifyRequestHeader,
+                                         AuthNotifyModel authNotifyModel);
+
+    /**
+     * 
+     * @param settings
+     * @param notifyRequestHeader
+     * @param body
+     */
+    public void onNonPaymentNotify(AMSSettings settings, NotifyRequestHeader notifyRequestHeader,
+                                   HashMap<String, Object> body) {
+        if (body.containsKey("accessToken")) {
+            //an authorization notify
+            AuthNotifyModel authNotifyModel = new AuthNotifyModel(body);
+            onAuthNotify(settings, notifyRequestHeader, authNotifyModel);
+
+        } else {
+            //currently unknown notify 
+            settings.logger.warn("Received an unknown notify: [%s]", body);
+        }
+    }
 
 }

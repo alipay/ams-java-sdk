@@ -13,19 +13,15 @@ import com.alipay.ams.domain.PaymentContext;
  * @author guangling.zgl
  * @version $Id: PaymentContextCallback.java, v 0.1 2019年10月23日 下午3:51:48 guangling.zgl Exp $
  */
-public class PaymentContextCallback {
+public interface PaymentContextCallback {
 
     /**
      * 
      * @param paymentRequestId
      * @return
      */
-    public PaymentContext loadContextByPaymentRequestId(String paymentRequestId) {
-        return null;
-    }
+    public PaymentContext loadContextByPaymentRequestId(String paymentRequestId);
 
-    public void saveContext(PaymentContext context) {
-
-    }
+    public void saveContext(PaymentContext context);
 
 }
