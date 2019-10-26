@@ -112,9 +112,6 @@ public class UserPresentedCodePaymentRequest extends Request {
             body.put("order", order);
         }
 
-        Amount actualPaymentAmount = new Amount(currency, amountInCents);
-        body.put("actualPaymentAmount", actualPaymentAmount);
-
         Amount paymentAmount = new Amount(currency, amountInCents);
         body.put("paymentAmount", paymentAmount);
 
@@ -124,7 +121,6 @@ public class UserPresentedCodePaymentRequest extends Request {
         body.put("paymentMethod", paymentMethod);
 
         Map<String, Object> paymentFactor = new HashMap<String, Object>();
-        paymentFactor.put("isPaymentCode", true);
         paymentFactor.put("inStorePaymentScenario", "PaymentCode");
         body.put("paymentFactor", paymentFactor);
 
