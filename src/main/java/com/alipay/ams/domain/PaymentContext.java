@@ -19,6 +19,7 @@ public class PaymentContext {
     private int    cancelCount;
     private Date   lastInquiryTime;
     private String paymentRequestId;
+    private String agentToken;
 
     /**
      * @param paymentRequestId
@@ -95,6 +96,24 @@ public class PaymentContext {
      */
     public void setPaymentRequestId(String paymentRequestId) {
         this.paymentRequestId = paymentRequestId;
+    }
+
+    /**
+     * Getter method for property <tt>agentToken</tt>.
+     * 
+     * @return property value of agentToken
+     */
+    public String getAgentToken() {
+        return agentToken;
+    }
+
+    /**
+     * Setter method for property <tt>agentToken</tt>.
+     * 
+     * @param agentToken value to be assigned to property agentToken
+     */
+    public void setAgentToken(String agentToken) {
+        this.agentToken = agentToken;
     }
 
 }

@@ -43,7 +43,8 @@ public abstract class UserPresentedCodePaymentCallback
         //Initiate a Inquiry
         client.execute(
             PaymentInquiryRequest.byPaymentRequestId(client.getSettings(),
-                paymentRequest.getPaymentRequestId()), paymentInquiryCallback);
+                paymentRequest.getPaymentRequestId(), paymentRequest.getAgentToken()),
+            paymentInquiryCallback);
 
     }
 
@@ -74,7 +75,8 @@ public abstract class UserPresentedCodePaymentCallback
         //Initiate a Inquiry
         client.execute(
             PaymentInquiryRequest.byPaymentRequestId(client.getSettings(),
-                paymentRequest.getPaymentRequestId()), paymentInquiryCallback);
+                paymentRequest.getPaymentRequestId(), paymentRequest.getAgentToken()),
+            paymentInquiryCallback);
 
     }
 

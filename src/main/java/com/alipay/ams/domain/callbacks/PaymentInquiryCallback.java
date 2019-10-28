@@ -85,9 +85,11 @@ public abstract class PaymentInquiryCallback extends
      * 
      */
     private void cancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
-        client.execute(
-            PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
-                paymentInquiryRequest.getPaymentRequestId()), paymentCancelCallback);
+        client
+            .execute(
+                PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
+                    paymentInquiryRequest.getPaymentRequestId(),
+                    paymentInquiryRequest.getAgentToken()), paymentCancelCallback);
     }
 
     /**
