@@ -74,8 +74,9 @@ public abstract class PaymentCancelCallback extends
      */
     private void retryOrAlarm(AMSClient client, PaymentCancelRequest request) {
 
-        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestId(request
-            .getPaymentRequestId());
+        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
+            request.getPaymentRequestId(), new PaymentContext(request.getPaymentRequestId(),
+                request.getAgentToken()));
 
         if (needFurtherCancel(context, client.getSettings())) {
 

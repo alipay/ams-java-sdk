@@ -38,8 +38,8 @@ public class AMSSettings {
     public boolean enableQueryWhenUnknowException    = true;
     public boolean enableAutoCancelAfterMutipleQuery = true;
     public boolean notifyEnabled                     = true;
-    public int     maxQueryCount;
-    public int     maxCancelCount;
+    public int     maxQueryCount                     = 3;
+    public int     maxCancelCount                    = 3;
 
     public Logger  logger                            = new SystemoutLogger();
 

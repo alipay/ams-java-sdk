@@ -23,10 +23,12 @@ public class PaymentContext {
 
     /**
      * @param paymentRequestId
+     * @param agentToken
      */
-    public PaymentContext(String paymentRequestId) {
+    public PaymentContext(String paymentRequestId, String agentToken) {
         super();
         this.paymentRequestId = paymentRequestId;
+        this.agentToken = agentToken;
     }
 
     /**

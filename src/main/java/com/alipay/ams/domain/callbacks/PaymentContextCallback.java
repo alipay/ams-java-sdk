@@ -18,9 +18,11 @@ public interface PaymentContextCallback {
     /**
      * 
      * @param paymentRequestId
+     * @param initial
      * @return
      */
-    public PaymentContext loadContextByPaymentRequestId(String paymentRequestId);
+    public PaymentContext loadContextByPaymentRequestIdOrDefault(String paymentRequestId,
+                                                                 PaymentContext initial);
 
     public void saveContext(PaymentContext context);
 

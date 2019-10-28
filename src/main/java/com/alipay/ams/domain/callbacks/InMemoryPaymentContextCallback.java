@@ -19,12 +19,15 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     private final static Map<String, PaymentContext> repository = new ConcurrentHashMap<String, PaymentContext>();
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#loadContextByPaymentRequestId(java.lang.String)
+     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#loadContextByPaymentRequestIdOrDefault(java.lang.String, com.alipay.ams.domain.PaymentContext)
      */
     @Override
-    public PaymentContext loadContextByPaymentRequestId(String paymentRequestId) {
+    public PaymentContext loadContextByPaymentRequestIdOrDefault(String paymentRequestId,
+                                                                 PaymentContext initial) {
+
         return repository.containsKey(paymentRequestId) ? repository.get(paymentRequestId)
-            : new PaymentContext(paymentRequestId);
+            : initial;
+
     }
 
     /** 

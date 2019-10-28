@@ -98,8 +98,10 @@ public abstract class PaymentInquiryCallback extends
      */
     private void retryOrCancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
 
-        PaymentContext context = paymentContextCallback
-            .loadContextByPaymentRequestId(paymentInquiryRequest.getPaymentRequestId());
+        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
+            paymentInquiryRequest.getPaymentRequestId(),
+            new PaymentContext(paymentInquiryRequest.getPaymentRequestId(), paymentInquiryRequest
+                .getAgentToken()));
 
         if (needFurtherInquiry(context, client.getSettings())) {
 
