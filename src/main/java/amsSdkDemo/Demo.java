@@ -26,14 +26,14 @@ import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.domain.callbacks.PaymentRefundCallback;
 import com.alipay.ams.domain.callbacks.UserPresentedCodePaymentCallback;
-import com.alipay.ams.domain.reponses.PaymentCancelResponse;
-import com.alipay.ams.domain.reponses.PaymentInquiryResponse;
-import com.alipay.ams.domain.reponses.PaymentRefundResponse;
-import com.alipay.ams.domain.reponses.UserPresentedCodePaymentResponse;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
 import com.alipay.ams.domain.requests.UserPresentedCodePaymentRequest;
+import com.alipay.ams.domain.responses.PaymentCancelResponse;
+import com.alipay.ams.domain.responses.PaymentInquiryResponse;
+import com.alipay.ams.domain.responses.PaymentRefundResponse;
+import com.alipay.ams.domain.responses.UserPresentedCodePaymentResponse;
 
 /**
  * 
@@ -92,7 +92,7 @@ public class Demo {
     public static void main(String[] args) {
         Demo demo = new Demo();
 
-        //        demo.pay();
+        demo.pay();
 
         //        demo.inquiry();
         //
@@ -100,7 +100,7 @@ public class Demo {
         //
         //        demo.onNotify();
         //
-        demo.cancel();
+        //        demo.cancel();
 
     }
 
@@ -114,11 +114,12 @@ public class Demo {
             "Some_store", "store231117459", "7011")));
 
         String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
-        String buyerPaymentCode = "288888888812345678";
+        String buyerPaymentCode = "288888888888888888";
         long amountInCents = 1000l;
 
         final UserPresentedCodePaymentRequest request = new UserPresentedCodePaymentRequest(cfg,
-            paymentRequestId, order, currency, amountInCents, buyerPaymentCode, "some_token");
+            paymentRequestId, order, currency, amountInCents, buyerPaymentCode,
+            "r3DugUkweTd4cfKiuRxje3uSkEFSFzJitOW6X7XAjG000141");
 
         AMS.with(cfg).execute(request,
             new UserPresentedCodePaymentCallback(paymentInquiryCallback) {

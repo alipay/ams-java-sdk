@@ -72,9 +72,10 @@ public abstract class AMSClient {
         }
 
         //3. Signature verification.
-        if (SignatureUtil.verify(requestURI, notifyRequestHeader.getClientId(),
-            notifyRequestHeader.getRequestTime(), settings.alipayPublicKey, requestBody,
-            notifyRequestHeader.getSignature().getSignature())) {
+        if (settings.isDevMode()
+            || SignatureUtil.verify(requestURI, notifyRequestHeader.getClientId(),
+                notifyRequestHeader.getRequestTime(), settings.alipayPublicKey, requestBody,
+                notifyRequestHeader.getSignature().getSignature())) {
 
             processNotifyBody(notifyCallback, notifyRequestHeader, requestBody);
 
@@ -134,7 +135,8 @@ public abstract class AMSClient {
             responseBody, responseHeader);
 
         //3. Signature verification.
-        if (responseHeader.validate()
+        if (settings.isDevMode()
+            || responseHeader.validate()
             && SignatureUtil.verify(request.getRequestURI(), responseHeader.getClientId(),
                 responseHeader.getResponseTime(), request.getSettings().alipayPublicKey,
                 responseBody, responseHeader.getSignature().getSignature())) {

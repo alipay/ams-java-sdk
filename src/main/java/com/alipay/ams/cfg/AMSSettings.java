@@ -83,4 +83,12 @@ public class AMSSettings {
     public boolean validate() {
         return true;
     }
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isDevMode() {
+        return gatewayUrl.contains("dev.alipay.net") || gatewayUrl.contains(".alipaydev.com");
+    }
 }
