@@ -4,10 +4,13 @@
  */
 package com.alipay.ams.domain.requests;
 
+import java.util.Map;
+
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Request;
+import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -23,6 +26,7 @@ public class PaymentRefundRequest extends Request {
     private String  refundReason;
     private String  refundRequestTime;
     private boolean isAsyncRefund;
+    private String  agentToken;
 
     /**
      * @param requestURI
@@ -30,13 +34,38 @@ public class PaymentRefundRequest extends Request {
      */
     public PaymentRefundRequest(AMSSettings settings, String paymentId, String refundRequestId,
                                 Amount refundAmount, String refundRequestTime) {
+        this(settings, paymentId, refundRequestId, refundAmount, refundRequestTime, null);
+    }
+
+    /**
+     * @param requestURI
+     * @param settings
+     */
+    public PaymentRefundRequest(AMSSettings settings, String paymentId, String refundRequestId,
+                                Amount refundAmount, String refundRequestTime, String agentToken) {
 
         super("/ams/api/v1/payments/refund", settings);
         this.paymentId = paymentId;
         this.refundRequestId = refundRequestId;
         this.refundAmount = refundAmount;
         this.refundRequestTime = refundRequestTime;
+        this.agentToken = agentToken;
 
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.Request#getExtraHeaders()
+     */
+    @Override
+    protected Map<String, String> getExtraHeaders() {
+
+        Map<String, String> extraHeaders = super.getExtraHeaders();
+
+        if (StringUtil.isNotBlank(this.agentToken)) {
+            extraHeaders.put("Agent-Token", this.agentToken);
+        }
+
+        return extraHeaders;
     }
 
     /** 
@@ -202,6 +231,24 @@ public class PaymentRefundRequest extends Request {
      */
     public void setAsyncRefund(boolean isAsyncRefund) {
         this.isAsyncRefund = isAsyncRefund;
+    }
+
+    /**
+     * Getter method for property <tt>agentToken</tt>.
+     * 
+     * @return property value of agentToken
+     */
+    public String getAgentToken() {
+        return agentToken;
+    }
+
+    /**
+     * Setter method for property <tt>agentToken</tt>.
+     * 
+     * @param agentToken value to be assigned to property agentToken
+     */
+    public void setAgentToken(String agentToken) {
+        this.agentToken = agentToken;
     }
 
 }

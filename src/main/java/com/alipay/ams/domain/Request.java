@@ -37,8 +37,13 @@ public abstract class Request extends AMSMessage {
 
         Signature signature = new Signature();
         requestHeader.setSignature(signature);
+
         //make sure this is the last call after everything is ready.
-        signature.setSignature(SignatureUtil.sign(this, getSettings()));
+        if (isDevMode()) {
+            signature.setSignature("testing_signature");
+        } else {
+            signature.setSignature(SignatureUtil.sign(this, getSettings()));
+        }
 
         return requestHeader;
     }
@@ -60,7 +65,24 @@ public abstract class Request extends AMSMessage {
      * @return
      */
     protected Map<String, String> getExtraHeaders() {
-        return new HashMap<String, String>();
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+
+        if (isDevMode()) {
+
+            headers.put("original_host", "open-na.alipay.com");
+        }
+
+        return headers;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    private boolean isDevMode() {
+        return getSettings().gatewayUrl.contains("dev.alipay.net")
+               || getSettings().gatewayUrl.contains(".alipaydev.com");
     }
 
     /**

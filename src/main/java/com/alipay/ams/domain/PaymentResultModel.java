@@ -7,6 +7,9 @@ package com.alipay.ams.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * 
  * @author guangling.zgl
@@ -23,11 +26,13 @@ public class PaymentResultModel {
 
     private String            pspName;
     private String            pspCustomerId;
-    private String            dispayCustomerId;
+    private String            displayCustomerId;
 
     private PaymentStatusType paymentStatus;
     private Amount            nonGuaranteeCouponAmount;
     private String            extendInfo;
+
+    private Quote             paymentQuote;
 
     /** 
      * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
@@ -47,13 +52,14 @@ public class PaymentResultModel {
             .get("nonGuaranteeCouponAmount"));
 
         Map<String, String> cust = (Map<String, String>) body.get("pspCustomerInfo");
-        this.dispayCustomerId = cust.get("dispayCustomerId");
+        this.displayCustomerId = cust.get("displayCustomerId");
         this.pspCustomerId = cust.get("pspCustomerId");
         this.pspName = cust.get("pspName");
 
         this.paymentStatus = PaymentStatusType.valueOf((String) body.get("paymentStatus"));
 
         this.extendInfo = (String) body.get("extendInfo");
+        this.paymentQuote = Quote.fromMap((Map<String, String>) body.get("paymentQuote"));
 
     }
 
@@ -184,24 +190,6 @@ public class PaymentResultModel {
     }
 
     /**
-     * Getter method for property <tt>dispayCustomerId</tt>.
-     * 
-     * @return property value of dispayCustomerId
-     */
-    public String getDispayCustomerId() {
-        return dispayCustomerId;
-    }
-
-    /**
-     * Setter method for property <tt>dispayCustomerId</tt>.
-     * 
-     * @param dispayCustomerId value to be assigned to property dispayCustomerId
-     */
-    public void setDispayCustomerId(String dispayCustomerId) {
-        this.dispayCustomerId = dispayCustomerId;
-    }
-
-    /**
      * Getter method for property <tt>paymentStatus</tt>.
      * 
      * @return property value of paymentStatus
@@ -271,6 +259,50 @@ public class PaymentResultModel {
      */
     public void setActualPaymentAmount(Amount actualPaymentAmount) {
         this.actualPaymentAmount = actualPaymentAmount;
+    }
+
+    /**
+     * Getter method for property <tt>displayCustomerId</tt>.
+     * 
+     * @return property value of displayCustomerId
+     */
+    public String getDisplayCustomerId() {
+        return displayCustomerId;
+    }
+
+    /**
+     * Setter method for property <tt>displayCustomerId</tt>.
+     * 
+     * @param displayCustomerId value to be assigned to property displayCustomerId
+     */
+    public void setDisplayCustomerId(String displayCustomerId) {
+        this.displayCustomerId = displayCustomerId;
+    }
+
+    /**
+     * Getter method for property <tt>paymentQuote</tt>.
+     * 
+     * @return property value of paymentQuote
+     */
+    public Quote getPaymentQuote() {
+        return paymentQuote;
+    }
+
+    /**
+     * Setter method for property <tt>paymentQuote</tt>.
+     * 
+     * @param paymentQuote value to be assigned to property paymentQuote
+     */
+    public void setPaymentQuote(Quote paymentQuote) {
+        this.paymentQuote = paymentQuote;
+    }
+
+    /** 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }
