@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2019 All Rights Reserved.
  */
-package com.alipay.ams.domain.reponses;
+package com.alipay.ams.domain.responses;
 
 import java.util.HashMap;
 import java.util.Map;

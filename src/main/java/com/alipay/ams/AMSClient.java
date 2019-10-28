@@ -17,7 +17,7 @@ import com.alipay.ams.domain.Request;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
-import com.alipay.ams.domain.reponses.NotifyResponse;
+import com.alipay.ams.domain.responses.NotifyResponse;
 import com.alipay.ams.util.HeaderUtil;
 import com.alipay.ams.util.SignatureUtil;
 import com.google.gson.Gson;

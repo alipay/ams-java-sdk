@@ -59,7 +59,7 @@ public class PaymentResultModel {
         this.paymentStatus = PaymentStatusType.valueOf((String) body.get("paymentStatus"));
 
         this.extendInfo = (String) body.get("extendInfo");
-        this.paymentQuote = Quote.fromMap((Map<String, String>) body.get("paymentQuote"));
+        this.paymentQuote = Quote.fromMap((Map<String, Object>) body.get("paymentQuote"));
 
     }
 

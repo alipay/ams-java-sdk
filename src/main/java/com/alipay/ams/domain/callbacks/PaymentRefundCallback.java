@@ -11,8 +11,8 @@ import com.alipay.ams.AMSClient;
 import com.alipay.ams.domain.Callback;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
-import com.alipay.ams.domain.reponses.PaymentRefundResponse;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
+import com.alipay.ams.domain.responses.PaymentRefundResponse;
 
 /**
  * 
