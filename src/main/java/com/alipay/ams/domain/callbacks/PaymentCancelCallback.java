@@ -54,6 +54,8 @@ public abstract class PaymentCancelCallback extends
 
     /**
      * 
+     * A solution with data persistent feature like Redis would be strongly recommended.
+     * 
      * @param context
      * @param settings
      */

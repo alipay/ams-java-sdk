@@ -10,6 +10,8 @@ import com.alipay.ams.domain.PaymentContext;
  * 
  * store & retrieve context info for a payment.
  * 
+ * A solution with data persistent feature like Redis would be strongly recommended.
+ * 
  * @author guangling.zgl
  * @version $Id: PaymentContextCallback.java, v 0.1 2019年10月23日 下午3:51:48 guangling.zgl Exp $
  */

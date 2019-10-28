@@ -57,7 +57,7 @@ public abstract class PaymentInquiryCallbackWithInMemoryScheduledThreadPoolExecu
 
                 if (needFurtherInquiry(paymentContext, client.getSettings())) {
 
-                    client.getSettings().logger.warn("Running scheduled Inquiry task: [%s]",
+                    client.getSettings().logger.info("Running scheduled Inquiry task: [%s]",
                         paymentContext);
 
                     context.setInquiryCount(inquiryCount + 1);

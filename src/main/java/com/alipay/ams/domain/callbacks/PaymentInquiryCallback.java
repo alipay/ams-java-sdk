@@ -43,6 +43,9 @@ public abstract class PaymentInquiryCallback extends
     public abstract void onPaymentFailure(PaymentInquiryResponse inquiryResponse);
 
     /**
+     * 
+     * A solution with data persistent feature like Redis would be strongly recommended.
+     * 
      * @param amsSettings 
      * @param context 
      * 
