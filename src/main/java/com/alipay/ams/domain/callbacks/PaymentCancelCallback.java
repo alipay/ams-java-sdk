@@ -57,7 +57,8 @@ public abstract class PaymentCancelCallback extends
      * @param context
      * @param settings
      */
-    protected abstract void scheduleALaterCancel(PaymentContext context, AMSSettings settings);
+    protected abstract void scheduleALaterCancel(final AMSClient client,
+                                                 final PaymentContext context);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
@@ -81,7 +82,7 @@ public abstract class PaymentCancelCallback extends
         if (needFurtherCancel(context, client.getSettings())) {
 
             //schedule a later Inquiry
-            scheduleALaterCancel(context, client.getSettings());
+            scheduleALaterCancel(client, context);
 
         } else {
             reportCancelResultUnknown(client, request);
@@ -95,7 +96,7 @@ public abstract class PaymentCancelCallback extends
      * @param settings
      * @return
      */
-    private boolean needFurtherCancel(PaymentContext context, AMSSettings settings) {
+    protected boolean needFurtherCancel(PaymentContext context, AMSSettings settings) {
         int cancelCount = context.getCancelCount();
 
         if (cancelCount + 1 > settings.maxCancelCount) {
@@ -140,5 +141,14 @@ public abstract class PaymentCancelCallback extends
         PaymentCancelResponse cancelResponse = new PaymentCancelResponse(requestURI,
             client.getSettings(), responseHeader, body);
         onCancelSuccess(cancelResponse);
+    }
+
+    /**
+     * Getter method for property <tt>paymentContextCallback</tt>.
+     * 
+     * @return property value of paymentContextCallback
+     */
+    public PaymentContextCallback getPaymentContextCallback() {
+        return paymentContextCallback;
     }
 }

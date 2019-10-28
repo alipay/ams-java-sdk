@@ -30,16 +30,16 @@ public class AMSSettings {
     public String  readTimeout;
     public String  connTimeout;
 
-    public String  queryInterval;
-    public String  cancelInterval;
+    public int[]   inquiryInterval                   = new int[] { 2, 3, 3, 5, 5, 5, 5, 5, 5 };
+    public int[]   cancelInterval                    = new int[] { 2, 3, 3, 5, 5 };
 
     public boolean enableTelemetry                   = true;
     public boolean enableQueryWhenInProcessing       = true;
     public boolean enableQueryWhenUnknowException    = true;
     public boolean enableAutoCancelAfterMutipleQuery = true;
     public boolean notifyEnabled                     = true;
-    public int     maxQueryCount                     = 3;
-    public int     maxCancelCount                    = 3;
+    public int     maxInquiryCount                   = inquiryInterval.length;
+    public int     maxCancelCount                    = cancelInterval.length;
 
     public Logger  logger                            = new SystemoutLogger();
 

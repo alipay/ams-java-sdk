@@ -6,6 +6,9 @@ package com.alipay.ams.domain;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * 
  * Context info for a payment.
@@ -118,4 +121,11 @@ public class PaymentContext {
         this.agentToken = agentToken;
     }
 
+    /** 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

@@ -47,7 +47,7 @@ public abstract class PaymentInquiryCallback extends
      * @param context 
      * 
      */
-    public abstract void scheduleALaterInquiry(PaymentContext context, AMSSettings amsSettings);
+    public abstract void scheduleALaterInquiry(final AMSClient client, final PaymentContext context);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
@@ -106,7 +106,7 @@ public abstract class PaymentInquiryCallback extends
         if (needFurtherInquiry(context, client.getSettings())) {
 
             //schedule a later Inquiry
-            scheduleALaterInquiry(context, client.getSettings());
+            scheduleALaterInquiry(client, context);
 
         } else {
             cancel(client, paymentInquiryRequest);
@@ -120,10 +120,10 @@ public abstract class PaymentInquiryCallback extends
      * @param settings
      * @return
      */
-    private boolean needFurtherInquiry(PaymentContext context, AMSSettings settings) {
+    protected boolean needFurtherInquiry(PaymentContext context, AMSSettings settings) {
         int inquiryCount = context.getInquiryCount();
 
-        if (inquiryCount + 1 > settings.maxQueryCount) {
+        if (inquiryCount + 1 > settings.maxInquiryCount) {
             return false;
         }
 
@@ -172,5 +172,23 @@ public abstract class PaymentInquiryCallback extends
             default:
                 break;
         }
+    }
+
+    /**
+     * Getter method for property <tt>paymentCancelCallback</tt>.
+     * 
+     * @return property value of paymentCancelCallback
+     */
+    public PaymentCancelCallback getPaymentCancelCallback() {
+        return paymentCancelCallback;
+    }
+
+    /**
+     * Getter method for property <tt>paymentContextCallback</tt>.
+     * 
+     * @return property value of paymentContextCallback
+     */
+    public PaymentContextCallback getPaymentContextCallback() {
+        return paymentContextCallback;
     }
 }

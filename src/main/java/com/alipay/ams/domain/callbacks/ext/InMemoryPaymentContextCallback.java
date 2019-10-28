@@ -2,12 +2,13 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2019 All Rights Reserved.
  */
-package com.alipay.ams.domain.callbacks;
+package com.alipay.ams.domain.callbacks.ext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alipay.ams.domain.PaymentContext;
+import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 
 /**
  * 
