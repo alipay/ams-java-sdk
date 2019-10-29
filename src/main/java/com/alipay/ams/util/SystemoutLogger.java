@@ -20,6 +20,14 @@ public class SystemoutLogger implements Logger {
     }
 
     /** 
+     * @see com.alipay.ams.util.Logger#info(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public void info(String format, Object... args) {
+        System.out.println(String.format(format, args));
+    }
+
+    /** 
      * @see com.alipay.ams.util.Logger#warn(java.lang.String, java.lang.Object[])
      */
     @Override

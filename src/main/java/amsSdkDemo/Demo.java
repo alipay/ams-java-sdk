@@ -6,7 +6,6 @@ package amsSdkDemo;
 
 import java.util.Currency;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.alipay.ams.AMS;
 import com.alipay.ams.AMSClient;
@@ -25,9 +24,7 @@ import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.domain.callbacks.PaymentRefundCallback;
 import com.alipay.ams.domain.callbacks.UserPresentedCodePaymentCallback;
-import com.alipay.ams.domain.callbacks.ext.InMemoryPaymentContextCallback;
-import com.alipay.ams.domain.callbacks.ext.PaymentCancelCallbackWithInMemoryScheduledThreadPoolExecutor;
-import com.alipay.ams.domain.callbacks.ext.PaymentInquiryCallbackWithInMemoryScheduledThreadPoolExecutor;
+import com.alipay.ams.domain.callbacks.impl.InMemoryPaymentContextCallback;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
@@ -36,6 +33,7 @@ import com.alipay.ams.domain.responses.PaymentCancelResponse;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.domain.responses.PaymentRefundResponse;
 import com.alipay.ams.domain.responses.UserPresentedCodePaymentResponse;
+import com.alipay.ams.job.JobExecutor;
 
 /**
  * 
@@ -46,12 +44,10 @@ public class Demo {
 
     AMSSettings                    cfg                    = new AMSSettings();
 
-    ScheduledThreadPoolExecutor    executor               = new ScheduledThreadPoolExecutor(4);
-
     private PaymentContextCallback paymentContextCallback = new InMemoryPaymentContextCallback();
 
-    private PaymentCancelCallback  paymentCancelCallback  = new PaymentCancelCallbackWithInMemoryScheduledThreadPoolExecutor(
-                                                              paymentContextCallback, executor) {
+    private PaymentCancelCallback  paymentCancelCallback  = new PaymentCancelCallback(
+                                                              paymentContextCallback) {
 
                                                               @Override
                                                               protected void reportCancelResultUnknown(AMSClient client,
@@ -67,9 +63,9 @@ public class Demo {
                                                               }
                                                           };
 
-    private PaymentInquiryCallback paymentInquiryCallback = new PaymentInquiryCallbackWithInMemoryScheduledThreadPoolExecutor(
+    private PaymentInquiryCallback paymentInquiryCallback = new PaymentInquiryCallback(
                                                               paymentCancelCallback,
-                                                              paymentContextCallback, executor) {
+                                                              paymentContextCallback) {
 
                                                               @Override
                                                               public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
@@ -79,6 +75,14 @@ public class Demo {
                                                               public void onPaymentFailure(PaymentInquiryResponse inquiryResponse) {
                                                               }
                                                           };
+
+    {
+        JobExecutor.instance.setClient(AMS.with(cfg));
+        JobExecutor.instance.setPaymentCancelCallback(paymentCancelCallback);
+        JobExecutor.instance.setPaymentContextCallback(paymentContextCallback);
+        JobExecutor.instance.setPaymentInquiryCallback(paymentInquiryCallback);
+        JobExecutor.instance.startJobExecutor();
+    }
 
     /**
      * @param args
@@ -184,8 +188,7 @@ public class Demo {
     void inquiry() {
         AMS.with(cfg).execute(
             PaymentInquiryRequest.byPaymentRequestId(cfg, "PR20190000000001_1571936707820"),
-            new PaymentInquiryCallbackWithInMemoryScheduledThreadPoolExecutor(
-                paymentCancelCallback, paymentContextCallback, executor) {
+            new PaymentInquiryCallback(paymentCancelCallback, paymentContextCallback) {
 
                 @Override
                 public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
@@ -200,8 +203,7 @@ public class Demo {
     void cancel() {
         AMS.with(cfg).execute(
             PaymentCancelRequest.byPaymentId(cfg, "PR20190000000001_1571936707820"),
-            new PaymentCancelCallbackWithInMemoryScheduledThreadPoolExecutor(
-                paymentContextCallback, executor) {
+            new PaymentCancelCallback(paymentContextCallback) {
 
                 @Override
                 protected void reportCancelResultUnknown(AMSClient client,

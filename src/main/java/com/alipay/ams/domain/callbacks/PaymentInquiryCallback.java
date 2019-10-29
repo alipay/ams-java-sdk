@@ -6,6 +6,7 @@ package com.alipay.ams.domain.callbacks;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import com.alipay.ams.AMSClient;
 import com.alipay.ams.cfg.AMSSettings;
@@ -16,6 +17,7 @@ import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
+import com.alipay.ams.job.JobExecutor;
 
 /**
  * 
@@ -50,7 +52,14 @@ public abstract class PaymentInquiryCallback extends
      * @param context 
      * 
      */
-    public abstract void scheduleALaterInquiry(final AMSClient client, final PaymentContext context);
+    public void scheduleALaterInquiry(final AMSClient client, final PaymentContext context) {
+
+        int inquiryCount = context.getInquiryCount();
+
+        JobExecutor.instance.scheduleInquiryJob(context.getPaymentRequestId(),
+            client.getSettings().inquiryInterval[inquiryCount], TimeUnit.SECONDS);
+
+    }
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
@@ -123,7 +132,7 @@ public abstract class PaymentInquiryCallback extends
      * @param settings
      * @return
      */
-    protected boolean needFurtherInquiry(PaymentContext context, AMSSettings settings) {
+    public boolean needFurtherInquiry(PaymentContext context, AMSSettings settings) {
         int inquiryCount = context.getInquiryCount();
 
         if (inquiryCount + 1 > settings.maxInquiryCount) {

@@ -6,6 +6,7 @@ package com.alipay.ams.domain.callbacks;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import com.alipay.ams.AMSClient;
 import com.alipay.ams.cfg.AMSSettings;
@@ -15,6 +16,7 @@ import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.responses.PaymentCancelResponse;
+import com.alipay.ams.job.JobExecutor;
 
 /**
  * 
@@ -59,8 +61,13 @@ public abstract class PaymentCancelCallback extends
      * @param context
      * @param settings
      */
-    protected abstract void scheduleALaterCancel(final AMSClient client,
-                                                 final PaymentContext context);
+    protected void scheduleALaterCancel(final AMSClient client, final PaymentContext context) {
+
+        final int cancelCount = context.getCancelCount();
+
+        JobExecutor.instance.scheduleCancelJob(context.getPaymentRequestId(),
+            client.getSettings().cancelInterval[cancelCount], TimeUnit.SECONDS);
+    }
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
@@ -98,7 +105,7 @@ public abstract class PaymentCancelCallback extends
      * @param settings
      * @return
      */
-    protected boolean needFurtherCancel(PaymentContext context, AMSSettings settings) {
+    public boolean needFurtherCancel(PaymentContext context, AMSSettings settings) {
         int cancelCount = context.getCancelCount();
 
         if (cancelCount + 1 > settings.maxCancelCount) {

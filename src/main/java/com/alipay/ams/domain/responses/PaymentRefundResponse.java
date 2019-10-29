@@ -20,6 +20,7 @@ import com.alipay.ams.domain.ResponseHeader;
 public class PaymentRefundResponse extends Response {
 
     private String  paymentId;
+    private String  refundId;
     private String  refundRequestId;
     private Amount  refundAmount;
     private String  refundTime;
@@ -44,6 +45,7 @@ public class PaymentRefundResponse extends Response {
 
         this.refundTime = (String) body.get("refundTime");
         this.paymentId = (String) body.get("paymentId");
+        this.refundId = (String) body.get("refundId");
         this.refundRequestId = (String) body.get("refundRequestId");
         this.refundAmount = Amount.fromMap((Map<String, String>) body.get("refundAmount"));
         this.isAsyncRefund = "true".equals((String) body.get("isAsyncRefund"));
@@ -145,6 +147,24 @@ public class PaymentRefundResponse extends Response {
      */
     public void setAsyncRefund(boolean isAsyncRefund) {
         this.isAsyncRefund = isAsyncRefund;
+    }
+
+    /**
+     * Getter method for property <tt>refundId</tt>.
+     * 
+     * @return property value of refundId
+     */
+    public String getRefundId() {
+        return refundId;
+    }
+
+    /**
+     * Setter method for property <tt>refundId</tt>.
+     * 
+     * @param refundId value to be assigned to property refundId
+     */
+    public void setRefundId(String refundId) {
+        this.refundId = refundId;
     }
 
 }
