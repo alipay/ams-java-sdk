@@ -4,6 +4,7 @@
  */
 package com.alipay.ams.job;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -14,7 +15,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author guangling.zgl
  * @version $Id: Job.java, v 0.1 2019年10月28日 下午6:17:05 guangling.zgl Exp $
  */
-public class Job {
+public class Job implements Serializable {
+
+    /**  */
+    private static final long serialVersionUID = 1430509534871165784L;
 
     /**
          * 

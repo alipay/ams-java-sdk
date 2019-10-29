@@ -4,6 +4,7 @@
  */
 package com.alipay.ams.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -17,12 +18,15 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author guangling.zgl
  * @version $Id: PaymentContext.java, v 0.1 2019年10月23日 下午3:52:13 guangling.zgl Exp $
  */
-public class PaymentContext {
-    private int    inquiryCount;
-    private int    cancelCount;
-    private Date   lastInquiryTime;
-    private String paymentRequestId;
-    private String agentToken;
+public class PaymentContext implements Serializable {
+    /**  */
+    private static final long serialVersionUID = 5669984777395423776L;
+
+    private int               inquiryCount;
+    private int               cancelCount;
+    private Date              lastInquiryTime;
+    private String            paymentRequestId;
+    private String            agentToken;
 
     /**
      * @param paymentRequestId
