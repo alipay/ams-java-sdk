@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.math.RandomUtils;
+
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.job.Job;
@@ -20,11 +22,12 @@ import com.alipay.ams.job.Job;
  * @version $Id: InMemoryPaymentContextCallback.java, v 0.1 2019年10月29日 上午12:27:16 guangling.zgl Exp $
  */
 public class InMemoryPaymentContextCallback implements PaymentContextCallback {
-    private final Object                value    = new Object();
+    private final Object                value                 = new Object();
 
-    private Map<String, PaymentContext> repo     = new ConcurrentHashMap<String, PaymentContext>();
-    private List<Job>                   jobRepo  = new ArrayList<Job>();
-    private Map<Job, Object>            lockRepo = new ConcurrentHashMap<Job, Object>();
+    private Map<String, PaymentContext> repo                  = new ConcurrentHashMap<String, PaymentContext>();
+    private List<Job>                   jobRepo               = new ArrayList<Job>();
+    private Map<Job, Object>            jobLockRepo           = new ConcurrentHashMap<Job, Object>();
+    private Map<String, Object>         paymentStatusLockRepo = new ConcurrentHashMap<String, Object>();
 
     /** 
      * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#loadContextByPaymentRequestIdOrDefault(java.lang.String, com.alipay.ams.domain.PaymentContext)
@@ -65,7 +68,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
      */
     @Override
     public boolean lockJob(Job job, long autoReleaseDelay, TimeUnit unit) {
-        return lockRepo.putIfAbsent(job, value) == null;
+        return jobLockRepo.putIfAbsent(job, value) == null;
     }
 
     /** 
@@ -73,7 +76,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
      */
     @Override
     public boolean releaseLock(Job job) {
-        return lockRepo.remove(job) != null;
+        return jobLockRepo.remove(job) != null;
     }
 
     /** 
@@ -90,6 +93,39 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     @Override
     public Job[] listJobs() {
         return jobRepo.toArray(new Job[jobRepo.size()]);
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#tryLock4PaymentStatusUpdate(java.lang.String, long, java.util.concurrent.TimeUnit)
+     */
+    @Override
+    public boolean tryLock4PaymentStatusUpdate(String paymentRequestId, long autoReleaseDelay,
+                                               TimeUnit unit) {
+        return paymentStatusLockRepo.putIfAbsent(paymentRequestId, value) == null;
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#unlock4PaymentStatusUpdate(java.lang.String)
+     */
+    @Override
+    public boolean unlock4PaymentStatusUpdate(String paymentRequestId) {
+        return paymentStatusLockRepo.remove(paymentRequestId) != null;
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#isPaymentStatusSuccess(java.lang.String)
+     */
+    @Override
+    public boolean isPaymentStatusSuccess(String paymentRequestId) {
+        return RandomUtils.nextBoolean();
+    }
+
+    /** 
+     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#isPaymentStatusCancelled(java.lang.String)
+     */
+    @Override
+    public boolean isPaymentStatusCancelled(String paymentRequestId) {
+        return RandomUtils.nextBoolean();
     }
 
 }

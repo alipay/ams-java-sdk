@@ -23,36 +23,21 @@ import com.alipay.ams.job.JobExecutor;
  * @author guangling.zgl
  * @version $Id: PaymentCancelCallback.java, v 0.1 2019年10月18日 下午6:37:18 guangling.zgl Exp $
  */
-public abstract class PaymentCancelCallback extends
-                                           Callback<PaymentCancelRequest, PaymentCancelResponse> {
+public class PaymentCancelCallback extends Callback<PaymentCancelRequest, PaymentCancelResponse> {
 
-    private PaymentContextCallback paymentContextCallback;
+    private PaymentContextCallback      paymentContextCallback;
+    private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
     /**
      * @param paymentContextCallback
+     * @param paymentStatusUpdateCallback
      */
-    public PaymentCancelCallback(PaymentContextCallback paymentContextCallback) {
+    public PaymentCancelCallback(PaymentContextCallback paymentContextCallback,
+                                 PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
+
         this.paymentContextCallback = paymentContextCallback;
+        this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
-
-    /**
-     * 
-     * @param cancelResponse
-     */
-    protected abstract void onCancelSuccess(PaymentCancelResponse cancelResponse);
-
-    /**
-     * 
-     * @param responseResult
-     */
-    protected abstract void onCancelFailure(ResponseResult responseResult);
-
-    /**
-     * 
-     * @param client
-     * @param request
-     */
-    protected abstract void reportCancelResultUnknown(AMSClient client, PaymentCancelRequest request);
 
     /**
      * 
@@ -94,7 +79,7 @@ public abstract class PaymentCancelCallback extends
             scheduleALaterCancel(client, context);
 
         } else {
-            reportCancelResultUnknown(client, request);
+            paymentStatusUpdateCallback.reportCancelResultUnknown(client, request);
         }
 
     }
@@ -129,7 +114,7 @@ public abstract class PaymentCancelCallback extends
     @Override
     public void onFstatus(AMSClient client, PaymentCancelRequest request,
                           ResponseResult responseResult) {
-        onCancelFailure(responseResult);
+        retryOrAlarm(client, request);
     }
 
     /** 
@@ -147,9 +132,12 @@ public abstract class PaymentCancelCallback extends
     @Override
     public void onSstatus(AMSClient client, String requestURI, ResponseHeader responseHeader,
                           HashMap<String, Object> body, PaymentCancelRequest request) {
+
         PaymentCancelResponse cancelResponse = new PaymentCancelResponse(requestURI,
             client.getSettings(), responseHeader, body);
-        onCancelSuccess(cancelResponse);
+
+        paymentStatusUpdateCallback.onPaymentCancelled(cancelResponse.getPaymentRequestId(),
+            cancelResponse.getPaymentId(), cancelResponse.getCancelTime());
     }
 
     /**

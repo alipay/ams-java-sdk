@@ -4,6 +4,8 @@
  */
 package com.alipay.ams.util;
 
+import java.util.concurrent.TimeUnit;
+
 import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 
 /**
@@ -16,7 +18,8 @@ public class LockUtil {
     public static boolean executeWithLock(PaymentContextCallback paymentContextCallback,
                                           String paymentRequestId, Runnable logic) {
 
-        if (paymentContextCallback.tryLock4PaymentStatusUpdate(paymentRequestId)) {
+        if (paymentContextCallback.tryLock4PaymentStatusUpdate(paymentRequestId, 10,
+            TimeUnit.SECONDS)) {
 
             try {
 

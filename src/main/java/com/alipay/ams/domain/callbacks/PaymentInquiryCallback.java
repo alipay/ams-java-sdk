@@ -14,6 +14,7 @@ import com.alipay.ams.domain.Callback;
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
+import com.alipay.ams.domain.ResultStatusType;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.job.JobExecutor;
@@ -23,25 +24,24 @@ import com.alipay.ams.job.JobExecutor;
  * @author guangling.zgl
  * @version $Id: PaymentInquiryCallback.java, v 0.1 2019年10月18日 下午6:37:18 guangling.zgl Exp $
  */
-public abstract class PaymentInquiryCallback extends
-                                            Callback<PaymentInquiryRequest, PaymentInquiryResponse> {
+public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, PaymentInquiryResponse> {
 
-    private PaymentCancelCallback  paymentCancelCallback;
-    private PaymentContextCallback paymentContextCallback;
+    private PaymentCancelCallback       paymentCancelCallback;
+    private PaymentContextCallback      paymentContextCallback;
+    private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
     /**
      * @param paymentCancelCallback
      * @param paymentContextCallback
+     * @param paymentStatusUpdateCallback
      */
     public PaymentInquiryCallback(PaymentCancelCallback paymentCancelCallback,
-                                  PaymentContextCallback paymentContextCallback) {
+                                  PaymentContextCallback paymentContextCallback,
+                                  PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
         this.paymentCancelCallback = paymentCancelCallback;
         this.paymentContextCallback = paymentContextCallback;
+        this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
-
-    public abstract void onPaymentSuccess(PaymentInquiryResponse inquiryResponse);
-
-    public abstract void onPaymentFailure(PaymentInquiryResponse inquiryResponse);
 
     /**
      * 
@@ -161,20 +161,25 @@ public abstract class PaymentInquiryCallback extends
         PaymentInquiryResponse inquiryResponse = new PaymentInquiryResponse(requestURI,
             client.getSettings(), responseHeader, body);
 
-        switch (inquiryResponse.getPaymentStatusType()) {
+        switch (inquiryResponse.getPaymentResultModel().getPaymentStatus()) {
             case SUCCESS:
 
-                onPaymentSuccess(inquiryResponse);
+                paymentStatusUpdateCallback.handlePaymentSuccess(inquiryResponse
+                    .getPaymentResultModel());
                 break;
 
             case FAIL:
 
-                onPaymentFailure(inquiryResponse);
+                paymentStatusUpdateCallback.onPaymentFailed(inquiryResponse.getPaymentResultModel()
+                    .getPaymentRequestId(), new ResponseResult("UNKNOWN", ResultStatusType.F,
+                    "paymentStatus = FAIL in Inquiry response."));
                 break;
 
             case CANCELLED:
 
-                onPaymentFailure(inquiryResponse);
+                paymentStatusUpdateCallback.onPaymentCancelled(inquiryResponse
+                    .getPaymentResultModel().getPaymentRequestId(), inquiryResponse
+                    .getPaymentResultModel().getPaymentId(), null);//cancelTime not available from an Inquiry.
                 break;
 
             case PROCESSING:

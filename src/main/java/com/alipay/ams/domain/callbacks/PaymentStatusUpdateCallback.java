@@ -4,11 +4,15 @@
  */
 package com.alipay.ams.domain.callbacks;
 
+import java.util.concurrent.TimeUnit;
+
+import com.alipay.ams.AMSClient;
+import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.PaymentResultModel;
 import com.alipay.ams.domain.ResponseResult;
-import com.alipay.ams.domain.responses.PaymentCancelResponse;
+import com.alipay.ams.domain.requests.PaymentCancelRequest;
+import com.alipay.ams.job.JobExecutor;
 import com.alipay.ams.util.LockUtil;
-import com.alipay.ams.util.Logger;
 
 /**
  * 
@@ -17,7 +21,7 @@ import com.alipay.ams.util.Logger;
  */
 public abstract class PaymentStatusUpdateCallback {
 
-    Logger                         logger;
+    private AMSSettings            setting;
 
     private PaymentContextCallback paymentContextCallback;
 
@@ -32,7 +36,7 @@ public abstract class PaymentStatusUpdateCallback {
                     if (paymentContextCallback.isPaymentStatusSuccess(paymentResultModel
                         .getPaymentRequestId())) {
 
-                        logger
+                        setting.logger
                             .warn(
                                 "onPaymentSuccess() skipped. Because Payment status now is already SUCCESS in partner system. paymentResultModel=[%s]",
                                 paymentResultModel);
@@ -42,7 +46,7 @@ public abstract class PaymentStatusUpdateCallback {
                     if (paymentContextCallback.isPaymentStatusCancelled(paymentResultModel
                         .getPaymentRequestId())) {
 
-                        logger
+                        setting.logger
                             .warn(
                                 "onPaymentSuccess() skipped. Because Payment status now is already Cancelled in partner system. paymentResultModel=[%s]",
                                 paymentResultModel);
@@ -54,24 +58,40 @@ public abstract class PaymentStatusUpdateCallback {
                 }
             });
 
-        if (!lockOK) {
+        if (!lockOK) { //Maybe there is a pending Cancel operation.
 
-            logger
+            //In memory retry.
+            setting.logger
                 .warn(
-                    "onPaymentSuccess() skipped. Because Acquiring lock failed. paymentResultModel=[%s]",
-                    paymentResultModel);
+                    "onPaymentSuccess() delayed in %s seconds. Because Acquiring lock failed. paymentResultModel=[%s]",
+                    setting.retryHandlePaymentSuccessDelayInSeconds, paymentResultModel);
+
+            final PaymentStatusUpdateCallback self = this;
+
+            JobExecutor.instance.schedule(new Runnable() {
+
+                @Override
+                public void run() {
+                    setting.logger
+                        .warn(
+                            "onPaymentSuccess() running from a scheduled task. paymentResultModel=[%s]",
+                            paymentResultModel);
+                    self.handlePaymentSuccess(paymentResultModel);
+                }
+            }, setting.retryHandlePaymentSuccessDelayInSeconds, TimeUnit.SECONDS);
         }
-    }
-
-    void handlePaymentCancelled(PaymentCancelResponse paymentCancelResponse) {
-    }
-
-    void handlePaymentFailed(ResponseResult responseResult) {
     }
 
     abstract void onPaymentSuccess(PaymentResultModel paymentResultModel);
 
-    abstract void onPaymentCancelled(PaymentCancelResponse paymentCancelResponse);
+    abstract void onPaymentCancelled(String paymentRequestId, String paymentId, String cancelTime);
 
-    abstract void onPaymentFailed(ResponseResult responseResult);
+    abstract void onPaymentFailed(String paymentRequestId, ResponseResult responseResult);
+
+    /**
+     * 
+     * @param client
+     * @param request
+     */
+    abstract void reportCancelResultUnknown(AMSClient client, PaymentCancelRequest request);
 }

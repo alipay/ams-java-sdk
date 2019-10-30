@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.PaymentResultModel;
-import com.alipay.ams.domain.PaymentStatusType;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 
@@ -20,7 +19,6 @@ import com.alipay.ams.domain.ResponseHeader;
 public class PaymentInquiryResponse extends Response {
 
     private PaymentResultModel paymentResultModel;
-    private PaymentStatusType  paymentStatusType;
 
     /**
      * @param requestURI
@@ -37,8 +35,6 @@ public class PaymentInquiryResponse extends Response {
      */
     @Override
     protected void initBody(HashMap<String, Object> body) {
-        this.paymentStatusType = PaymentStatusType.valueOf(((String) body.get("paymentStatus"))
-            .toUpperCase());
         this.paymentResultModel = new PaymentResultModel(body);
     }
 
@@ -57,24 +53,6 @@ public class PaymentInquiryResponse extends Response {
      */
     public PaymentResultModel getPaymentResultModel() {
         return paymentResultModel;
-    }
-
-    /**
-     * Getter method for property <tt>paymentStatusType</tt>.
-     * 
-     * @return property value of paymentStatusType
-     */
-    public PaymentStatusType getPaymentStatusType() {
-        return paymentStatusType;
-    }
-
-    /**
-     * Setter method for property <tt>paymentStatusType</tt>.
-     * 
-     * @param paymentStatusType value to be assigned to property paymentStatusType
-     */
-    public void setPaymentStatusType(PaymentStatusType paymentStatusType) {
-        this.paymentStatusType = paymentStatusType;
     }
 
     /**

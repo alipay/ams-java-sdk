@@ -20,19 +20,22 @@ import com.alipay.ams.domain.responses.UserPresentedCodePaymentResponse;
  * @author guangling.zgl
  * @version $Id: UserPresentedCodePaymentCallback.java, v 0.1 2019年8月26日 下午6:27:20 guangling.zgl Exp $
  */
-public abstract class UserPresentedCodePaymentCallback
-                                                      extends
-                                                      Callback<UserPresentedCodePaymentRequest, UserPresentedCodePaymentResponse> {
+public class UserPresentedCodePaymentCallback
+                                             extends
+                                             Callback<UserPresentedCodePaymentRequest, UserPresentedCodePaymentResponse> {
 
-    private PaymentInquiryCallback paymentInquiryCallback;
+    private PaymentInquiryCallback      paymentInquiryCallback;
+    private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
-    public UserPresentedCodePaymentCallback(PaymentInquiryCallback paymentInquiryCallback) {
+    /**
+     * @param paymentInquiryCallback
+     * @param paymentStatusUpdateCallback
+     */
+    public UserPresentedCodePaymentCallback(PaymentInquiryCallback paymentInquiryCallback,
+                                            PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
         this.paymentInquiryCallback = paymentInquiryCallback;
+        this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
-
-    public abstract void onDirectSuccess(UserPresentedCodePaymentResponse paymentResponse);
-
-    public abstract void onFailure(ResponseResult responseResult);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
@@ -54,7 +57,10 @@ public abstract class UserPresentedCodePaymentCallback
     @Override
     public void onHttpStatusNot200(AMSClient client, UserPresentedCodePaymentRequest request,
                                    int code) {
-        onFailure(null);
+        //Initiate a Inquiry
+        client.execute(
+            PaymentInquiryRequest.byPaymentRequestId(client.getSettings(),
+                request.getPaymentRequestId(), request.getAgentToken()), paymentInquiryCallback);
     }
 
     /** 
@@ -63,7 +69,7 @@ public abstract class UserPresentedCodePaymentCallback
     @Override
     public void onFstatus(AMSClient client, UserPresentedCodePaymentRequest request,
                           ResponseResult responseResult) {
-        onFailure(responseResult);
+        paymentStatusUpdateCallback.onPaymentFailed(request.getPaymentRequestId(), responseResult);
     }
 
     /** 
@@ -72,7 +78,7 @@ public abstract class UserPresentedCodePaymentCallback
     @Override
     public void onUstatus(AMSClient client, UserPresentedCodePaymentRequest paymentRequest,
                           ResponseResult responseResult) {
-        //Initiate a Inquiry
+        //Initiate an Inquiry
         client.execute(
             PaymentInquiryRequest.byPaymentRequestId(client.getSettings(),
                 paymentRequest.getPaymentRequestId(), paymentRequest.getAgentToken()),
@@ -90,7 +96,7 @@ public abstract class UserPresentedCodePaymentCallback
         UserPresentedCodePaymentResponse paymentResponse = new UserPresentedCodePaymentResponse(
             client.getSettings(), requestURI, responseHeader, body);
 
-        onDirectSuccess(paymentResponse);
+        paymentStatusUpdateCallback.handlePaymentSuccess(paymentResponse.getPaymentResultModel());
 
     }
 

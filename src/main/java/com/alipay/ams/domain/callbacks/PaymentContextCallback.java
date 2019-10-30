@@ -91,13 +91,14 @@ public interface PaymentContextCallback {
      * @return {@code true} if the lock was acquired and
      *         {@code false} otherwise
      */
-    boolean tryLock4PaymentStatusUpdate(String paymentRequestId);
+    boolean tryLock4PaymentStatusUpdate(String paymentRequestId, long autoReleaseDelay,
+                                        TimeUnit unit);
 
     /**
      * 
      * @param paymentRequestId
      */
-    void unlock4PaymentStatusUpdate(String paymentRequestId);
+    boolean unlock4PaymentStatusUpdate(String paymentRequestId);
 
     /**
      * 

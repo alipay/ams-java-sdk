@@ -26,25 +26,21 @@ public class AMSSettings {
     public String  gatewayUrl;
     //from config.properties end
 
-    public String  connectionPool;
     public String  readTimeout;
     public String  connTimeout;
 
-    public int[]   inquiryInterval                    = new int[] { 2, 3, 3, 5, 5, 5, 5, 5, 5 };
-    public int[]   cancelInterval                     = new int[] { 2, 3, 3, 5, 5 };
+    public int[]   inquiryInterval                         = new int[] { 2, 3, 3, 5, 5, 5, 5, 5, 5 };
+    public int[]   cancelInterval                          = new int[] { 2, 3, 3, 5, 5 };
 
-    public boolean enableTelemetry                    = true;
-    public boolean enableQueryWhenInProcessing        = true;
-    public boolean enableQueryWhenUnknowException     = true;
-    public boolean enableAutoCancelAfterMutipleQuery  = true;
-    public boolean notifyEnabled                      = true;
-    public int     maxInquiryCount                    = inquiryInterval.length;
-    public int     maxCancelCount                     = cancelInterval.length;
+    public boolean enableTelemetry                         = true;
+    public int     maxInquiryCount                         = inquiryInterval.length;
+    public int     maxCancelCount                          = cancelInterval.length;
 
-    public Logger  logger                             = new SystemoutLogger();
-    public long    jobListingDelayInMilliSeconds      = 300;
-    public int     corePoolSizeOfJobExecutor          = 10;
-    public long    lockAutoReleaseDelayInMilliSeconds = 300;
+    public Logger  logger                                  = new SystemoutLogger();
+    public long    jobListingDelayInMilliSeconds           = 300;
+    public int     corePoolSizeOfJobExecutor               = 10;
+    public long    lockAutoReleaseDelayInMilliSeconds      = 300;
+    public int     retryHandlePaymentSuccessDelayInSeconds = 3;
 
     public AMSSettings() {
 

@@ -212,4 +212,14 @@ public class JobExecutor {
         this.client = client;
     }
 
+    /**
+     * 
+     * @param runnable
+     * @param delay
+     * @param unit
+     */
+    public void schedule(Runnable command, int delay, TimeUnit unit) {
+        this.executor.schedule(command, delay, unit);
+    }
+
 }
