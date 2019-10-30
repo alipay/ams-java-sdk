@@ -8,13 +8,11 @@ import java.util.Currency;
 import java.util.Map;
 
 import com.alipay.ams.AMS;
-import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.LockSupport;
 import com.alipay.ams.callbacks.PaymentCancelCallback;
-import com.alipay.ams.callbacks.PaymentContextCallback;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.callbacks.PaymentRefundCallback;
 import com.alipay.ams.callbacks.UserPresentedCodePaymentCallback;
-import com.alipay.ams.callbacks.impl.InMemoryPaymentContextCallback;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.AuthNotifyModel;
@@ -29,10 +27,7 @@ import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
 import com.alipay.ams.domain.requests.UserPresentedCodePaymentRequest;
-import com.alipay.ams.domain.responses.PaymentCancelResponse;
-import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.domain.responses.PaymentRefundResponse;
-import com.alipay.ams.domain.responses.UserPresentedCodePaymentResponse;
 import com.alipay.ams.job.JobExecutor;
 
 /**
@@ -44,43 +39,22 @@ public class Demo {
 
     AMSSettings                    cfg                    = new AMSSettings();
 
-    private PaymentContextCallback paymentContextCallback = new InMemoryPaymentContextCallback();
+    LockSupport                    lockSupport            = new InMemoryCallbackImpl(cfg);
 
-    private PaymentCancelCallback  paymentCancelCallback  = new PaymentCancelCallback(
-                                                              paymentContextCallback) {
+    InMemoryCallbackImpl           allInOne               = new InMemoryCallbackImpl(cfg,
+                                                              lockSupport);
 
-                                                              @Override
-                                                              protected void reportCancelResultUnknown(AMSClient client,
-                                                                                                       PaymentCancelRequest request) {
-                                                              }
-
-                                                              @Override
-                                                              protected void onCancelSuccess(PaymentCancelResponse cancelResponse) {
-                                                              }
-
-                                                              @Override
-                                                              protected void onCancelFailure(ResponseResult responseResult) {
-                                                              }
-                                                          };
+    private PaymentCancelCallback  paymentCancelCallback  = new PaymentCancelCallback(allInOne,
+                                                              allInOne);
 
     private PaymentInquiryCallback paymentInquiryCallback = new PaymentInquiryCallback(
-                                                              paymentCancelCallback,
-                                                              paymentContextCallback) {
-
-                                                              @Override
-                                                              public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
-                                                              }
-
-                                                              @Override
-                                                              public void onPaymentFailure(PaymentInquiryResponse inquiryResponse) {
-                                                              }
-                                                          };
+                                                              paymentCancelCallback);
 
     {
         JobExecutor.instance.setClient(AMS.with(cfg));
-        JobExecutor.instance.setPaymentCancelCallback(paymentCancelCallback);
-        JobExecutor.instance.setPaymentContextCallback(paymentContextCallback);
+        JobExecutor.instance.setJobSupport(allInOne);
         JobExecutor.instance.setPaymentInquiryCallback(paymentInquiryCallback);
+
         JobExecutor.instance.startJobExecutor();
     }
 
@@ -119,19 +93,8 @@ public class Demo {
             paymentRequestId, order, currency, amountInCents, buyerPaymentCode,
             "r3DugUkweTd4cfKiuRxje3uSkEFSFzJitOW6X7XAjG000141");
 
-        AMS.with(cfg).execute(request,
-            new UserPresentedCodePaymentCallback(paymentInquiryCallback) {
-
-                @Override
-                public void onDirectSuccess(UserPresentedCodePaymentResponse paymentResponse) {
-                    System.out.println(paymentResponse.toString());
-                }
-
-                @Override
-                public void onFailure(ResponseResult responseResult) {
-                    System.out.println(responseResult.toString());
-                }
-            });
+        AMS.with(cfg)
+            .execute(request, new UserPresentedCodePaymentCallback(paymentInquiryCallback));
     }
 
     /**
@@ -188,35 +151,12 @@ public class Demo {
     void inquiry() {
         AMS.with(cfg).execute(
             PaymentInquiryRequest.byPaymentRequestId(cfg, "PR20190000000001_1571936707820"),
-            new PaymentInquiryCallback(paymentCancelCallback, paymentContextCallback) {
-
-                @Override
-                public void onPaymentSuccess(PaymentInquiryResponse inquiryResponse) {
-                }
-
-                @Override
-                public void onPaymentFailure(PaymentInquiryResponse inquiryResponse) {
-                }
-            });
+            paymentInquiryCallback);
     }
 
     void cancel() {
         AMS.with(cfg).execute(
             PaymentCancelRequest.byPaymentId(cfg, "PR20190000000001_1571936707820"),
-            new PaymentCancelCallback(paymentContextCallback) {
-
-                @Override
-                protected void reportCancelResultUnknown(AMSClient client,
-                                                         PaymentCancelRequest request) {
-                }
-
-                @Override
-                protected void onCancelSuccess(PaymentCancelResponse cancelResponse) {
-                }
-
-                @Override
-                protected void onCancelFailure(ResponseResult responseResult) {
-                }
-            });
+            paymentCancelCallback);
     }
 }

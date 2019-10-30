@@ -21,20 +21,29 @@ import com.alipay.ams.util.LockUtil;
  */
 public abstract class PaymentStatusUpdateCallback {
 
-    private AMSSettings            setting;
+    private AMSSettings setting;
 
-    private PaymentContextCallback paymentContextCallback;
+    private LockSupport lockSupport;
 
-    void handlePaymentSuccess(final PaymentResultModel paymentResultModel) {
+    /**
+     * @param setting
+     * @param lockSupport
+     */
+    public PaymentStatusUpdateCallback(AMSSettings setting, LockSupport lockSupport) {
+        super();
+        this.setting = setting;
+        this.lockSupport = lockSupport;
+    }
 
-        boolean lockOK = LockUtil.executeWithLock(paymentContextCallback,
+    public void handlePaymentSuccess(final PaymentResultModel paymentResultModel) {
+
+        boolean lockOK = LockUtil.executeWithLock(lockSupport,
             paymentResultModel.getPaymentRequestId(), new Runnable() {
 
                 @Override
                 public void run() {
 
-                    if (paymentContextCallback.isPaymentStatusSuccess(paymentResultModel
-                        .getPaymentRequestId())) {
+                    if (isPaymentStatusSuccess(paymentResultModel.getPaymentRequestId())) {
 
                         setting.logger
                             .warn(
@@ -43,8 +52,7 @@ public abstract class PaymentStatusUpdateCallback {
                         return;
                     }
 
-                    if (paymentContextCallback.isPaymentStatusCancelled(paymentResultModel
-                        .getPaymentRequestId())) {
+                    if (isPaymentStatusCancelled(paymentResultModel.getPaymentRequestId())) {
 
                         setting.logger
                             .warn(
@@ -82,16 +90,54 @@ public abstract class PaymentStatusUpdateCallback {
         }
     }
 
-    abstract void onPaymentSuccess(PaymentResultModel paymentResultModel);
+    /**
+     * Not intended to be used directly. Use handlePaymentSuccess due to the lock logic.
+     * 
+     * @param paymentResultModel
+     */
+    protected abstract void onPaymentSuccess(PaymentResultModel paymentResultModel);
 
-    abstract void onPaymentCancelled(String paymentRequestId, String paymentId, String cancelTime);
+    public abstract void onPaymentCancelled(String paymentRequestId, String paymentId,
+                                            String cancelTime);
 
-    abstract void onPaymentFailed(String paymentRequestId, ResponseResult responseResult);
+    public abstract void onPaymentFailed(String paymentRequestId, ResponseResult responseResult);
 
     /**
      * 
      * @param client
      * @param request
      */
-    abstract void reportCancelResultUnknown(AMSClient client, PaymentCancelRequest request);
+    public abstract void reportCancelResultUnknown(AMSClient client, PaymentCancelRequest request);
+
+    /**
+     * 
+     * @param paymentRequestId
+     * @return
+     */
+    abstract public boolean isPaymentStatusSuccess(String paymentRequestId);
+
+    /**
+     * 
+     * @param paymentRequestId
+     * @return
+     */
+    abstract public boolean isPaymentStatusCancelled(String paymentRequestId);
+
+    /**
+     * Getter method for property <tt>setting</tt>.
+     * 
+     * @return property value of setting
+     */
+    public AMSSettings getSetting() {
+        return setting;
+    }
+
+    /**
+     * Getter method for property <tt>lockSupport</tt>.
+     * 
+     * @return property value of lockSupport
+     */
+    public LockSupport getLockSupport() {
+        return lockSupport;
+    }
 }

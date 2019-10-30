@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.callbacks.PaymentCancelCallback;
-import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.JobSupport;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.job.Job.Type;
 
@@ -21,10 +20,10 @@ import com.alipay.ams.job.Job.Type;
  */
 public class JobExecutor {
 
-    private PaymentContextCallback      paymentContextCallback;
+    private JobSupport                  jobSupport;
     private PaymentInquiryCallback      paymentInquiryCallback;
-    private PaymentCancelCallback       paymentCancelCallback;
     private AMSClient                   client;
+
     private ScheduledThreadPoolExecutor executor;
 
     private static AtomicBoolean        jobExecutorStarted = new AtomicBoolean(false);
@@ -49,8 +48,8 @@ public class JobExecutor {
 
         } else {
 
-            if (this.client == null || this.paymentCancelCallback == null
-                || this.paymentContextCallback == null || this.paymentInquiryCallback == null) {
+            if (this.client == null || this.jobSupport == null
+                || this.paymentInquiryCallback == null) {
                 throw new IllegalStateException(
                     "JobExecutor not ready to start. paymentCancelCallback, paymentContextCallback and paymentInquiryCallback required.");
             }
@@ -67,7 +66,7 @@ public class JobExecutor {
 
                         try {
 
-                            Job[] jobs = paymentContextCallback.listJobs();
+                            Job[] jobs = jobSupport.listJobs();
 
                             for (Job job : jobs) {
 
@@ -106,11 +105,12 @@ public class JobExecutor {
         switch (job.getType()) {
             case INQUIRY:
 
-                return new InquiryTask(paymentContextCallback, paymentInquiryCallback, client, job);
+                return new InquiryTask(jobSupport, job, paymentInquiryCallback, client);
 
             case CANCEL:
 
-                return new CancelTask(paymentContextCallback, paymentCancelCallback, client, job);
+                return new CancelTask(jobSupport, job,
+                    paymentInquiryCallback.getPaymentCancelCallback(), client);
 
             default:
                 return null;
@@ -126,7 +126,7 @@ public class JobExecutor {
      */
     public void scheduleInquiryJob(String paymentRequestId, int delay, TimeUnit unit) {
 
-        paymentContextCallback.insertNewJob(new Job(Type.INQUIRY, paymentRequestId, delay, unit));
+        jobSupport.insertNewJob(new Job(Type.INQUIRY, paymentRequestId, delay, unit));
     }
 
     /**
@@ -137,25 +137,17 @@ public class JobExecutor {
      */
     public void scheduleCancelJob(String paymentRequestId, int delay, TimeUnit unit) {
 
-        paymentContextCallback.insertNewJob(new Job(Type.CANCEL, paymentRequestId, delay, unit));
+        jobSupport.insertNewJob(new Job(Type.CANCEL, paymentRequestId, delay, unit));
     }
 
     /**
-     * Getter method for property <tt>paymentContextCallback</tt>.
      * 
-     * @return property value of paymentContextCallback
+     * @param runnable
+     * @param delay
+     * @param unit
      */
-    public PaymentContextCallback getPaymentContextCallback() {
-        return paymentContextCallback;
-    }
-
-    /**
-     * Setter method for property <tt>paymentContextCallback</tt>.
-     * 
-     * @param paymentContextCallback value to be assigned to property paymentContextCallback
-     */
-    public void setPaymentContextCallback(PaymentContextCallback paymentContextCallback) {
-        this.paymentContextCallback = paymentContextCallback;
+    public void schedule(Runnable command, int delay, TimeUnit unit) {
+        this.executor.schedule(command, delay, unit);
     }
 
     /**
@@ -177,24 +169,6 @@ public class JobExecutor {
     }
 
     /**
-     * Getter method for property <tt>paymentCancelCallback</tt>.
-     * 
-     * @return property value of paymentCancelCallback
-     */
-    public PaymentCancelCallback getPaymentCancelCallback() {
-        return paymentCancelCallback;
-    }
-
-    /**
-     * Setter method for property <tt>paymentCancelCallback</tt>.
-     * 
-     * @param paymentCancelCallback value to be assigned to property paymentCancelCallback
-     */
-    public void setPaymentCancelCallback(PaymentCancelCallback paymentCancelCallback) {
-        this.paymentCancelCallback = paymentCancelCallback;
-    }
-
-    /**
      * Getter method for property <tt>client</tt>.
      * 
      * @return property value of client
@@ -213,13 +187,12 @@ public class JobExecutor {
     }
 
     /**
+     * Setter method for property <tt>jobSupport</tt>.
      * 
-     * @param runnable
-     * @param delay
-     * @param unit
+     * @param jobSupport value to be assigned to property jobSupport
      */
-    public void schedule(Runnable command, int delay, TimeUnit unit) {
-        this.executor.schedule(command, delay, unit);
+    public void setJobSupport(JobSupport jobSupport) {
+        this.jobSupport = jobSupport;
     }
 
 }

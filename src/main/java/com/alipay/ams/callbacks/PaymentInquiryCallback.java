@@ -26,21 +26,14 @@ import com.alipay.ams.job.JobExecutor;
  */
 public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, PaymentInquiryResponse> {
 
-    private PaymentCancelCallback       paymentCancelCallback;
-    private PaymentContextCallback      paymentContextCallback;
-    private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
+    private PaymentCancelCallback paymentCancelCallback;
 
     /**
      * @param paymentCancelCallback
-     * @param paymentContextCallback
-     * @param paymentStatusUpdateCallback
      */
-    public PaymentInquiryCallback(PaymentCancelCallback paymentCancelCallback,
-                                  PaymentContextCallback paymentContextCallback,
-                                  PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
+    public PaymentInquiryCallback(PaymentCancelCallback paymentCancelCallback) {
+        super();
         this.paymentCancelCallback = paymentCancelCallback;
-        this.paymentContextCallback = paymentContextCallback;
-        this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
 
     /**
@@ -97,10 +90,11 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      */
     private void cancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
 
-        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
-            paymentInquiryRequest.getPaymentRequestId(),
-            new PaymentContext(paymentInquiryRequest.getPaymentRequestId(), paymentInquiryRequest
-                .getAgentToken()));
+        PaymentContext context = paymentCancelCallback.getPaymentContextSupport()
+            .loadContextByPaymentRequestIdOrDefault(
+                paymentInquiryRequest.getPaymentRequestId(),
+                new PaymentContext(paymentInquiryRequest.getPaymentRequestId(),
+                    paymentInquiryRequest.getAgentToken()));
 
         paymentCancelCallback.scheduleALaterCancel(client, context);
     }
@@ -111,10 +105,11 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      */
     private void retryOrCancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
 
-        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
-            paymentInquiryRequest.getPaymentRequestId(),
-            new PaymentContext(paymentInquiryRequest.getPaymentRequestId(), paymentInquiryRequest
-                .getAgentToken()));
+        PaymentContext context = paymentCancelCallback.getPaymentContextSupport()
+            .loadContextByPaymentRequestIdOrDefault(
+                paymentInquiryRequest.getPaymentRequestId(),
+                new PaymentContext(paymentInquiryRequest.getPaymentRequestId(),
+                    paymentInquiryRequest.getAgentToken()));
 
         if (needFurtherInquiry(context, client.getSettings())) {
 
@@ -164,22 +159,23 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
         switch (inquiryResponse.getPaymentResultModel().getPaymentStatus()) {
             case SUCCESS:
 
-                paymentStatusUpdateCallback.handlePaymentSuccess(inquiryResponse
-                    .getPaymentResultModel());
+                paymentCancelCallback.getPaymentStatusUpdateCallback().handlePaymentSuccess(
+                    inquiryResponse.getPaymentResultModel());
                 break;
 
             case FAIL:
 
-                paymentStatusUpdateCallback.onPaymentFailed(inquiryResponse.getPaymentResultModel()
-                    .getPaymentRequestId(), new ResponseResult("UNKNOWN", ResultStatusType.F,
-                    "paymentStatus = FAIL in Inquiry response."));
+                paymentCancelCallback.getPaymentStatusUpdateCallback().onPaymentFailed(
+                    inquiryResponse.getPaymentResultModel().getPaymentRequestId(),
+                    new ResponseResult("UNKNOWN", ResultStatusType.F,
+                        "paymentStatus = FAIL in Inquiry response."));
                 break;
 
             case CANCELLED:
 
-                paymentStatusUpdateCallback.onPaymentCancelled(inquiryResponse
-                    .getPaymentResultModel().getPaymentRequestId(), inquiryResponse
-                    .getPaymentResultModel().getPaymentId(), null);//cancelTime not available from an Inquiry.
+                paymentCancelCallback.getPaymentStatusUpdateCallback().onPaymentCancelled(
+                    inquiryResponse.getPaymentResultModel().getPaymentRequestId(),
+                    inquiryResponse.getPaymentResultModel().getPaymentId(), null);//cancelTime not available from an Inquiry.
                 break;
 
             case PROCESSING:
@@ -199,14 +195,5 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      */
     public PaymentCancelCallback getPaymentCancelCallback() {
         return paymentCancelCallback;
-    }
-
-    /**
-     * Getter method for property <tt>paymentContextCallback</tt>.
-     * 
-     * @return property value of paymentContextCallback
-     */
-    public PaymentContextCallback getPaymentContextCallback() {
-        return paymentContextCallback;
     }
 }

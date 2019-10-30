@@ -5,8 +5,8 @@
 package com.alipay.ams.job;
 
 import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.JobSupport;
 import com.alipay.ams.callbacks.PaymentCancelCallback;
-import com.alipay.ams.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.util.LockUtil;
@@ -18,23 +18,22 @@ import com.alipay.ams.util.LockUtil;
      */
 public class CancelTask extends Task {
 
-    private PaymentContextCallback paymentContextCallback;
-    private AMSClient              client;
-    private PaymentCancelCallback  paymentCancelCallback;
+    private AMSClient             client;
+    private PaymentCancelCallback paymentCancelCallback;
 
     /**
-     * @param paymentContextCallback
+     * @param jobSupport
+     * @param job
      * @param paymentCancelCallback
-     * @param paymentRequestId
      * @param client
-     * @param job 
      */
-    public CancelTask(PaymentContextCallback paymentContextCallback,
-                      PaymentCancelCallback paymentCancelCallback, AMSClient client, Job job) {
-        super(paymentContextCallback, client, job);
-        this.paymentContextCallback = paymentContextCallback;
-        this.paymentCancelCallback = paymentCancelCallback;
+    public CancelTask(JobSupport jobSupport, Job job, PaymentCancelCallback paymentCancelCallback,
+                      AMSClient client) {
+
+        super(jobSupport, paymentCancelCallback.getPaymentStatusUpdateCallback().getLockSupport(),
+            client.getSettings(), job);
         this.client = client;
+        this.paymentCancelCallback = paymentCancelCallback;
     }
 
     /** 
@@ -43,7 +42,7 @@ public class CancelTask extends Task {
     @Override
     protected boolean runTask() {
 
-        final PaymentContext paymentContext = paymentContextCallback
+        final PaymentContext paymentContext = paymentCancelCallback.getPaymentContextSupport()
             .loadContextByPaymentRequestIdOrDefault(job.getPaymentRequestId(), null);
 
         if (paymentContext == null) {
@@ -58,31 +57,32 @@ public class CancelTask extends Task {
 
             client.getSettings().logger.warn("Running scheduled Cancel task: [%s]", paymentContext);
 
-            boolean lockOK = LockUtil.executeWithLock(paymentContextCallback,
-                paymentContext.getPaymentRequestId(), new Runnable() {
+            boolean lockOK = LockUtil.executeWithLock(paymentCancelCallback
+                .getPaymentStatusUpdateCallback().getLockSupport(), paymentContext
+                .getPaymentRequestId(), new Runnable() {
 
-                    @Override
-                    public void run() {
+                @Override
+                public void run() {
 
-                        if (paymentContextCallback.isPaymentStatusSuccess(paymentContext
-                            .getPaymentRequestId())) {
+                    if (paymentCancelCallback.getPaymentStatusUpdateCallback()
+                        .isPaymentStatusSuccess(paymentContext.getPaymentRequestId())) {
 
-                            client.getSettings().logger
-                                .warn(
-                                    "Cancel Job skipped. Because Payment status now is SUCCESS in partner system. context [%s]",
-                                    paymentContext);
-                            return;
-                        }
-
-                        paymentContext.setCancelCount(paymentContext.getCancelCount() + 1);
-                        paymentContextCallback.saveContext(paymentContext);
-
-                        client.execute(PaymentCancelRequest.byPaymentRequestId(
-                            client.getSettings(), paymentContext.getPaymentRequestId(),
-                            paymentContext.getAgentToken()), paymentCancelCallback);
-
+                        client.getSettings().logger
+                            .warn(
+                                "Cancel Job skipped. Because Payment status now is already SUCCESS in partner system. context [%s]",
+                                paymentContext);
+                        return;
                     }
-                });
+
+                    paymentContext.setCancelCount(paymentContext.getCancelCount() + 1);
+                    paymentCancelCallback.getPaymentContextSupport().saveContext(paymentContext);
+
+                    client.execute(PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
+                        paymentContext.getPaymentRequestId(), paymentContext.getAgentToken()),
+                        paymentCancelCallback);
+
+                }
+            });
 
             if (!lockOK) {
 

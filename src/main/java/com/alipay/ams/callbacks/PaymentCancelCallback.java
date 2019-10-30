@@ -25,17 +25,17 @@ import com.alipay.ams.job.JobExecutor;
  */
 public class PaymentCancelCallback extends Callback<PaymentCancelRequest, PaymentCancelResponse> {
 
-    private PaymentContextCallback      paymentContextCallback;
+    private PaymentContextSupport       paymentContextSupport;
     private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
     /**
-     * @param paymentContextCallback
+     * @param paymentContextSupport
      * @param paymentStatusUpdateCallback
      */
-    public PaymentCancelCallback(PaymentContextCallback paymentContextCallback,
+    public PaymentCancelCallback(PaymentContextSupport paymentContextSupport,
                                  PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
 
-        this.paymentContextCallback = paymentContextCallback;
+        this.paymentContextSupport = paymentContextSupport;
         this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
 
@@ -69,7 +69,7 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
      */
     private void retryOrAlarm(AMSClient client, PaymentCancelRequest request) {
 
-        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
+        PaymentContext context = paymentContextSupport.loadContextByPaymentRequestIdOrDefault(
             request.getPaymentRequestId(), new PaymentContext(request.getPaymentRequestId(),
                 request.getAgentToken()));
 
@@ -141,11 +141,20 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
     }
 
     /**
-     * Getter method for property <tt>paymentContextCallback</tt>.
+     * Getter method for property <tt>paymentContextSupport</tt>.
      * 
-     * @return property value of paymentContextCallback
+     * @return property value of paymentContextSupport
      */
-    public PaymentContextCallback getPaymentContextCallback() {
-        return paymentContextCallback;
+    public PaymentContextSupport getPaymentContextSupport() {
+        return paymentContextSupport;
+    }
+
+    /**
+     * Getter method for property <tt>paymentStatusUpdateCallback</tt>.
+     * 
+     * @return property value of paymentStatusUpdateCallback
+     */
+    public PaymentStatusUpdateCallback getPaymentStatusUpdateCallback() {
+        return paymentStatusUpdateCallback;
     }
 }

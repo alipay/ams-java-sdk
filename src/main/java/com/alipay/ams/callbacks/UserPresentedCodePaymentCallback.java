@@ -24,17 +24,13 @@ public class UserPresentedCodePaymentCallback
                                              extends
                                              Callback<UserPresentedCodePaymentRequest, UserPresentedCodePaymentResponse> {
 
-    private PaymentInquiryCallback      paymentInquiryCallback;
-    private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
+    private PaymentInquiryCallback paymentInquiryCallback;
 
     /**
      * @param paymentInquiryCallback
-     * @param paymentStatusUpdateCallback
      */
-    public UserPresentedCodePaymentCallback(PaymentInquiryCallback paymentInquiryCallback,
-                                            PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
+    public UserPresentedCodePaymentCallback(PaymentInquiryCallback paymentInquiryCallback) {
         this.paymentInquiryCallback = paymentInquiryCallback;
-        this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
 
     /** 
@@ -69,7 +65,8 @@ public class UserPresentedCodePaymentCallback
     @Override
     public void onFstatus(AMSClient client, UserPresentedCodePaymentRequest request,
                           ResponseResult responseResult) {
-        paymentStatusUpdateCallback.onPaymentFailed(request.getPaymentRequestId(), responseResult);
+        paymentInquiryCallback.getPaymentCancelCallback().getPaymentStatusUpdateCallback()
+            .onPaymentFailed(request.getPaymentRequestId(), responseResult);
     }
 
     /** 
@@ -96,7 +93,8 @@ public class UserPresentedCodePaymentCallback
         UserPresentedCodePaymentResponse paymentResponse = new UserPresentedCodePaymentResponse(
             client.getSettings(), requestURI, responseHeader, body);
 
-        paymentStatusUpdateCallback.handlePaymentSuccess(paymentResponse.getPaymentResultModel());
+        paymentInquiryCallback.getPaymentCancelCallback().getPaymentStatusUpdateCallback()
+            .handlePaymentSuccess(paymentResponse.getPaymentResultModel());
 
     }
 

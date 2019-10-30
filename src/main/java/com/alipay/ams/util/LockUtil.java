@@ -6,7 +6,7 @@ package com.alipay.ams.util;
 
 import java.util.concurrent.TimeUnit;
 
-import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.LockSupport;
 
 /**
  * 
@@ -15,11 +15,10 @@ import com.alipay.ams.callbacks.PaymentContextCallback;
  */
 public class LockUtil {
 
-    public static boolean executeWithLock(PaymentContextCallback paymentContextCallback,
-                                          String paymentRequestId, Runnable logic) {
+    public static boolean executeWithLock(LockSupport lockSupport, String paymentRequestId,
+                                          Runnable logic) {
 
-        if (paymentContextCallback.tryLock4PaymentStatusUpdate(paymentRequestId, 10,
-            TimeUnit.SECONDS)) {
+        if (lockSupport.tryLock4PaymentStatusUpdate(paymentRequestId, 10, TimeUnit.SECONDS)) {
 
             try {
 
@@ -27,7 +26,7 @@ public class LockUtil {
                 return true;
 
             } finally {
-                paymentContextCallback.unlock4PaymentStatusUpdate(paymentRequestId);
+                lockSupport.unlock4PaymentStatusUpdate(paymentRequestId);
             }
 
         } else {

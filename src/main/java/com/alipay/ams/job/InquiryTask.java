@@ -5,7 +5,7 @@
 package com.alipay.ams.job;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.JobSupport;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
@@ -16,21 +16,19 @@ import com.alipay.ams.domain.requests.PaymentInquiryRequest;
  */
 public class InquiryTask extends Task {
 
-    private PaymentContextCallback paymentContextCallback;
     private PaymentInquiryCallback paymentInquiryCallback;
     private AMSClient              client;
 
     /**
-     * @param paymentContextCallback
+     * @param jobSupport
+     * @param job
      * @param paymentInquiryCallback
-     * @param paymentContext
      * @param client
-     * @param job 
      */
-    public InquiryTask(PaymentContextCallback paymentContextCallback,
-                       PaymentInquiryCallback paymentInquiryCallback, AMSClient client, Job job) {
-        super(paymentContextCallback, client, job);
-        this.paymentContextCallback = paymentContextCallback;
+    public InquiryTask(JobSupport jobSupport, Job job,
+                       PaymentInquiryCallback paymentInquiryCallback, AMSClient client) {
+        super(jobSupport, paymentInquiryCallback.getPaymentCancelCallback()
+            .getPaymentStatusUpdateCallback().getLockSupport(), client.getSettings(), job);
         this.paymentInquiryCallback = paymentInquiryCallback;
         this.client = client;
     }
@@ -41,7 +39,8 @@ public class InquiryTask extends Task {
     @Override
     protected boolean runTask() {
 
-        PaymentContext paymentContext = paymentContextCallback
+        PaymentContext paymentContext = paymentInquiryCallback.getPaymentCancelCallback()
+            .getPaymentContextSupport()
             .loadContextByPaymentRequestIdOrDefault(job.getPaymentRequestId(), null);
 
         if (paymentContext == null) {
@@ -54,10 +53,11 @@ public class InquiryTask extends Task {
 
         if (paymentInquiryCallback.needFurtherInquiry(paymentContext, client.getSettings())) {
 
-            client.getSettings().logger.info("Running scheduled Inquiry task: [%s]",
-                paymentContext);
+            client.getSettings().logger
+                .info("Running scheduled Inquiry task: [%s]", paymentContext);
             paymentContext.setInquiryCount(paymentContext.getInquiryCount() + 1);
-            paymentContextCallback.saveContext(paymentContext);
+            paymentInquiryCallback.getPaymentCancelCallback().getPaymentContextSupport()
+                .saveContext(paymentContext);
 
             client.execute(
                 PaymentInquiryRequest.byPaymentRequestId(client.getSettings(),

@@ -6,8 +6,9 @@ package com.alipay.ams.job;
 
 import java.util.concurrent.TimeUnit;
 
-import com.alipay.ams.AMSClient;
-import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.JobSupport;
+import com.alipay.ams.callbacks.LockSupport;
+import com.alipay.ams.cfg.AMSSettings;
 
 /**
  * 
@@ -16,18 +17,22 @@ import com.alipay.ams.callbacks.PaymentContextCallback;
  */
 public abstract class Task implements Runnable {
 
-    private PaymentContextCallback paymentContextCallback;
-    private AMSClient              client;
-    protected Job                  job;
+    private JobSupport  jobSupport;
+    private LockSupport lockSupport;
+    private AMSSettings setting;
+    protected Job       job;
 
     /**
-     * @param paymentContextCallback
-     * @param client
+     * @param jobSupport
+     * @param lockSupport
+     * @param setting
      * @param job
      */
-    public Task(PaymentContextCallback paymentContextCallback, AMSClient client, Job job) {
-        this.paymentContextCallback = paymentContextCallback;
-        this.client = client;
+    public Task(JobSupport jobSupport, LockSupport lockSupport, AMSSettings setting, Job job) {
+        super();
+        this.jobSupport = jobSupport;
+        this.lockSupport = lockSupport;
+        this.setting = setting;
         this.job = job;
     }
 
@@ -37,17 +42,17 @@ public abstract class Task implements Runnable {
     @Override
     public void run() {
 
-        if (paymentContextCallback.lockJob(job,
-            client.getSettings().lockAutoReleaseDelayInMilliSeconds, TimeUnit.MILLISECONDS)) {
+        if (lockSupport.lockJob(job, setting.lockAutoReleaseDelayInMilliSeconds,
+            TimeUnit.MILLISECONDS)) {
 
             if (runTask()) {
-                paymentContextCallback.removeJob(job);
+                jobSupport.removeJob(job);
             }
 
-            paymentContextCallback.releaseLock(job);
+            lockSupport.releaseLock(job);
 
         } else {
-            client.getSettings().logger.warn("Lock failed for Job [%s]. Skipped. ", job);
+            setting.logger.warn("Lock failed for Job [%s]. Skipped. ", job);
         }
 
     }
