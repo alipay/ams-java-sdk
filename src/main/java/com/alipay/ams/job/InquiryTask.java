@@ -5,9 +5,9 @@
 package com.alipay.ams.job;
 
 import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.domain.PaymentContext;
-import com.alipay.ams.domain.callbacks.PaymentContextCallback;
-import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 
 /**

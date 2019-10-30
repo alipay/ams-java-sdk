@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2019 All Rights Reserved.
  */
-package com.alipay.ams.domain.callbacks.impl;
+package com.alipay.ams.callbacks.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.math.RandomUtils;
 
+import com.alipay.ams.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.PaymentContext;
-import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.job.Job;
 
 /**
@@ -30,7 +30,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     private Map<String, Object>         paymentStatusLockRepo = new ConcurrentHashMap<String, Object>();
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#loadContextByPaymentRequestIdOrDefault(java.lang.String, com.alipay.ams.domain.PaymentContext)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#loadContextByPaymentRequestIdOrDefault(java.lang.String, com.alipay.ams.domain.PaymentContext)
      */
     @Override
     public PaymentContext loadContextByPaymentRequestIdOrDefault(String paymentRequestId,
@@ -48,7 +48,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#saveContext(com.alipay.ams.domain.PaymentContext)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#saveContext(com.alipay.ams.domain.PaymentContext)
      */
     @Override
     public void saveContext(PaymentContext context) {
@@ -56,7 +56,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#insertNewJob(com.alipay.ams.job.Job)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#insertNewJob(com.alipay.ams.job.Job)
      */
     @Override
     public void insertNewJob(Job job) {
@@ -64,7 +64,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#lockJob(com.alipay.ams.job.Job, long, java.util.concurrent.TimeUnit)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#lockJob(com.alipay.ams.job.Job, long, java.util.concurrent.TimeUnit)
      */
     @Override
     public boolean lockJob(Job job, long autoReleaseDelay, TimeUnit unit) {
@@ -72,7 +72,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#releaseLock(com.alipay.ams.job.Job)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#releaseLock(com.alipay.ams.job.Job)
      */
     @Override
     public boolean releaseLock(Job job) {
@@ -80,7 +80,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#removeJob(com.alipay.ams.job.Job)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#removeJob(com.alipay.ams.job.Job)
      */
     @Override
     public boolean removeJob(Job job) {
@@ -88,7 +88,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#listJobs()
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#listJobs()
      */
     @Override
     public Job[] listJobs() {
@@ -96,7 +96,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#tryLock4PaymentStatusUpdate(java.lang.String, long, java.util.concurrent.TimeUnit)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#tryLock4PaymentStatusUpdate(java.lang.String, long, java.util.concurrent.TimeUnit)
      */
     @Override
     public boolean tryLock4PaymentStatusUpdate(String paymentRequestId, long autoReleaseDelay,
@@ -105,7 +105,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#unlock4PaymentStatusUpdate(java.lang.String)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#unlock4PaymentStatusUpdate(java.lang.String)
      */
     @Override
     public boolean unlock4PaymentStatusUpdate(String paymentRequestId) {
@@ -113,7 +113,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#isPaymentStatusSuccess(java.lang.String)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#isPaymentStatusSuccess(java.lang.String)
      */
     @Override
     public boolean isPaymentStatusSuccess(String paymentRequestId) {
@@ -121,7 +121,7 @@ public class InMemoryPaymentContextCallback implements PaymentContextCallback {
     }
 
     /** 
-     * @see com.alipay.ams.domain.callbacks.PaymentContextCallback#isPaymentStatusCancelled(java.lang.String)
+     * @see com.alipay.ams.callbacks.PaymentContextCallback#isPaymentStatusCancelled(java.lang.String)
      */
     @Override
     public boolean isPaymentStatusCancelled(String paymentRequestId) {

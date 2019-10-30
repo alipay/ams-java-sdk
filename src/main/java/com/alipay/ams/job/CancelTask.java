@@ -5,9 +5,9 @@
 package com.alipay.ams.job;
 
 import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.PaymentCancelCallback;
+import com.alipay.ams.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.PaymentContext;
-import com.alipay.ams.domain.callbacks.PaymentCancelCallback;
-import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.util.LockUtil;
 

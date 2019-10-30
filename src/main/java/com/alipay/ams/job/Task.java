@@ -7,7 +7,7 @@ package com.alipay.ams.job;
 import java.util.concurrent.TimeUnit;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.domain.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.PaymentContextCallback;
 
 /**
  * 

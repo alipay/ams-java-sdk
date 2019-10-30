@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.domain.callbacks.PaymentCancelCallback;
-import com.alipay.ams.domain.callbacks.PaymentContextCallback;
-import com.alipay.ams.domain.callbacks.PaymentInquiryCallback;
+import com.alipay.ams.callbacks.PaymentCancelCallback;
+import com.alipay.ams.callbacks.PaymentContextCallback;
+import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.job.Job.Type;
 
 /**
