@@ -9,6 +9,7 @@ import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.callbacks.PaymentCancelCallback;
 import com.alipay.ams.domain.callbacks.PaymentContextCallback;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
+import com.alipay.ams.util.LockUtil;
 
 /**
      * 
@@ -42,7 +43,7 @@ public class CancelTask extends Task {
     @Override
     protected boolean runTask() {
 
-        PaymentContext paymentContext = paymentContextCallback
+        final PaymentContext paymentContext = paymentContextCallback
             .loadContextByPaymentRequestIdOrDefault(job.getPaymentRequestId(), null);
 
         if (paymentContext == null) {
@@ -55,16 +56,40 @@ public class CancelTask extends Task {
 
         if (paymentCancelCallback.needFurtherCancel(paymentContext, client.getSettings())) {
 
-            client.getSettings().logger.warn("Running scheduled Cancel task: [%s]",
-                paymentContext);
+            client.getSettings().logger.warn("Running scheduled Cancel task: [%s]", paymentContext);
 
-            paymentContext.setCancelCount(paymentContext.getCancelCount() + 1);
-            paymentContextCallback.saveContext(paymentContext);
+            boolean lockOK = LockUtil.executeWithLock(paymentContextCallback,
+                paymentContext.getPaymentRequestId(), new Runnable() {
 
-            client.execute(
-                PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
-                    paymentContext.getPaymentRequestId(), paymentContext.getAgentToken()),
-                paymentCancelCallback);
+                    @Override
+                    public void run() {
+
+                        if (paymentContextCallback.isPaymentStatusSuccess(paymentContext
+                            .getPaymentRequestId())) {
+
+                            client.getSettings().logger
+                                .warn(
+                                    "Cancel Job skipped. Because Payment status now is SUCCESS in partner system. context [%s]",
+                                    paymentContext);
+                            return;
+                        }
+
+                        paymentContext.setCancelCount(paymentContext.getCancelCount() + 1);
+                        paymentContextCallback.saveContext(paymentContext);
+
+                        client.execute(PaymentCancelRequest.byPaymentRequestId(
+                            client.getSettings(), paymentContext.getPaymentRequestId(),
+                            paymentContext.getAgentToken()), paymentCancelCallback);
+
+                    }
+                });
+
+            if (!lockOK) {
+
+                client.getSettings().logger.warn(
+                    "Cancel Job skipped. Because Acquiring lock failed. context [%s]",
+                    paymentContext);
+            }
 
         } else {
 

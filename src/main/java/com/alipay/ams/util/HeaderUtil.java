@@ -38,7 +38,16 @@ public class HeaderUtil {
      * @return
      */
     public static String getCharset(com.alipay.ams.domain.Header header) {
-        String contentType = header.getContentType();
+
+        return getCharset(header.getContentType());
+    }
+
+    /**
+     * 
+     * @param header
+     * @return
+     */
+    public static String getCharset(String contentType) {
 
         return StringUtil.defaultIfEmpty(StringUtil.substringBetween(contentType, "charset=", ";"),
             StringUtil.defaultIfEmpty(StringUtil.substringAfter(contentType, "charset="), "UTF-8"))

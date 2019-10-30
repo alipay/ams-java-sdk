@@ -14,7 +14,6 @@ import com.alipay.ams.domain.Callback;
 import com.alipay.ams.domain.PaymentContext;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
-import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.job.JobExecutor;
@@ -97,11 +96,13 @@ public abstract class PaymentInquiryCallback extends
      * 
      */
     private void cancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
-        client
-            .execute(
-                PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
-                    paymentInquiryRequest.getPaymentRequestId(),
-                    paymentInquiryRequest.getAgentToken()), paymentCancelCallback);
+
+        PaymentContext context = paymentContextCallback.loadContextByPaymentRequestIdOrDefault(
+            paymentInquiryRequest.getPaymentRequestId(),
+            new PaymentContext(paymentInquiryRequest.getPaymentRequestId(), paymentInquiryRequest
+                .getAgentToken()));
+
+        paymentCancelCallback.scheduleALaterCancel(client, context);
     }
 
     /**

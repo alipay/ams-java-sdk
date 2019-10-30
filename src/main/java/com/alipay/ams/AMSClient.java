@@ -18,6 +18,7 @@ import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.responses.NotifyResponse;
+import com.alipay.ams.domain.responses.NotifyResponseImpl;
 import com.alipay.ams.util.HeaderUtil;
 import com.alipay.ams.util.SignatureUtil;
 import com.google.gson.Gson;
@@ -61,30 +62,44 @@ public abstract class AMSClient {
         //1. Load response headers
         NotifyRequestHeader notifyRequestHeader = new NotifyRequestHeader(notifyRequestheaders);
 
-        notifyRequestHeader.validate();
-
         //2. Load http request body content
-        String requestBody;
+        String requestBody = null;
+
         try {
-            requestBody = new String(bodyContent, HeaderUtil.getCharset(notifyRequestHeader));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+
+            notifyRequestHeader.validate();
+
+            try {
+                requestBody = new String(bodyContent, HeaderUtil.getCharset(notifyRequestHeader));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+
+            //3. Signature verification.
+            if (settings.isDevMode()
+                || SignatureUtil.verify(requestURI, notifyRequestHeader.getClientId(),
+                    notifyRequestHeader.getRequestTime(), settings.alipayPublicKey, requestBody,
+                    notifyRequestHeader.getSignature().getSignature())) {
+
+                processNotifyBody(notifyCallback, notifyRequestHeader, requestBody);
+
+                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.S);
+
+            } else {
+
+                notifyCallback.onNotifySignatureVerifyFailed(notifyRequestHeader, requestBody);
+
+                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U);
+            }
+
+        } catch (Exception e) {
+
+            settings.logger.warn("Exception[%s - %s] occured when onNotify， requestBody=[%s]", e
+                .getClass().getName(), e.getMessage(), requestBody);
+
+            return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U);
         }
 
-        //3. Signature verification.
-        if (settings.isDevMode()
-            || SignatureUtil.verify(requestURI, notifyRequestHeader.getClientId(),
-                notifyRequestHeader.getRequestTime(), settings.alipayPublicKey, requestBody,
-                notifyRequestHeader.getSignature().getSignature())) {
-
-            processNotifyBody(notifyCallback, notifyRequestHeader, requestBody);
-
-        } else {
-
-            notifyCallback.onNotifySignatureVerifyFailed(notifyRequestHeader, requestBody);
-        }
-
-        return null;
     }
 
     /**

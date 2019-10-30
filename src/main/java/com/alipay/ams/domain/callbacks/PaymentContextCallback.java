@@ -72,4 +72,45 @@ public interface PaymentContextCallback {
      */
     Job[] listJobs();
 
+    /** 
+     * 
+     * <p>A typical usage idiom for this method would be:
+     *  <pre> {@code
+     * Lock lock = ...;
+     * if (lock.tryLock()) {
+     *   try {
+     *     // manipulate protected state
+     *   } finally {
+     *     lock.unlock();
+     *   }
+     * } else {
+     *   // perform alternative actions
+     * }}</pre>
+     * 
+     * @param paymentRequestId
+     * @return {@code true} if the lock was acquired and
+     *         {@code false} otherwise
+     */
+    boolean tryLock4PaymentStatusUpdate(String paymentRequestId);
+
+    /**
+     * 
+     * @param paymentRequestId
+     */
+    void unlock4PaymentStatusUpdate(String paymentRequestId);
+
+    /**
+     * 
+     * @param paymentRequestId
+     * @return
+     */
+    public boolean isPaymentStatusSuccess(String paymentRequestId);
+
+    /**
+     * 
+     * @param paymentRequestId
+     * @return
+     */
+    public boolean isPaymentStatusCancelled(String paymentRequestId);
+
 }
