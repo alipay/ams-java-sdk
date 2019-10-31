@@ -26,7 +26,7 @@ public class NotifyResponseHeader extends Header {
     public Map<String, String> toMap() {
 
         Map<String, String> map = super.toMap();
-        map.put("response-Time", responseTime);
+        map.put("response-time", responseTime);
         map.put("sdkVersion", sdkVersion);
         map.put("ext", ext);
 
