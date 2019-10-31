@@ -14,7 +14,7 @@ import com.alipay.ams.util.StringUtil;
 public class Signature {
 
     String algorithm  = "RSA256";
-    String keyVersion = "2";
+    String keyVersion = "1";
     String signature;
 
     public Signature() {
