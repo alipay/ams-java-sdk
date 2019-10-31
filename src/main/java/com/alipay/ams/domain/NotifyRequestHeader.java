@@ -21,9 +21,9 @@ public class NotifyRequestHeader extends Header {
     public NotifyRequestHeader(Map<String, String> headers) {
         this.setClientId(headers.get("client-id"));
         this.setContentType(headers.get("Content-Type"));
-        this.setRequestTime(headers.get("Request-Time"));
+        this.setRequestTime(headers.get("request-Time"));
         Signature signature = new Signature();
-        signature.setSignature(headers.get("Signature"));
+        signature.setSignature(headers.get("signature"));
         this.setSignature(signature);
 
     }

@@ -26,7 +26,7 @@ public class RequestHeader extends Header {
     public Map<String, String> toMap() {
 
         Map<String, String> map = super.toMap();
-        map.put("Request-Time", requestTime);
+        map.put("request-Time", requestTime);
         map.put("sdkVersion", sdkVersion);
         map.put("ext", ext);
 

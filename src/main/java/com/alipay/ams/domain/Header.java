@@ -26,7 +26,7 @@ public abstract class Header {
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("Content-Type", contentType);
         hashMap.put("client-id", clientId);
-        hashMap.put("Signature", signature.toString());
+        hashMap.put("signature", signature.toString());
 
         Map<String, String> extraHeaders = extraHeaders();
         if (extraHeaders != null) {
