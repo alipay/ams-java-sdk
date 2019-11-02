@@ -44,12 +44,13 @@ public abstract class Task implements Runnable {
 
         if (lockSupport.lockJob(job, setting.lockAutoReleaseDelayInMilliSeconds,
             TimeUnit.MILLISECONDS)) {
-
-            if (runTask()) {
-                jobSupport.removeJob(job);
+            try {
+                if (runTask()) {
+                    jobSupport.removeJob(job);
+                }
+            } finally {
+                lockSupport.releaseLock(job);
             }
-
-            lockSupport.releaseLock(job);
 
         } else {
             setting.logger.warn("Lock failed for Job [%s]. Skipped. ", job);
