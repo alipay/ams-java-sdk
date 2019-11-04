@@ -40,7 +40,7 @@ public class UserPresentedCodePaymentResponse extends Response {
     protected void initBody(HashMap<String, Object> body) {
 
         //To reuse PaymentResultModel, we add the missing paymentStatus field.
-        if (body.containsKey("paymentStatus")) {
+        if (!body.containsKey("paymentStatus")) {
             body.put("paymentStatus", "SUCCESS");
         }
 
