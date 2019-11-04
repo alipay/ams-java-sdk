@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.domain.Callback;
+import com.alipay.ams.domain.CallbackWithDumbTelemetry;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
@@ -21,7 +21,7 @@ import com.alipay.ams.domain.responses.PaymentInquiryResponse;
  */
 public abstract class SinglePaymentInquiryCallback
                                                   extends
-                                                  Callback<PaymentInquiryRequest, PaymentInquiryResponse> {
+                                                  CallbackWithDumbTelemetry<PaymentInquiryRequest, PaymentInquiryResponse> {
 
     public abstract void onPaymentInquiryResponse(PaymentInquiryResponse inquiryResponse);
 

@@ -17,6 +17,7 @@ import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.ResultStatusType;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
+import com.alipay.ams.domain.telemetry.Call;
 import com.alipay.ams.job.JobExecutor;
 
 /**
@@ -32,7 +33,7 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      * @param paymentCancelCallback
      */
     public PaymentInquiryCallback(PaymentCancelCallback paymentCancelCallback) {
-        super();
+        super(paymentCancelCallback.getPaymentContextSupport());
         this.paymentCancelCallback = paymentCancelCallback;
     }
 
@@ -159,11 +160,15 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
         switch (inquiryResponse.getPaymentResultModel().getPaymentStatus()) {
             case SUCCESS:
 
+                reportPaymentS(paymentInquiryRequest.getPaymentRequestId());
+
                 paymentCancelCallback.getPaymentStatusUpdateCallback().handlePaymentSuccess(
                     inquiryResponse.getPaymentResultModel());
                 break;
 
             case FAIL:
+
+                reportPaymentF(paymentInquiryRequest.getPaymentRequestId());
 
                 paymentCancelCallback.getPaymentStatusUpdateCallback().onPaymentFailed(
                     inquiryResponse.getPaymentResultModel().getPaymentRequestId(),
@@ -172,6 +177,8 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
                 break;
 
             case CANCELLED:
+
+                reportPaymentCanceled(paymentInquiryRequest.getPaymentRequestId());
 
                 paymentCancelCallback.getPaymentStatusUpdateCallback().onPaymentCancelled(
                     inquiryResponse.getPaymentResultModel().getPaymentRequestId(),
@@ -195,5 +202,29 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      */
     public PaymentCancelCallback getPaymentCancelCallback() {
         return paymentCancelCallback;
+    }
+
+    /** 
+     * @see com.alipay.ams.callbacks.TelemetrySupport#getCurrentCall(com.alipay.ams.domain.PaymentContext)
+     */
+    @Override
+    protected Call getCurrentCall(PaymentContext paymentContext) {
+        return paymentContext.getTelemetry().getLatestUnfinishedInquiryOrInitOne();
+    }
+
+    /** 
+     * @see com.alipay.ams.callbacks.TelemetrySupport#getPaymentRequestId(com.alipay.ams.domain.Request)
+     */
+    @Override
+    protected String getPaymentRequestId(PaymentInquiryRequest request) {
+        return request.getPaymentRequestId();
+    }
+
+    /** 
+     * @see com.alipay.ams.callbacks.TelemetrySupport#getAgentToken(com.alipay.ams.domain.Request)
+     */
+    @Override
+    protected String getAgentToken(PaymentInquiryRequest request) {
+        return request.getAgentToken();
     }
 }

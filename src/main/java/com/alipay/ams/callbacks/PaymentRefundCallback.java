@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.domain.Callback;
+import com.alipay.ams.domain.CallbackWithDumbTelemetry;
 import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
@@ -19,8 +19,9 @@ import com.alipay.ams.domain.responses.PaymentRefundResponse;
  * @author guangling.zgl
  * @version $Id: PaymentRefundCallback.java, v 0.1 2019年10月18日 下午6:37:18 guangling.zgl Exp $
  */
-public abstract class PaymentRefundCallback extends
-                                           Callback<PaymentRefundRequest, PaymentRefundResponse> {
+public abstract class PaymentRefundCallback
+                                           extends
+                                           CallbackWithDumbTelemetry<PaymentRefundRequest, PaymentRefundResponse> {
 
     /**
      * 

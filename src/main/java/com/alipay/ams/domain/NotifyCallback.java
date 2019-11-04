@@ -6,6 +6,7 @@ package com.alipay.ams.domain;
 
 import java.util.HashMap;
 
+import com.alipay.ams.callbacks.PaymentContextSupport;
 import com.alipay.ams.cfg.AMSSettings;
 
 /**
@@ -14,6 +15,16 @@ import com.alipay.ams.cfg.AMSSettings;
  * @version $Id: NotifyCallback.java, v 0.1 2019年10月23日 上午11:19:04 guangling.zgl Exp $
  */
 public abstract class NotifyCallback {
+
+    private PaymentContextSupport paymentContextSupport;
+
+    /**
+     * @param paymentContextSupport
+     */
+    public NotifyCallback(PaymentContextSupport paymentContextSupport) {
+        super();
+        this.paymentContextSupport = paymentContextSupport;
+    }
 
     /**
      * 
@@ -46,7 +57,26 @@ public abstract class NotifyCallback {
      */
     public void onSstatus(AMSSettings settings, NotifyRequestHeader notifyRequestHeader,
                           HashMap<String, Object> body) {
-        onPaymentSuccess(settings, notifyRequestHeader, new PaymentResultModel(body));
+
+        PaymentResultModel paymentResultModel = new PaymentResultModel(body);
+
+        PaymentContext paymentContext = paymentContextSupport
+            .loadContextByPaymentRequestIdOrDefault(paymentResultModel.getPaymentRequestId(), null);
+
+        if (paymentContext != null) {
+
+            paymentContext.getTelemetry().setNotifiedPaymentSuccess();
+            paymentContextSupport.saveContext(paymentContext);
+
+        } else {
+
+            settings.logger.warn(
+                "PaymentContext not found and ignored in NotifyCallback. paymentRequestId=[%s]",
+                paymentResultModel.getPaymentRequestId());
+
+        }
+
+        onPaymentSuccess(settings, notifyRequestHeader, paymentResultModel);
     }
 
     /**

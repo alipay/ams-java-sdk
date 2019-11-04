@@ -67,6 +67,11 @@ public class Demo {
         Demo demo = new Demo();
 
         demo.pay();
+        try {
+            Thread.sleep(9000);
+        } catch (InterruptedException e) {
+        }
+        demo.pay();
 
         //        demo.inquiry();
         //
@@ -107,22 +112,23 @@ public class Demo {
         Map<String, String> notifyRequestheaders = null;
         byte[] bodyContent = null;
 
-        AMS.with(cfg).onNotify(requestURI, notifyRequestheaders, bodyContent, new NotifyCallback() {
+        AMS.with(cfg).onNotify(requestURI, notifyRequestheaders, bodyContent,
+            new NotifyCallback(allInOne) {
 
-            @Override
-            protected void onPaymentSuccess(AMSSettings settings,
+                @Override
+                protected void onPaymentSuccess(AMSSettings settings,
+                                                NotifyRequestHeader notifyRequestHeader,
+                                                PaymentResultModel paymentResultModel) {
+                    String paymentId = paymentResultModel.getPaymentId();
+
+                }
+
+                @Override
+                protected void onAuthNotify(AMSSettings settings,
                                             NotifyRequestHeader notifyRequestHeader,
-                                            PaymentResultModel paymentResultModel) {
-                String paymentId = paymentResultModel.getPaymentId();
-
-            }
-
-            @Override
-            protected void onAuthNotify(AMSSettings settings,
-                                        NotifyRequestHeader notifyRequestHeader,
-                                        AuthNotifyModel authNotifyModel) {
-            }
-        });
+                                            AuthNotifyModel authNotifyModel) {
+                }
+            });
     }
 
     /**

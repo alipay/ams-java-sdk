@@ -8,13 +8,23 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.PaymentContextSupport;
+import com.alipay.ams.callbacks.TelemetrySupport;
 
 /**
  * 
  * @author guangling.zgl
  * @version $Id: Callback.java, v 0.1 2019年10月16日 下午7:48:32 guangling.zgl Exp $
  */
-public abstract class Callback<R extends Request, P extends Response> {
+public abstract class Callback<R extends Request, P extends Response> extends
+                                                                      TelemetrySupport<R, P> {
+
+    /**
+     * @param paymentContextSupport
+     */
+    public Callback(PaymentContextSupport paymentContextSupport) {
+        super(paymentContextSupport);
+    }
 
     /**
      * 

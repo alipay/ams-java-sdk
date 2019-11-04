@@ -184,6 +184,8 @@ public abstract class AMSClient {
         ResponseResult responseResult = ResponseResult.fromMap((Map<String, String>) body
             .get("result"));
 
+        callback.reportResultStatus(request, responseResult.getResultStatus());
+
         switch (responseResult.getResultStatus()) {
             case F:
                 callback.onFstatus(this, request, responseResult);

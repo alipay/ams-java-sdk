@@ -53,17 +53,21 @@ public class ApacheHttpPostAMSClient extends AMSClient {
             String body = request.buildBody().toString();
             RequestHeader requestHeader = request.buildRequestHeader();
 
+            httpPost.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
+
+            callback.reportRequestStart(request, requestHeader);
+
             getSettings().logger.debug("Request[%s][%s]: body->[%s], header->[%s]",
                 request.getBizIdentifier(),
                 request.getSettings().gatewayUrl + request.getRequestURI(), body, requestHeader);
-
-            httpPost.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
 
             for (Entry<String, String> e : requestHeader.toMap().entrySet()) {
                 httpPost.setHeader(e.getKey(), e.getValue());
             }
 
             response = new DefaultHttpClient().execute(httpPost);
+
+            callback.reportResponseReceived(request);
 
             switch (response.getStatusLine().getStatusCode()) {
 

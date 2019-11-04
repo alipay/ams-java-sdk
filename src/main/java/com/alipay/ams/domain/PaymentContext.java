@@ -10,6 +10,8 @@ import java.util.Date;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.alipay.ams.domain.telemetry.Telemetry;
+
 /**
  * 
  * Context info for a payment.
@@ -28,6 +30,8 @@ public class PaymentContext implements Serializable {
     private String            paymentRequestId;
     private String            agentToken;
 
+    private Telemetry         telemetry;
+
     /**
      * @param paymentRequestId
      * @param agentToken
@@ -36,6 +40,7 @@ public class PaymentContext implements Serializable {
         super();
         this.paymentRequestId = paymentRequestId;
         this.agentToken = agentToken;
+        this.telemetry = new Telemetry(paymentRequestId);
     }
 
     /**
@@ -123,6 +128,24 @@ public class PaymentContext implements Serializable {
      */
     public void setAgentToken(String agentToken) {
         this.agentToken = agentToken;
+    }
+
+    /**
+     * Getter method for property <tt>telemetry</tt>.
+     * 
+     * @return property value of telemetry
+     */
+    public Telemetry getTelemetry() {
+        return telemetry;
+    }
+
+    /**
+     * Setter method for property <tt>telemetry</tt>.
+     * 
+     * @param telemetry value to be assigned to property telemetry
+     */
+    public void setTelemetry(Telemetry telemetry) {
+        this.telemetry = telemetry;
     }
 
     /** 

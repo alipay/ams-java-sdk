@@ -4,6 +4,7 @@
  */
 package com.alipay.ams.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,9 +18,10 @@ public class RequestHeader extends Header {
 
     private String              sdkVersion;
     private String              ext;
-    private Map<String, String> extraHeaders;
+    private Map<String, String> extraHeaders = new HashMap<String, String>();
 
     /** 
+     * @param enableTelemetry 
      * @see com.alipay.ams.domain.Header#toMap()
      */
     @Override
@@ -27,8 +29,8 @@ public class RequestHeader extends Header {
 
         Map<String, String> map = super.toMap();
         map.put("request-time", requestTime);
-        map.put("sdkVersion", sdkVersion);
-        map.put("ext", ext);
+        map.put("X-sdkVersion", sdkVersion);
+        map.put("X-ext", ext);
 
         return map;
     }
@@ -101,6 +103,18 @@ public class RequestHeader extends Header {
      * @param extraHeaders value to be assigned to property extraHeaders
      */
     public void setExtraHeaders(Map<String, String> extraHeaders) {
-        this.extraHeaders = extraHeaders;
+
+        if (extraHeaders != null) {
+            this.extraHeaders.putAll(extraHeaders);
+        }
+    }
+
+    /**
+     * 
+     * @param key
+     * @param value
+     */
+    public void putExtraHeader(String key, String value) {
+        this.extraHeaders.put(key, value);
     }
 }

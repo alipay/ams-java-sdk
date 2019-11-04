@@ -4,6 +4,8 @@
  */
 package com.alipay.ams.callbacks;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.alipay.ams.domain.PaymentContext;
 
 /**
@@ -16,6 +18,8 @@ import com.alipay.ams.domain.PaymentContext;
  * @version $Id: PaymentContextSupport.java, v 0.1 2019年10月23日 下午3:51:48 guangling.zgl Exp $
  */
 public interface PaymentContextSupport {
+    static final int                     MAX_REQUEST_TELEMETRY_BUFFER_SIZE = 100;
+    static ConcurrentLinkedQueue<String> prevRequestTelemetry              = new ConcurrentLinkedQueue<String>();
 
     /**
      * 
