@@ -7,6 +7,9 @@ package com.alipay.ams.domain;
 import java.util.Currency;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * 
  * @author guangling.zgl
@@ -71,4 +74,11 @@ public class Amount {
         this.value = value;
     }
 
+    /** 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }
