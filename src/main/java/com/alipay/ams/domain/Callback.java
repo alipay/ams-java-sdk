@@ -49,7 +49,7 @@ public abstract class Callback<R extends Request, P extends Response> extends
     public void onSignatureVerifyFailed(R request, ResponseHeader responseHeader,
                                         String responseBody) {
         throw new IllegalStateException(String.format(
-            "SignatureVerifyFailed[%s]: %s[bizId=[%s]], responseBody=[%s]", request.getClass()
+            "SignatureVerifyFailed[%s]: [bizId=[%s]], responseBody=[%s]", request.getClass()
                 .getName(), request.getBizIdentifier(), responseBody));
     }
 
