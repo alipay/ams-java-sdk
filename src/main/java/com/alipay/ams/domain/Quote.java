@@ -4,7 +4,6 @@
  */
 package com.alipay.ams.domain;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,12 +19,12 @@ import com.alipay.ams.util.DateUtil;
  */
 public class Quote {
 
-    private String     quoteId;
-    private String     quoteCurrencyPair;
-    private BigDecimal quotePrice;
-    private Date       quoteStartTime;
-    private Date       quoteExpiryTime;
-    boolean            guaranteed;
+    private String  quoteId;
+    private String  quoteCurrencyPair;
+    private Double  quotePrice;
+    private Date    quoteStartTime;
+    private Date    quoteExpiryTime;
+    private boolean guaranteed;
 
     /**
      * 
@@ -41,7 +40,7 @@ public class Quote {
         Quote quote = new Quote();
         quote.setQuoteId((String) map.get("quoteId"));
         quote.setQuoteCurrencyPair((String) map.get("quoteCurrencyPair"));
-        quote.setQuotePrice(new BigDecimal((Double) map.get("quotePrice")));
+        quote.setQuotePrice((Double) map.get("quotePrice"));
         quote.setQuoteStartTime(DateUtil.parseISODateTimeStr((String) map.get("quoteStartTime")));
         quote.setQuoteExpiryTime(DateUtil.parseISODateTimeStr((String) map.get("quoteExpiryTime")));
         quote.setGuaranteed(Boolean.valueOf((Boolean) map.get("guaranteed")));
@@ -90,7 +89,7 @@ public class Quote {
      * 
      * @return property value of quotePrice
      */
-    public BigDecimal getQuotePrice() {
+    public Double getQuotePrice() {
         return quotePrice;
     }
 
@@ -99,7 +98,7 @@ public class Quote {
      * 
      * @param quotePrice value to be assigned to property quotePrice
      */
-    public void setQuotePrice(BigDecimal quotePrice) {
+    public void setQuotePrice(Double quotePrice) {
         this.quotePrice = quotePrice;
     }
 
