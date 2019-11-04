@@ -28,25 +28,19 @@ public abstract class PaymentRefundCallback extends
      */
     protected abstract void onRefundSuccess(PaymentRefundResponse cancelResponse);
 
-    protected abstract void onRefundFailure(ResponseResult responseResult);
-
-    protected abstract void onRefundCallFailure();
+    protected abstract void onRefundFailure(String refundRequestId, ResponseResult responseResult);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onIOException(java.io.IOException, com.alipay.ams.AMSClient, com.alipay.ams.domain.Request)
      */
     @Override
-    public void onIOException(IOException e, AMSClient client, PaymentRefundRequest request) {
-        onRefundCallFailure();
-    }
+    public abstract void onIOException(IOException e, AMSClient client, PaymentRefundRequest request);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onHttpStatusNot200(com.alipay.ams.AMSClient, com.alipay.ams.domain.Request, int)
      */
     @Override
-    public void onHttpStatusNot200(AMSClient client, PaymentRefundRequest request, int code) {
-        onRefundCallFailure();
-    }
+    public abstract void onHttpStatusNot200(AMSClient client, PaymentRefundRequest request, int code);
 
     /** 
      * @see com.alipay.ams.domain.Callback#onFstatus(com.alipay.ams.AMSClient, com.alipay.ams.domain.Request, com.alipay.ams.domain.ResponseResult)
@@ -54,7 +48,7 @@ public abstract class PaymentRefundCallback extends
     @Override
     public void onFstatus(AMSClient client, PaymentRefundRequest request,
                           ResponseResult responseResult) {
-        onRefundFailure(responseResult);
+        onRefundFailure(request.getRefundRequestId(), responseResult);
     }
 
     /** 
@@ -72,8 +66,6 @@ public abstract class PaymentRefundCallback extends
      * @see com.alipay.ams.domain.Callback#onUstatus(com.alipay.ams.domain.ResponseResult)
      */
     @Override
-    public void onUstatus(AMSClient client, PaymentRefundRequest paymentRefundRequest,
-                          ResponseResult responseResult) {
-        onRefundFailure(responseResult);
-    }
+    public abstract void onUstatus(AMSClient client, PaymentRefundRequest paymentRefundRequest,
+                                   ResponseResult responseResult);
 }

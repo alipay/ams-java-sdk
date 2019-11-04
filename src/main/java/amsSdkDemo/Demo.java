@@ -4,10 +4,12 @@
  */
 package amsSdkDemo;
 
+import java.io.IOException;
 import java.util.Currency;
 import java.util.Map;
 
 import com.alipay.ams.AMS;
+import com.alipay.ams.AMSClient;
 import com.alipay.ams.callbacks.LockSupport;
 import com.alipay.ams.callbacks.PaymentCancelCallback;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
@@ -132,15 +134,24 @@ public class Demo {
         AMS.with(cfg).execute(paymentRefundRequest, new PaymentRefundCallback() {
 
             @Override
+            public void onUstatus(AMSClient client, PaymentRefundRequest paymentRefundRequest,
+                                  ResponseResult responseResult) {
+            }
+
+            @Override
             protected void onRefundSuccess(PaymentRefundResponse cancelResponse) {
             }
 
             @Override
-            protected void onRefundFailure(ResponseResult responseResult) {
+            protected void onRefundFailure(String refundRequestId, ResponseResult responseResult) {
             }
 
             @Override
-            protected void onRefundCallFailure() {
+            public void onIOException(IOException e, AMSClient client, PaymentRefundRequest request) {
+            }
+
+            @Override
+            public void onHttpStatusNot200(AMSClient client, PaymentRefundRequest request, int code) {
             }
         });
     }
