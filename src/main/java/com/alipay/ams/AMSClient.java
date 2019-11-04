@@ -160,7 +160,7 @@ public abstract class AMSClient {
 
         } else {
 
-            callback.onSignatureVerifyFailed(responseHeader, responseBody);
+            callback.onSignatureVerifyFailed(request, responseHeader, responseBody);
         }
 
     }

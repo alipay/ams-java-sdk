@@ -4,7 +4,9 @@
  */
 package com.alipay.ams.domain;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -19,10 +21,16 @@ public class NotifyRequestHeader extends Header {
      * @param notifyRequestheaders
      */
     public NotifyRequestHeader(Map<String, String> headers) {
-        this.setClientId(headers.get("client-id"));
-        this.setContentType(headers.get("Content-Type"));
-        this.setRequestTime(headers.get("request-time"));
-        this.setSignature(new Signature(headers.get("signature")));
+        HashMap<String, String> lowered = new HashMap<String, String>();
+
+        for (Entry<String, String> e : headers.entrySet()) {
+            lowered.put(e.getKey().toLowerCase(), e.getValue());
+        }
+
+        this.setClientId(lowered.get("client-id"));
+        this.setContentType(lowered.get("content-type"));
+        this.setRequestTime(lowered.get("request-time"));
+        this.setSignature(new Signature(lowered.get("signature")));
     }
 
     /**

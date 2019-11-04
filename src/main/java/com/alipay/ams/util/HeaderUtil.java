@@ -26,7 +26,7 @@ public class HeaderUtil {
         HashMap<String, String> hashMap = new HashMap<String, String>();
 
         for (Header h : allHeaders) {
-            hashMap.put(h.getName(), h.getValue());
+            hashMap.put(h.getName().toLowerCase(), h.getValue());
         }
 
         return hashMap;

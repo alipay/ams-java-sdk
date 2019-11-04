@@ -21,8 +21,8 @@ public class ResponseHeader extends Header {
     public ResponseHeader(Map<String, String> headers) {
 
         this.setClientId(headers.get("client-id"));
-        this.setTracerId(headers.get("tracerId"));
-        this.setContentType(headers.get("Content-Type"));
+        this.setTracerId(headers.get("tracerid"));
+        this.setContentType(headers.get("content-type"));
         this.setResponseTime(headers.get("response-time"));
         this.setSignature(new Signature(headers.get("signature")));
     }
