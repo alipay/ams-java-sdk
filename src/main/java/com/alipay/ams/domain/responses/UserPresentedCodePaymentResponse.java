@@ -12,6 +12,7 @@ import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 
 /**
+ * A SUCCESS payment response.
  * 
  * @author guangling.zgl
  * @version $Id: UserPresentedCodePaymentResponse.java, v 0.1 2019年10月16日 下午8:42:50 guangling.zgl Exp $
@@ -37,6 +38,12 @@ public class UserPresentedCodePaymentResponse extends Response {
      */
     @Override
     protected void initBody(HashMap<String, Object> body) {
+
+        //To reuse PaymentResultModel, we add the missing paymentStatus field.
+        if (body.containsKey("paymentStatus")) {
+            body.put("paymentStatus", "SUCCESS");
+        }
+
         this.paymentResultModel = new PaymentResultModel(body);
     }
 
