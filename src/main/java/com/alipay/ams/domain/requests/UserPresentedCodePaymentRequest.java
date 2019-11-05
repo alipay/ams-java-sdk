@@ -13,7 +13,6 @@ import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.Request;
-import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -27,7 +26,6 @@ public class UserPresentedCodePaymentRequest extends Request {
     private Currency currency;
     private Long     amountInCents;
     private String   paymentCode;
-    private String   agentToken;
 
     public UserPresentedCodePaymentRequest(AMSSettings settings, String paymentRequestId,
                                            Order order, Currency currency, Long amountInCents,
@@ -55,22 +53,7 @@ public class UserPresentedCodePaymentRequest extends Request {
         this.currency = currency;
         this.amountInCents = amountInCents;
         this.paymentCode = paymentCode;
-        this.agentToken = agentToken;
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#getExtraHeaders()
-     */
-    @Override
-    protected Map<String, String> getExtraHeaders() {
-
-        Map<String, String> extraHeaders = super.getExtraHeaders();
-
-        if (StringUtil.isNotBlank(this.agentToken)) {
-            extraHeaders.put("Agent-Token", this.agentToken);
-        }
-
-        return extraHeaders;
+        super.setAgentToken(agentToken);
     }
 
     /** 
@@ -79,22 +62,6 @@ public class UserPresentedCodePaymentRequest extends Request {
     @Override
     protected boolean extValidate() {
         return true;
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#getExt()
-     */
-    @Override
-    protected String getExt() {
-        return "place-holder";
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#getSdkVersion()
-     */
-    @Override
-    protected String getSdkVersion() {
-        return "1.0.20191016";
     }
 
     /** 
@@ -223,23 +190,5 @@ public class UserPresentedCodePaymentRequest extends Request {
      */
     public void setPaymentCode(String paymentCode) {
         this.paymentCode = paymentCode;
-    }
-
-    /**
-     * Getter method for property <tt>agentToken</tt>.
-     * 
-     * @return property value of agentToken
-     */
-    public String getAgentToken() {
-        return agentToken;
-    }
-
-    /**
-     * Setter method for property <tt>agentToken</tt>.
-     * 
-     * @param agentToken value to be assigned to property agentToken
-     */
-    public void setAgentToken(String agentToken) {
-        this.agentToken = agentToken;
     }
 }

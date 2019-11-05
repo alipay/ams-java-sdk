@@ -37,11 +37,10 @@ public class PaymentRefundResponse extends Response {
     }
 
     /** 
-     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
+     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap, com.alipay.ams.domain.ResponseHeader)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    protected void initBody(HashMap<String, Object> body) {
+    protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
 
         this.refundTime = (String) body.get("refundTime");
         this.paymentId = (String) body.get("paymentId");
@@ -49,6 +48,7 @@ public class PaymentRefundResponse extends Response {
         this.refundRequestId = (String) body.get("refundRequestId");
         this.refundAmount = Amount.fromMap((Map<String, String>) body.get("refundAmount"));
         this.isAsyncRefund = "true".equals((String) body.get("isAsyncRefund"));
+        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

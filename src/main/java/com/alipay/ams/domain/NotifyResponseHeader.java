@@ -6,6 +6,8 @@ package com.alipay.ams.domain;
 
 import java.util.Map;
 
+import com.alipay.ams.cfg.AMSSettings;
+
 /**
  * 
  * @author guangling.zgl
@@ -15,8 +17,8 @@ public class NotifyResponseHeader extends Header {
 
     private String              responseTime;
 
-    private String              sdkVersion;
-    private String              ext;
+    private String              sdkVersion = AMSSettings.sdkVersion; ;
+
     private Map<String, String> extraHeaders;
 
     /** 
@@ -27,8 +29,7 @@ public class NotifyResponseHeader extends Header {
 
         Map<String, String> map = super.toMap();
         map.put("response-time", responseTime);
-        map.put("sdkVersion", sdkVersion);
-        map.put("ext", ext);
+        map.put("X-sdkVersion", sdkVersion);
 
         return map;
     }
@@ -66,33 +67,6 @@ public class NotifyResponseHeader extends Header {
      */
     public String getSdkVersion() {
         return sdkVersion;
-    }
-
-    /**
-     * Setter method for property <tt>sdkVersion</tt>.
-     * 
-     * @param sdkVersion value to be assigned to property sdkVersion
-     */
-    public void setSdkVersion(String sdkVersion) {
-        this.sdkVersion = sdkVersion;
-    }
-
-    /**
-     * Getter method for property <tt>ext</tt>.
-     * 
-     * @return property value of ext
-     */
-    public String getExt() {
-        return ext;
-    }
-
-    /**
-     * Setter method for property <tt>ext</tt>.
-     * 
-     * @param ext value to be assigned to property ext
-     */
-    public void setExt(String ext) {
-        this.ext = ext;
     }
 
     /**

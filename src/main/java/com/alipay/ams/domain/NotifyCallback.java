@@ -58,7 +58,8 @@ public abstract class NotifyCallback {
     public void onSstatus(AMSSettings settings, NotifyRequestHeader notifyRequestHeader,
                           HashMap<String, Object> body) {
 
-        PaymentResultModel paymentResultModel = new PaymentResultModel(body);
+        PaymentResultModel paymentResultModel = new PaymentResultModel(body,
+            notifyRequestHeader.getAgentToken());
 
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(paymentResultModel.getPaymentRequestId(), null);

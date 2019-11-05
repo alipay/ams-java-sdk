@@ -17,6 +17,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class PaymentResultModel {
 
+    private String            agentToken;
+
     private String            paymentRequestId;
     private String            paymentId;
     private Amount            paymentAmount;
@@ -34,11 +36,19 @@ public class PaymentResultModel {
 
     private Quote             paymentQuote;
 
+    /**
+     * 
+     */
+    public PaymentResultModel(HashMap<String, Object> body, String agentToken) {
+        this(body);
+        this.agentToken = agentToken;
+    }
+
     /** 
      * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
      */
     @SuppressWarnings("unchecked")
-    public PaymentResultModel(HashMap<String, Object> body) {
+    private PaymentResultModel(HashMap<String, Object> body) {
 
         this.paymentCreateTime = (String) body.get("paymentCreateTime");
         this.paymentId = (String) body.get("paymentId");
@@ -303,6 +313,24 @@ public class PaymentResultModel {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    /**
+     * Getter method for property <tt>agentToken</tt>.
+     * 
+     * @return property value of agentToken
+     */
+    public String getAgentToken() {
+        return agentToken;
+    }
+
+    /**
+     * Setter method for property <tt>agentToken</tt>.
+     * 
+     * @param agentToken value to be assigned to property agentToken
+     */
+    public void setAgentToken(String agentToken) {
+        this.agentToken = agentToken;
     }
 
 }

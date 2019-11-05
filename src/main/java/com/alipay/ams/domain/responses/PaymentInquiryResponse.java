@@ -31,11 +31,12 @@ public class PaymentInquiryResponse extends Response {
     }
 
     /** 
-     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
+     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap, com.alipay.ams.domain.ResponseHeader)
      */
     @Override
-    protected void initBody(HashMap<String, Object> body) {
-        this.paymentResultModel = new PaymentResultModel(body);
+    protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
+        this.paymentResultModel = new PaymentResultModel(body, responseHeader.getAgentToken());
+        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

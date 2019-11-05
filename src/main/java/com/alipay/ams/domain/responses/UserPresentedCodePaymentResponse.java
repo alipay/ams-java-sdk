@@ -34,17 +34,19 @@ public class UserPresentedCodePaymentResponse extends Response {
     }
 
     /** 
-     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
+     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap, com.alipay.ams.domain.ResponseHeader)
      */
     @Override
-    protected void initBody(HashMap<String, Object> body) {
+    protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
 
         //To reuse PaymentResultModel, we add the missing paymentStatus field.
         if (!body.containsKey("paymentStatus")) {
             body.put("paymentStatus", "SUCCESS");
         }
 
-        this.paymentResultModel = new PaymentResultModel(body);
+        this.paymentResultModel = new PaymentResultModel(body, responseHeader.getAgentToken());
+        this.setAgentToken(responseHeader.getAgentToken());
+
     }
 
     /** 

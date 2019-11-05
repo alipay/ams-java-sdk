@@ -27,7 +27,7 @@ public abstract class Response extends AMSMessage {
                        HashMap<String, Object> body) {
         super(requestURI, settings);
         this.responseHeader = responseHeader;
-        initBody(body);
+        initBody(body, responseHeader);
     }
 
     /**
@@ -37,6 +37,11 @@ public abstract class Response extends AMSMessage {
         return responseHeader;
     }
 
-    protected abstract void initBody(HashMap<String, Object> body);
+    /**
+     * 
+     * @param body
+     * @param responseHeader
+     */
+    protected abstract void initBody(HashMap<String, Object> body, ResponseHeader responseHeader);
 
 }

@@ -4,12 +4,9 @@
  */
 package com.alipay.ams.domain.requests;
 
-import java.util.Map;
-
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Request;
-import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -21,7 +18,6 @@ public class PaymentCancelRequest extends Request {
     private String  paymentId;
     private String  paymentRequestId;
     private boolean byPaymentId;
-    private String  agentToken;
 
     public static PaymentCancelRequest byPaymentId(AMSSettings settings, String paymentId) {
         return new PaymentCancelRequest(settings, true, paymentId, null);
@@ -52,7 +48,7 @@ public class PaymentCancelRequest extends Request {
         super("/ams/api/v1/payments/cancel", settings);
 
         this.byPaymentId = byPaymentId;
-        this.agentToken = agentToken;
+        super.setAgentToken(agentToken);
 
         if (byPaymentId) {
             this.paymentId = id;
@@ -60,21 +56,6 @@ public class PaymentCancelRequest extends Request {
             this.paymentRequestId = id;
         }
 
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#getExtraHeaders()
-     */
-    @Override
-    protected Map<String, String> getExtraHeaders() {
-
-        Map<String, String> extraHeaders = super.getExtraHeaders();
-
-        if (StringUtil.isNotBlank(this.agentToken)) {
-            extraHeaders.put("Agent-Token", this.agentToken);
-        }
-
-        return extraHeaders;
     }
 
     /** 
@@ -108,14 +89,6 @@ public class PaymentCancelRequest extends Request {
     @Override
     protected boolean extValidate() {
         return true;
-    }
-
-    /** 
-     * @see com.alipay.ams.domain.Request#getExt()
-     */
-    @Override
-    protected String getExt() {
-        return null;
     }
 
     /**
@@ -170,24 +143,6 @@ public class PaymentCancelRequest extends Request {
      */
     public void setByPaymentId(boolean byPaymentId) {
         this.byPaymentId = byPaymentId;
-    }
-
-    /**
-     * Getter method for property <tt>agentToken</tt>.
-     * 
-     * @return property value of agentToken
-     */
-    public String getAgentToken() {
-        return agentToken;
-    }
-
-    /**
-     * Setter method for property <tt>agentToken</tt>.
-     * 
-     * @param agentToken value to be assigned to property agentToken
-     */
-    public void setAgentToken(String agentToken) {
-        this.agentToken = agentToken;
     }
 
 }

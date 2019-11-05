@@ -29,7 +29,8 @@ public class NotifyResponseImpl implements NotifyResponse {
     private AMSSettings          setting;
     private String               requestURI;
 
-    public NotifyResponseImpl(AMSSettings setting, String requestURI, String bodyContent) {
+    public NotifyResponseImpl(AMSSettings setting, String requestURI, String bodyContent,
+                              String agentToken) {
 
         this.setting = setting;
         this.bodyContent = bodyContent;
@@ -38,6 +39,7 @@ public class NotifyResponseImpl implements NotifyResponse {
         headers.setContentType("application/json; charset=UTF-8");
         headers.setClientId(setting.clientId);
         headers.setResponseTime(DateUtil.getISODateTimeStr(new Date()));
+        headers.setAgentToken(agentToken);
 
     }
 

@@ -7,6 +7,8 @@ package com.alipay.ams.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alipay.ams.cfg.AMSSettings;
+
 /**
  * 
  * @author guangling.zgl
@@ -15,9 +17,7 @@ import java.util.Map;
 public class RequestHeader extends Header {
 
     private String              requestTime;
-
-    private String              sdkVersion;
-    private String              ext;
+    private String              sdkVersion   = AMSSettings.sdkVersion;
     private Map<String, String> extraHeaders = new HashMap<String, String>();
 
     /** 
@@ -30,7 +30,6 @@ public class RequestHeader extends Header {
         Map<String, String> map = super.toMap();
         map.put("request-time", requestTime);
         map.put("X-sdkVersion", sdkVersion);
-        map.put("X-ext", ext);
 
         return map;
     }
@@ -68,33 +67,6 @@ public class RequestHeader extends Header {
      */
     public String getSdkVersion() {
         return sdkVersion;
-    }
-
-    /**
-     * Setter method for property <tt>sdkVersion</tt>.
-     * 
-     * @param sdkVersion value to be assigned to property sdkVersion
-     */
-    public void setSdkVersion(String sdkVersion) {
-        this.sdkVersion = sdkVersion;
-    }
-
-    /**
-     * Getter method for property <tt>ext</tt>.
-     * 
-     * @return property value of ext
-     */
-    public String getExt() {
-        return ext;
-    }
-
-    /**
-     * Setter method for property <tt>ext</tt>.
-     * 
-     * @param ext value to be assigned to property ext
-     */
-    public void setExt(String ext) {
-        this.ext = ext;
     }
 
     /**

@@ -83,13 +83,15 @@ public abstract class AMSClient {
 
                 processNotifyBody(notifyCallback, notifyRequestHeader, requestBody);
 
-                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.S);
+                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.S,
+                    notifyRequestHeader.getAgentToken());
 
             } else {
 
                 notifyCallback.onNotifySignatureVerifyFailed(notifyRequestHeader, requestBody);
 
-                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U);
+                return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U,
+                    notifyRequestHeader.getAgentToken());
             }
 
         } catch (Exception e) {
@@ -97,7 +99,8 @@ public abstract class AMSClient {
             settings.logger.warn("Exception[%s - %s] occured when onNotify， requestBody=[%s]", e
                 .getClass().getName(), e.getMessage(), requestBody);
 
-            return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U);
+            return new NotifyResponseImpl(settings, requestURI, NotifyResponseImpl.U,
+                notifyRequestHeader.getAgentToken());
         }
 
     }

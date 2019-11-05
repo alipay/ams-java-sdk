@@ -32,14 +32,15 @@ public class PaymentCancelResponse extends Response {
     }
 
     /** 
-     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap)
+     * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap, com.alipay.ams.domain.ResponseHeader)
      */
     @Override
-    protected void initBody(HashMap<String, Object> body) {
+    protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
 
         this.cancelTime = (String) body.get("cancelTime");
         this.paymentId = (String) body.get("paymentId");
         this.paymentRequestId = (String) body.get("paymentRequestId");
+        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

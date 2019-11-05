@@ -15,16 +15,20 @@ import com.alipay.ams.util.StringUtil;
  */
 public class ResponseHeader extends Header {
 
-    String responseTime;
-    String tracerId;
+    private String responseTime;
+    private String tracerId;
 
     public ResponseHeader(Map<String, String> headers) {
+        super.fromMap(headers);
+    }
 
-        this.setClientId(headers.get("client-id"));
-        this.setTracerId(headers.get("tracerid"));
-        this.setContentType(headers.get("content-type"));
-        this.setResponseTime(headers.get("response-time"));
-        this.setSignature(new Signature(headers.get("signature")));
+    /** 
+     * @see com.alipay.ams.domain.Header#fromMap(java.util.Map)
+     */
+    @Override
+    protected void fromMapExt(Map<String, String> lowered) {
+        this.responseTime = lowered.get("response-time");
+        this.tracerId = lowered.get("tracerid");
     }
 
     /**
@@ -49,8 +53,8 @@ public class ResponseHeader extends Header {
      * 
      */
     public boolean validate() {
-        return StringUtil.isNotBlank(this.clientId)
-               && StringUtil.isNotBlank(this.signature.getSignature());
+        return StringUtil.isNotBlank(getClientId())
+               && StringUtil.isNotBlank(getSignature().getSignature());
     }
 
     /**

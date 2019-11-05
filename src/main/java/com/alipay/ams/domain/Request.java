@@ -11,6 +11,7 @@ import java.util.Map;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.util.DateUtil;
 import com.alipay.ams.util.SignatureUtil;
+import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -31,9 +32,11 @@ public abstract class Request extends AMSMessage {
 
         requestHeader.setClientId(getSettings().clientId);
         requestHeader.setRequestTime(requestTime);
-        requestHeader.setSdkVersion(getSdkVersion());
-        requestHeader.setExt(getExt());
         requestHeader.setExtraHeaders(getExtraHeaders());
+
+        if (StringUtil.isNotBlank(super.getAgentToken())) {
+            requestHeader.setAgentToken(getAgentToken());
+        }
 
         Signature signature = new Signature();
         requestHeader.setSignature(signature);
@@ -82,20 +85,6 @@ public abstract class Request extends AMSMessage {
      * @return
      */
     protected abstract boolean extValidate();
-
-    /**
-     * 
-     * @return
-     */
-    protected abstract String getExt();
-
-    /**
-     * 
-     * @return
-     */
-    protected String getSdkVersion() {
-        return "";
-    }
 
     /**
      * Getter method for property <tt>requestTime</tt>.

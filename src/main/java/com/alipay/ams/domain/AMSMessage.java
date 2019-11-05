@@ -18,6 +18,7 @@ public abstract class AMSMessage {
 
     private AMSSettings settings;
     private String      requestURI;
+    private String      agentToken;
 
     protected AMSMessage(String requestURI, AMSSettings settings) {
         this.requestURI = requestURI;
@@ -46,6 +47,24 @@ public abstract class AMSMessage {
      */
     public AMSSettings getSettings() {
         return settings;
+    }
+
+    /**
+     * Getter method for property <tt>agentToken</tt>.
+     * 
+     * @return property value of agentToken
+     */
+    public String getAgentToken() {
+        return agentToken;
+    }
+
+    /**
+     * Setter method for property <tt>agentToken</tt>.
+     * 
+     * @param agentToken value to be assigned to property agentToken
+     */
+    public void setAgentToken(String agentToken) {
+        this.agentToken = agentToken;
     }
 
     /** 

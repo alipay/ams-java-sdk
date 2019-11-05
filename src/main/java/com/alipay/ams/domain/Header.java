@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.alipay.ams.util.StringUtil;
+
 /**
  * 
  * @author guangling.zgl
@@ -18,15 +20,52 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public abstract class Header {
 
-    String    contentType = "application/json; charset=UTF-8";
-    String    clientId;
-    Signature signature;
+    private String    contentType = "application/json; charset=UTF-8";
+    private String    clientId;
+    private String    agentToken;
+    private Signature signature;
 
+    /**
+     * 
+     */
+    protected void fromMap(Map<String, String> headers) {
+
+        HashMap<String, String> lowered = new HashMap<String, String>();
+
+        for (Entry<String, String> e : headers.entrySet()) {
+            lowered.put(e.getKey().toLowerCase(), e.getValue());
+        }
+
+        this.clientId = lowered.get("client-id");
+        this.contentType = lowered.get("content-type");
+        this.signature = new Signature(lowered.get("signature"));
+        this.agentToken = lowered.get("agent-token");
+
+        fromMapExt(lowered);
+    }
+
+    /**
+     * 
+     * @param lowered
+     */
+    protected void fromMapExt(Map<String, String> lowered) {
+    }
+
+    /**
+     * 
+     * @return
+     */
     public Map<String, String> toMap() {
+
         HashMap<String, String> hashMap = new HashMap<String, String>();
+
         hashMap.put("Content-Type", contentType);
         hashMap.put("client-id", clientId);
         hashMap.put("signature", signature.toString());
+
+        if (StringUtil.isNotBlank(agentToken)) {
+            hashMap.put("Agent-Token", agentToken);
+        }
 
         Map<String, String> extraHeaders = extraHeaders();
         if (extraHeaders != null) {
@@ -93,6 +132,24 @@ public abstract class Header {
      */
     public void setSignature(Signature signature) {
         this.signature = signature;
+    }
+
+    /**
+     * Getter method for property <tt>agentToken</tt>.
+     * 
+     * @return property value of agentToken
+     */
+    public String getAgentToken() {
+        return agentToken;
+    }
+
+    /**
+     * Setter method for property <tt>agentToken</tt>.
+     * 
+     * @param agentToken value to be assigned to property agentToken
+     */
+    public void setAgentToken(String agentToken) {
+        this.agentToken = agentToken;
     }
 
     /** 
