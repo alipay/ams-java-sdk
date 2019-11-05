@@ -15,46 +15,28 @@ import com.alipay.ams.domain.Request;
  */
 public class PaymentCancelRequest extends Request {
 
-    private String  paymentId;
-    private String  paymentRequestId;
-    private boolean byPaymentId;
+    private String paymentRequestId;
 
-    public static PaymentCancelRequest byPaymentId(AMSSettings settings, String paymentId) {
-        return new PaymentCancelRequest(settings, true, paymentId, null);
-    }
+    /**
+     * @param settings
+     * @param paymentRequestId
+     */
+    public PaymentCancelRequest(AMSSettings settings, String paymentRequestId) {
 
-    public static PaymentCancelRequest byPaymentRequestId(AMSSettings settings,
-                                                          String paymentRequestId) {
-        return new PaymentCancelRequest(settings, false, paymentRequestId, null);
-    }
+        this(settings, paymentRequestId, null);
 
-    public static PaymentCancelRequest byPaymentId(AMSSettings settings, String paymentId,
-                                                   String agentToken) {
-        return new PaymentCancelRequest(settings, true, paymentId, agentToken);
-    }
-
-    public static PaymentCancelRequest byPaymentRequestId(AMSSettings settings,
-                                                          String paymentRequestId, String agentToken) {
-        return new PaymentCancelRequest(settings, false, paymentRequestId, agentToken);
     }
 
     /**
-     * @param requestURI
      * @param settings
+     * @param paymentRequestId
+     * @param agentToken
      */
-    private PaymentCancelRequest(AMSSettings settings, boolean byPaymentId, String id,
-                                 String agentToken) {
+    public PaymentCancelRequest(AMSSettings settings, String paymentRequestId, String agentToken) {
 
         super("/ams/api/v1/payments/cancel", settings);
-
-        this.byPaymentId = byPaymentId;
         super.setAgentToken(agentToken);
-
-        if (byPaymentId) {
-            this.paymentId = id;
-        } else {
-            this.paymentRequestId = id;
-        }
+        this.paymentRequestId = paymentRequestId;
 
     }
 
@@ -65,12 +47,7 @@ public class PaymentCancelRequest extends Request {
     public Body buildBody() {
 
         Body body = new Body();
-
-        if (byPaymentId) {
-            body.put("paymentId", paymentId);
-        } else {
-            body.put("paymentRequestId", paymentRequestId);
-        }
+        body.put("paymentRequestId", paymentRequestId);
 
         return body;
     }
@@ -92,24 +69,6 @@ public class PaymentCancelRequest extends Request {
     }
 
     /**
-     * Getter method for property <tt>paymentId</tt>.
-     * 
-     * @return property value of paymentId
-     */
-    public String getPaymentId() {
-        return paymentId;
-    }
-
-    /**
-     * Setter method for property <tt>paymentId</tt>.
-     * 
-     * @param paymentId value to be assigned to property paymentId
-     */
-    public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
-    }
-
-    /**
      * Getter method for property <tt>paymentRequestId</tt>.
      * 
      * @return property value of paymentRequestId
@@ -125,24 +84,6 @@ public class PaymentCancelRequest extends Request {
      */
     public void setPaymentRequestId(String paymentRequestId) {
         this.paymentRequestId = paymentRequestId;
-    }
-
-    /**
-     * Getter method for property <tt>byPaymentId</tt>.
-     * 
-     * @return property value of byPaymentId
-     */
-    public boolean isByPaymentId() {
-        return byPaymentId;
-    }
-
-    /**
-     * Setter method for property <tt>byPaymentId</tt>.
-     * 
-     * @param byPaymentId value to be assigned to property byPaymentId
-     */
-    public void setByPaymentId(boolean byPaymentId) {
-        this.byPaymentId = byPaymentId;
     }
 
 }

@@ -66,12 +66,7 @@ public class Demo {
     public static void main(String[] args) {
         Demo demo = new Demo();
 
-        demo.pay();
-        try {
-            Thread.sleep(9000);
-        } catch (InterruptedException e) {
-        }
-        demo.pay();
+        //        demo.pay();
 
         //        demo.inquiry();
         //
@@ -79,7 +74,7 @@ public class Demo {
         //
         //        demo.onNotify();
         //
-        //        demo.cancel();
+        demo.cancel();
 
     }
 
@@ -97,8 +92,7 @@ public class Demo {
         long amountInCents = 1000l;
 
         final UserPresentedCodePaymentRequest request = new UserPresentedCodePaymentRequest(cfg,
-            paymentRequestId, order, currency, amountInCents, buyerPaymentCode,
-            "r3DugUkweTd4cfKiuRxje3uSkEFSFzJitOW6X7XAjG000141");
+            paymentRequestId, order, currency, amountInCents, buyerPaymentCode);
 
         AMS.with(cfg)
             .execute(request, new UserPresentedCodePaymentCallback(paymentInquiryCallback));
@@ -135,29 +129,35 @@ public class Demo {
      * 
      */
     void refund() {
-        PaymentRefundRequest paymentRefundRequest = new PaymentRefundRequest(cfg, "some_id",
-            "some_id", new Amount(Currency.getInstance("JPY"), 111l), "some_time");
+        PaymentRefundRequest paymentRefundRequest = new PaymentRefundRequest(cfg,
+            "201911041940108001001882C0203027168", "201911041940108001001882C0203027168_refund1",
+            new Amount(Currency.getInstance("JPY"), 111l));
         AMS.with(cfg).execute(paymentRefundRequest, new PaymentRefundCallback() {
 
             @Override
             public void onUstatus(AMSClient client, PaymentRefundRequest paymentRefundRequest,
                                   ResponseResult responseResult) {
+                cfg.logger.info("onUstatus: %s", responseResult);
             }
 
             @Override
-            protected void onRefundSuccess(PaymentRefundResponse cancelResponse) {
+            protected void onRefundSuccess(PaymentRefundResponse refundResponse) {
+                cfg.logger.info("onRefundSuccess %s", refundResponse);
             }
 
             @Override
             protected void onRefundFailure(String refundRequestId, ResponseResult responseResult) {
+                cfg.logger.info("onRefundFailure: %s", responseResult);
             }
 
             @Override
             public void onIOException(IOException e, AMSClient client, PaymentRefundRequest request) {
+                cfg.logger.info("onIOException");
             }
 
             @Override
             public void onHttpStatusNot200(AMSClient client, PaymentRefundRequest request, int code) {
+                cfg.logger.info("onHttpStatusNot200");
             }
         });
     }
@@ -172,8 +172,7 @@ public class Demo {
     }
 
     void cancel() {
-        AMS.with(cfg).execute(
-            PaymentCancelRequest.byPaymentId(cfg, "PR20190000000001_1571936707820"),
+        AMS.with(cfg).execute(new PaymentCancelRequest(cfg, "PR20190000000001_1572938822740"),
             paymentCancelCallback);
     }
 }

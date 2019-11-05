@@ -77,8 +77,9 @@ public class CancelTask extends Task {
                     paymentContext.setCancelCount(paymentContext.getCancelCount() + 1);
                     paymentCancelCallback.getPaymentContextSupport().saveContext(paymentContext);
 
-                    client.execute(PaymentCancelRequest.byPaymentRequestId(client.getSettings(),
-                        paymentContext.getPaymentRequestId(), paymentContext.getAgentToken()),
+                    client.execute(
+                        new PaymentCancelRequest(client.getSettings(), paymentContext
+                            .getPaymentRequestId(), paymentContext.getAgentToken()),
                         paymentCancelCallback);
 
                 }
@@ -94,7 +95,7 @@ public class CancelTask extends Task {
         } else {
 
             client.getSettings().logger.warn(
-                "Cancel Job skipped (needFurtherInquiry=false). context [%s]", paymentContext);
+                "Cancel Job skipped (needFurtherCancel=false). context [%s]", paymentContext);
         }
 
         return true;

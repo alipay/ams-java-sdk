@@ -4,10 +4,13 @@
  */
 package com.alipay.ams.domain.requests;
 
+import java.util.Date;
+
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Request;
+import com.alipay.ams.util.DateUtil;
 
 /**
  * 
@@ -29,8 +32,19 @@ public class PaymentRefundRequest extends Request {
      * @param settings
      */
     public PaymentRefundRequest(AMSSettings settings, String paymentId, String refundRequestId,
-                                Amount refundAmount, String refundRequestTime) {
-        this(settings, paymentId, refundRequestId, refundAmount, refundRequestTime, null);
+                                Amount refundAmount) {
+        this(settings, paymentId, refundRequestId, refundAmount, DateUtil
+            .getISODateTimeStr(new Date()), null);
+    }
+
+    /**
+     * @param requestURI
+     * @param settings
+     */
+    public PaymentRefundRequest(AMSSettings settings, String paymentId, String refundRequestId,
+                                Amount refundAmount, String agentToken) {
+        this(settings, paymentId, refundRequestId, refundAmount, DateUtil
+            .getISODateTimeStr(new Date()), agentToken);
     }
 
     /**

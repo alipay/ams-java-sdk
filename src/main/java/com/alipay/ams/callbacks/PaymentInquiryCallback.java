@@ -19,6 +19,7 @@ import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.domain.telemetry.Call;
 import com.alipay.ams.job.JobExecutor;
+import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -217,6 +218,11 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      */
     @Override
     protected String getPaymentRequestId(PaymentInquiryRequest request) {
+
+        if (StringUtil.isBlank(request.getPaymentRequestId())) {
+            throw new IllegalStateException(
+                "paymentRequestId required when using PaymentInquiryCallback. Try using SinglePaymentInquiryCallback instead.");
+        }
         return request.getPaymentRequestId();
     }
 
