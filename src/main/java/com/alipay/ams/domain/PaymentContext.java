@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.alipay.ams.domain.telemetry.Telemetry;
+import com.google.gson.Gson;
 
 /**
  * 
@@ -155,6 +156,24 @@ public class PaymentContext implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public String toJson() {
+
+        return new Gson().toJson(this);
+    }
+
+    /**
+     * 
+     * @param json
+     * @return
+     */
+    public static PaymentContext fromJson(String json) {
+        return new Gson().fromJson(json, PaymentContext.class);
     }
 
     /**
