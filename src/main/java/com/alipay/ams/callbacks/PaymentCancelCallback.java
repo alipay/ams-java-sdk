@@ -26,7 +26,6 @@ import com.alipay.ams.job.JobExecutor;
  */
 public class PaymentCancelCallback extends Callback<PaymentCancelRequest, PaymentCancelResponse> {
 
-    private PaymentContextSupport       paymentContextSupport;
     private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
     /**
@@ -36,7 +35,6 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
     public PaymentCancelCallback(PaymentContextSupport paymentContextSupport,
                                  PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
         super(paymentContextSupport);
-        this.paymentContextSupport = paymentContextSupport;
         this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
     }
 
@@ -70,9 +68,9 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
      */
     private void retryOrAlarm(AMSClient client, PaymentCancelRequest request) {
 
-        PaymentContext context = paymentContextSupport.loadContextByPaymentRequestIdOrDefault(
-            request.getPaymentRequestId(), new PaymentContext(request.getPaymentRequestId(),
-                request.getAgentToken()));
+        PaymentContext context = getPaymentContextSupport().loadContextByPaymentRequestIdOrDefault(
+            request.getPaymentRequestId(),
+            new PaymentContext(request.getPaymentRequestId(), request.getAgentToken()));
 
         if (needFurtherCancel(context, client.getSettings())) {
 
@@ -143,15 +141,6 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
 
         paymentStatusUpdateCallback.onPaymentCancelled(cancelResponse.getPaymentRequestId(),
             cancelResponse.getPaymentId(), cancelResponse.getCancelTime());
-    }
-
-    /**
-     * Getter method for property <tt>paymentContextSupport</tt>.
-     * 
-     * @return property value of paymentContextSupport
-     */
-    public PaymentContextSupport getPaymentContextSupport() {
-        return paymentContextSupport;
     }
 
     /**
