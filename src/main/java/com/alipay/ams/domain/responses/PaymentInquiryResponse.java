@@ -36,7 +36,6 @@ public class PaymentInquiryResponse extends Response {
     @Override
     protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
         this.paymentResultModel = new PaymentResultModel(body, responseHeader.getAgentToken());
-        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

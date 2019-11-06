@@ -37,6 +37,7 @@ public class AMSSettings {
     public boolean             enableTelemetry                         = true;
     public int                 maxInquiryCount                         = inquiryInterval.length;
     public int                 maxCancelCount                          = cancelInterval.length;
+    public int                 maxOrderCodeRequestCount                = 3;
 
     public Logger              logger                                  = new SystemoutLogger();
     public long                jobListingDelayInMilliSeconds           = 300;

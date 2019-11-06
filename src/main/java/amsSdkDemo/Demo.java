@@ -11,6 +11,7 @@ import java.util.Map;
 import com.alipay.ams.AMS;
 import com.alipay.ams.AMSClient;
 import com.alipay.ams.callbacks.LockSupport;
+import com.alipay.ams.callbacks.OrderCodePaymentCallback;
 import com.alipay.ams.callbacks.PaymentCancelCallback;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
 import com.alipay.ams.callbacks.PaymentRefundCallback;
@@ -25,10 +26,12 @@ import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.PaymentResultModel;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.Store;
+import com.alipay.ams.domain.requests.OrderCodePaymentRequest;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
 import com.alipay.ams.domain.requests.UserPresentedCodePaymentRequest;
+import com.alipay.ams.domain.responses.OrderCodePaymentResponse;
 import com.alipay.ams.domain.responses.PaymentRefundResponse;
 import com.alipay.ams.job.JobExecutor;
 
@@ -65,6 +68,7 @@ public class Demo {
      */
     public static void main(String[] args) {
         Demo demo = new Demo();
+        demo.orderCode();
 
         //        demo.pay();
 
@@ -74,7 +78,7 @@ public class Demo {
         //
         //        demo.onNotify();
         //
-        demo.cancel();
+        //        demo.cancel();
 
     }
 
@@ -172,7 +176,36 @@ public class Demo {
     }
 
     void cancel() {
-        AMS.with(cfg).execute(new PaymentCancelRequest(cfg, "PR20190000000001_1572938822740"),
+        AMS.with(cfg).execute(new PaymentCancelRequest(cfg, "PR20190000000001_1572943243242"),
             paymentCancelCallback);
+    }
+
+    void orderCode() {
+        Order order = new Order();
+        Currency currency = Currency.getInstance("JPY");
+        order.setOrderAmount(new Amount(currency, 1000l));//10.00USD
+        order.setOrderDescription("New White Lace Sleeveless");
+        order.setReferenceOrderId("0000000001");
+        order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
+            "Some_store", "store231117459", "7011")));
+
+        String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
+        long amountInCents = 1000l;
+
+        AMS.with(cfg).execute(
+            new OrderCodePaymentRequest(cfg, paymentRequestId, order, currency, amountInCents),
+            new OrderCodePaymentCallback(allInOne) {
+
+                @Override
+                protected void onOrderCodeResponse(OrderCodePaymentResponse orderCodeResponse) {
+                    cfg.logger.info("onOrderCodeResponse: %s", orderCodeResponse);
+                }
+
+                @Override
+                protected void onGetOrderCodeFailed(OrderCodePaymentRequest request,
+                                                    ResponseResult responseResult) {
+                    cfg.logger.info("onGetOrderCodeFailed: %s", responseResult);
+                }
+            });
     }
 }

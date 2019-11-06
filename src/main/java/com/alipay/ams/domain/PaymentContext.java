@@ -26,6 +26,7 @@ public class PaymentContext implements Serializable {
 
     private int               inquiryCount;
     private int               cancelCount;
+    private int               orderCodeRequestCount;
     private Date              lastInquiryTime;
     private String            paymentRequestId;
     private String            agentToken;
@@ -154,5 +155,21 @@ public class PaymentContext implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public int getOrderCodeRequestCount() {
+        return orderCodeRequestCount;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public void incrOrderCodeRequestCount() {
+        orderCodeRequestCount++;
     }
 }

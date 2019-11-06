@@ -27,6 +27,7 @@ public abstract class Response extends AMSMessage {
                        HashMap<String, Object> body) {
         super(requestURI, settings);
         this.responseHeader = responseHeader;
+        this.setAgentToken(responseHeader.getAgentToken());
         initBody(body, responseHeader);
     }
 

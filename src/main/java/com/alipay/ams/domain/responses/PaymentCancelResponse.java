@@ -40,7 +40,6 @@ public class PaymentCancelResponse extends Response {
         this.cancelTime = (String) body.get("cancelTime");
         this.paymentId = (String) body.get("paymentId");
         this.paymentRequestId = (String) body.get("paymentRequestId");
-        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

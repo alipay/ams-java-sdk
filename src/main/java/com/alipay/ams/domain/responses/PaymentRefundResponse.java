@@ -48,7 +48,6 @@ public class PaymentRefundResponse extends Response {
         this.refundRequestId = (String) body.get("refundRequestId");
         this.refundAmount = Amount.fromMap((Map<String, String>) body.get("refundAmount"));
         this.isAsyncRefund = "true".equals((String) body.get("isAsyncRefund"));
-        this.setAgentToken(responseHeader.getAgentToken());
     }
 
     /** 

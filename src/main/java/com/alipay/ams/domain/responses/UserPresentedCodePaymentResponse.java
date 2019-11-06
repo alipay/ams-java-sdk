@@ -45,7 +45,6 @@ public class UserPresentedCodePaymentResponse extends Response {
         }
 
         this.paymentResultModel = new PaymentResultModel(body, responseHeader.getAgentToken());
-        this.setAgentToken(responseHeader.getAgentToken());
 
     }
 

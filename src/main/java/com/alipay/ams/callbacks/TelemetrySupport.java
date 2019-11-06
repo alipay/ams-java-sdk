@@ -195,4 +195,13 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
         paymentContextSupport.saveContext(paymentContext);
     }
 
+    /**
+     * Getter method for property <tt>paymentContextSupport</tt>.
+     * 
+     * @return property value of paymentContextSupport
+     */
+    public PaymentContextSupport getPaymentContextSupport() {
+        return paymentContextSupport;
+    }
+
 }
