@@ -5,8 +5,8 @@
 package com.alipay.ams.domain.telemetry;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.alipay.ams.domain.PaymentStatusType;
 
@@ -20,8 +20,8 @@ public class Telemetry implements Serializable {
     private static final long serialVersionUID = -1443362333176376924L;
 
     private Payment           payment          = new Payment();
-    private Deque<Inquiry>    inquiries        = new ArrayDeque<Inquiry>();
-    private Deque<Cancel>     cancels          = new ArrayDeque<Cancel>();
+    private List<Inquiry>     inquiries        = new ArrayList<Inquiry>();
+    private List<Cancel>      cancels          = new ArrayList<Cancel>();
     private PaymentStatusType paymentStatusType;
     private boolean           isPaymentCancelResultUnknown;
 
@@ -47,27 +47,27 @@ public class Telemetry implements Serializable {
 
     public Cancel getLatestUnfinishedCancelOrInitOne() {
 
-        if (cancels.peekFirst() == null || cancels.peekFirst().isFinished()) {
+        if (cancels.isEmpty() || cancels.get(0).isFinished()) {
 
             Cancel cancel = new Cancel();
-            cancels.offerFirst(cancel);
+            cancels.add(0, cancel);
             return cancel;
 
         } else {
-            return cancels.peekFirst();
+            return cancels.get(0);
         }
     }
 
     public Inquiry getLatestUnfinishedInquiryOrInitOne() {
 
-        if (inquiries.peekFirst() == null || inquiries.peekFirst().isFinished()) {
+        if (inquiries.isEmpty() || inquiries.get(0).isFinished()) {
 
             Inquiry inquiry = new Inquiry();
-            inquiries.offerFirst(inquiry);
+            inquiries.add(0, inquiry);
             return inquiry;
 
         } else {
-            return inquiries.peekFirst();
+            return inquiries.get(0);
         }
     }
 
@@ -89,10 +89,10 @@ public class Telemetry implements Serializable {
             defaultIfEmpty(payment.getRequestStartMs()),
             defaultIfEmpty(payment.getResponseReceivedMs()),
             defaultIfEmpty(payment.getIoExceptionOrHttpStatusNot200ReceivedMs()), inquiries.size(),
-            defaultRequestStartMsIfEmpty(inquiries.peekFirst()),
-            defaultRequestStartMsIfEmpty(inquiries.peekLast()), cancels.size(),
-            defaultRequestStartMsIfEmpty(cancels.peekFirst()),
-            defaultRequestStartMsIfEmpty(cancels.peekLast()),
+            defaultRequestStartMsIfEmpty(inquiries, 0),
+            defaultRequestStartMsIfEmpty(inquiries, inquiries.size() - 1), cancels.size(),
+            defaultRequestStartMsIfEmpty(cancels, 0),
+            defaultRequestStartMsIfEmpty(cancels, cancels.size() - 1),
             defaultIfEmpty(this.isPaymentCancelResultUnknown),
             defaultIfEmpty(this.notifySuccessReceivedMs));
     }
@@ -101,8 +101,8 @@ public class Telemetry implements Serializable {
         return en == null ? "-" : en.toString();
     }
 
-    private static String defaultRequestStartMsIfEmpty(Call call) {
-        return call == null ? "-" : defaultIfEmpty(call.getRequestStartMs());
+    private static String defaultRequestStartMsIfEmpty(List<? extends Call> calls, int idx) {
+        return calls.isEmpty() ? "-" : defaultIfEmpty(calls.get(idx).getRequestStartMs());
     }
 
     private static String defaultIfEmpty(boolean bol) {
@@ -155,7 +155,7 @@ public class Telemetry implements Serializable {
      * 
      * @return property value of inquiries
      */
-    public Deque<Inquiry> getInquiries() {
+    public List<Inquiry> getInquiries() {
         return inquiries;
     }
 
@@ -164,7 +164,7 @@ public class Telemetry implements Serializable {
      * 
      * @param inquiries value to be assigned to property inquiries
      */
-    public void setInquiries(Deque<Inquiry> inquiries) {
+    public void setInquiries(List<Inquiry> inquiries) {
         this.inquiries = inquiries;
     }
 
@@ -173,7 +173,7 @@ public class Telemetry implements Serializable {
      * 
      * @return property value of cancels
      */
-    public Deque<Cancel> getCancels() {
+    public List<Cancel> getCancels() {
         return cancels;
     }
 
@@ -182,7 +182,7 @@ public class Telemetry implements Serializable {
      * 
      * @param cancels value to be assigned to property cancels
      */
-    public void setCancels(Deque<Cancel> cancels) {
+    public void setCancels(List<Cancel> cancels) {
         this.cancels = cancels;
     }
 
