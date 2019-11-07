@@ -1,10 +1,12 @@
-# Alipay AMS Java Bindings [![Build Status]()
+# Alipay AMS Java Bindings 
 
-
+[![Build Status](https://travis-ci.com/alipay/ams-java-sdk.svg?branch=master)](https://travis-ci.com/alipay/ams-java-sdk)
+[![codecov](https://codecov.io/gh/alipay/ams-java-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/alipay/ams-java-sdk)
+![license](https://img.shields.io/badge/license-MIT-green)
 
 ## Requirements
 
-Java 1.8 or later.
+Java 1.6 or later.
 
 ## Installation
 
@@ -16,7 +18,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>com.alipay.ams</groupId>
   <artifactId>ams-java</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -25,12 +27,12 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation "com.alipay.ams:ams-java:1.0-SNAPSHOT"
+implementation "com.alipay.ams:ams-java:0.1.0-SNAPSHOT"
 ```
 
 ## Documentation
 
-Please see the [Java API docs](https://#) for the most up-to-date documentation.
+Please see the [Java API docs](#) for the most up-to-date documentation.
 
 ## Usage
 
@@ -45,7 +47,7 @@ alipayPublicKey=your_public_key_here
 gatewayUrl=the_alipay_gateway_endpoint
 ```
 
-Please see the [developer docs](https://#) for help with getting the above information.
+Please see the [developer docs](#) for help with getting the above information.
 
 see `amsSdkDemo.Demo` for detailed usage.
 
@@ -187,6 +189,6 @@ see `amsSdkDemo.Demo` for detailed usage.
 ```
 
 
-See the project's [functional tests](https://#) for more examples.
+See the project's [functional tests](#) for more examples.
 
-### Configuring Timeouts
+### Configuring
