@@ -22,7 +22,6 @@
  */
 package com.alipay.ams.domain.telemetry;
 
-
 /**
  * 
  * @author guangling.zgl
