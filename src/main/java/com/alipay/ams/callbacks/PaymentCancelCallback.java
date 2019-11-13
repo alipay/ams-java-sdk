@@ -160,8 +160,8 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
 
         paymentStatusUpdateCallback.onPaymentCancelled(
             StringUtil.defaultIfEmpty(cancelResponse.getPaymentRequestId(),
-                request.getPaymentRequestId()),
-            cancelResponse.getPaymentId(), cancelResponse.getCancelTime());
+                request.getPaymentRequestId()), cancelResponse.getPaymentId(),
+            cancelResponse.getCancelTime());
     }
 
     /**
