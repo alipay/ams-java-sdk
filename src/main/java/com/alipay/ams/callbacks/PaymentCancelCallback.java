@@ -36,6 +36,7 @@ import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.responses.PaymentCancelResponse;
 import com.alipay.ams.domain.telemetry.Call;
 import com.alipay.ams.job.JobExecutor;
+import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -157,7 +158,9 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
 
         reportPaymentCanceled(request.getPaymentRequestId());
 
-        paymentStatusUpdateCallback.onPaymentCancelled(cancelResponse.getPaymentRequestId(),
+        paymentStatusUpdateCallback.onPaymentCancelled(
+            StringUtil.defaultIfEmpty(cancelResponse.getPaymentRequestId(),
+                request.getPaymentRequestId()),
             cancelResponse.getPaymentId(), cancelResponse.getCancelTime());
     }
 
