@@ -31,6 +31,7 @@ import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.Request;
+import com.alipay.ams.util.StringUtil;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class UserPresentedCodePaymentRequest extends Request {
     private Currency currency;
     private Long     amountInCents;
     private String   paymentCode;
+    private String   paymentNotifyUrl;
 
     public UserPresentedCodePaymentRequest(AMSSettings settings, String paymentRequestId,
                                            Order order, Currency currency, Long amountInCents,
@@ -95,6 +97,10 @@ public class UserPresentedCodePaymentRequest extends Request {
 
         if (order != null) {
             body.put("order", order);
+        }
+
+        if (StringUtil.isNotBlank(paymentNotifyUrl)) {
+            body.put("paymentNotifyUrl", paymentNotifyUrl);
         }
 
         Amount paymentAmount = new Amount(currency, amountInCents);
@@ -208,5 +214,23 @@ public class UserPresentedCodePaymentRequest extends Request {
      */
     public void setPaymentCode(String paymentCode) {
         this.paymentCode = paymentCode;
+    }
+
+    /**
+     * Getter method for property <tt>paymentNotifyUrl</tt>.
+     * 
+     * @return property value of paymentNotifyUrl
+     */
+    public String getPaymentNotifyUrl() {
+        return paymentNotifyUrl;
+    }
+
+    /**
+     * Setter method for property <tt>paymentNotifyUrl</tt>.
+     * 
+     * @param paymentNotifyUrl value to be assigned to property paymentNotifyUrl
+     */
+    public void setPaymentNotifyUrl(String paymentNotifyUrl) {
+        this.paymentNotifyUrl = paymentNotifyUrl;
     }
 }
