@@ -45,8 +45,13 @@ public class AMSSettings {
     public String              gatewayUrl;
     //from config.properties end
 
-    public String              readTimeout;
-    public String              connTimeout;
+    //Max milliseconds to wait for a connection from the pool
+    public int                 apacheHttpConnectionRequestTimeout      = 5000;
+    //Max milliseconds to wait for a new connection with Alipay gateway to be established
+    public int                 apacheHttpConnectTimeout                = 5000;
+    //Max milliseconds to wait for response data
+    public int                 apacheHttpSocketTimeout                 = 5000;
+    public int                 apacheMaxPoolSize                       = 50;
 
     public int[]               inquiryInterval                         = new int[] { 2, 3, 3, 5, 5,
             5, 5, 5, 5                                                };
