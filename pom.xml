@@ -18,6 +18,7 @@
         <maven.java.formatter.plugin>0.4</maven.java.formatter.plugin>
         <maven.compiler.plugin>3.0</maven.compiler.plugin>
         <maven.source.plugin>3.0.0</maven.source.plugin>
+        <maven.source.plugin>3.0.0</maven.source.plugin>
         <maven.javadoc.plugin>2.9.1</maven.javadoc.plugin>
         <maven.staging.plugin>1.6.7</maven.staging.plugin>
         <maven.gpg.pluign>1.5</maven.gpg.pluign>
@@ -81,6 +82,19 @@
 					<showWarnings>false</showWarnings>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
