@@ -68,6 +68,19 @@ public class AMSSettings {
     public long                lockAutoReleaseDelayInMilliSeconds      = 300;
     public int                 retryHandlePaymentSuccessDelayInSeconds = 3;
 
+    /**
+     * @param clientId
+     * @param privateKey
+     * @param alipayPublicKey
+     * @param gatewayUrl
+     */
+    public AMSSettings(String clientId, String privateKey, String alipayPublicKey, String gatewayUrl) {
+        this.clientId = clientId;
+        this.privateKey = privateKey;
+        this.alipayPublicKey = alipayPublicKey;
+        this.gatewayUrl = gatewayUrl;
+    }
+
     public AMSSettings() {
 
         InputStream inputStream = null;
