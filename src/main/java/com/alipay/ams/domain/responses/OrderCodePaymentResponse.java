@@ -31,7 +31,6 @@ import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
-import com.google.gson.Gson;
 
 /**
  * 
@@ -72,37 +71,28 @@ public class OrderCodePaymentResponse extends Response {
 
         this.paymentAmount = Amount.fromMap((Map<String, String>) body.get("paymentAmount"));
 
-        String paymentActionForm = (String) body.get("paymentActionForm");
+        Map<String, Object> orderCodeForm = (Map<String, Object>) body.get("orderCodeForm");
 
-        HashMap<String, Object> paymentActionFormMap = new Gson().fromJson(paymentActionForm,
-            HashMap.class);
+        List<Map<String, Object>> codeDetails = (List<Map<String, Object>>) orderCodeForm
+            .get("codeDetails");
 
-        List<Map<String, Object>> paymentCodeInfos = (List<Map<String, Object>>) paymentActionFormMap
-            .get("paymentCodeInfos");
+        for (Map<String, Object> codeDetail : codeDetails) {
 
-        for (Map<String, Object> paymentCodeInfo : paymentCodeInfos) {
-
-            List<Map<String, Object>> paymentCodeDetails = (List<Map<String, Object>>) paymentCodeInfo
-                .get("paymentCodeDetails");
-
-            for (Map<String, Object> paymentCodeDetail : paymentCodeDetails) {
-
-                if ("TEXT".equalsIgnoreCase((String) paymentCodeDetail.get("displayType"))) {
-                    this.codeValueText = (String) paymentCodeDetail.get("codeValue");
-                    continue;
-                }
-                if ("IMAGE".equalsIgnoreCase((String) paymentCodeDetail.get("displayType"))) {
-                    this.codeValueImage = (String) paymentCodeDetail.get("codeValue");
-                    continue;
-                }
-                if ("SMALLIMAGE".equalsIgnoreCase((String) paymentCodeDetail.get("displayType"))) {
-                    this.codeValueSmallImage = (String) paymentCodeDetail.get("codeValue");
-                    continue;
-                }
-                if ("BIGIMAGE".equalsIgnoreCase((String) paymentCodeDetail.get("displayType"))) {
-                    this.codeValueBigImage = (String) paymentCodeDetail.get("codeValue");
-                    continue;
-                }
+            if ("TEXT".equalsIgnoreCase((String) codeDetail.get("displayType"))) {
+                this.codeValueText = (String) codeDetail.get("codeValue");
+                continue;
+            }
+            if ("IMAGE".equalsIgnoreCase((String) codeDetail.get("displayType"))) {
+                this.codeValueImage = (String) codeDetail.get("codeValue");
+                continue;
+            }
+            if ("SMALLIMAGE".equalsIgnoreCase((String) codeDetail.get("displayType"))) {
+                this.codeValueSmallImage = (String) codeDetail.get("codeValue");
+                continue;
+            }
+            if ("BIGIMAGE".equalsIgnoreCase((String) codeDetail.get("displayType"))) {
+                this.codeValueBigImage = (String) codeDetail.get("codeValue");
+                continue;
             }
 
             break;//Skip others if any.
