@@ -12,7 +12,22 @@ Java 1.6 or later.
 
 ### Maven users
 
-Add this dependency to your project's POM:
+Add this repository to your project's POM:
+
+```xml
+<repositories>
+    <repository>
+        <id>ams-java-sdk-mvn-repo</id>
+        <url>https://raw.github.com/alipay/ams-java-sdk/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+and dependency:
 
 ```xml
 <dependency>
