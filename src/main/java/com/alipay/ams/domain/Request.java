@@ -46,6 +46,8 @@ public abstract class Request extends AMSMessage {
 
     public RequestHeader buildRequestHeader() {
 
+        validate();
+
         RequestHeader requestHeader = new RequestHeader();
 
         requestHeader.setClientId(getSettings().clientId);

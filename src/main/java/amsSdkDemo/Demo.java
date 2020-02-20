@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.alipay.ams.AMS;
 import com.alipay.ams.AMSClient;
+import com.alipay.ams.callbacks.EntryCodePaymentCallback;
 import com.alipay.ams.callbacks.LockSupport;
 import com.alipay.ams.callbacks.OrderCodePaymentCallback;
 import com.alipay.ams.callbacks.PaymentCancelCallback;
@@ -37,6 +38,7 @@ import com.alipay.ams.callbacks.UserPresentedCodePaymentCallback;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.AuthNotifyModel;
+import com.alipay.ams.domain.Env;
 import com.alipay.ams.domain.Merchant;
 import com.alipay.ams.domain.NotifyCallback;
 import com.alipay.ams.domain.NotifyRequestHeader;
@@ -44,11 +46,13 @@ import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.PaymentResultModel;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.Store;
+import com.alipay.ams.domain.requests.EntryCodePaymentRequest;
 import com.alipay.ams.domain.requests.OrderCodePaymentRequest;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.PaymentRefundRequest;
 import com.alipay.ams.domain.requests.UserPresentedCodePaymentRequest;
+import com.alipay.ams.domain.responses.EntryCodePaymentResponse;
 import com.alipay.ams.domain.responses.OrderCodePaymentResponse;
 import com.alipay.ams.domain.responses.PaymentRefundResponse;
 import com.alipay.ams.job.JobExecutor;
@@ -86,8 +90,8 @@ public class Demo {
      */
     public static void main(String[] args) {
         Demo demo = new Demo();
-        demo.orderCode();
-
+        //        demo.orderCode();
+        demo.entryCode();
         //        demo.pay();
 
         //        demo.inquiry();
@@ -223,6 +227,39 @@ public class Demo {
                 protected void onGetOrderCodeFailed(OrderCodePaymentRequest request,
                                                     ResponseResult responseResult) {
                     cfg.logger.info("onGetOrderCodeFailed: %s", responseResult);
+                }
+            });
+    }
+
+    void entryCode() {
+        Order order = new Order();
+        Currency currency = Currency.getInstance("JPY");
+        order.setOrderAmount(new Amount(currency, 1000l));//10.00USD
+        order.setOrderDescription("New White Lace Sleeveless");
+        order.setReferenceOrderId("0000000001");
+        order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
+            "Some_store", "store231117459", "7011")));
+        order
+            .setEnv(new Env(
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15G77 NebulaSDK/1.8.100112 Nebula PSDType(1) AlipayDefined(nt:4G,ws:320|504|2.0) AliApp(AP/10.1.32.600) AlipayClient/10.1.32.600 Alipay Language/zh-Hans AlipayConnect"));
+
+        String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
+        long amountInCents = 1000l;
+
+        AMS.with(cfg).execute(
+            new EntryCodePaymentRequest(cfg, paymentRequestId, order, currency, amountInCents),
+            new EntryCodePaymentCallback(allInOne) {
+
+                @Override
+                protected void onGetEntryCodeFailed(EntryCodePaymentRequest request,
+                                                    ResponseResult responseResult) {
+                    cfg.logger.info("onGetEntryCodeFailed: %s", responseResult);
+
+                }
+
+                @Override
+                protected void onEntryCodeResponse(EntryCodePaymentResponse entryCodeResponse) {
+                    cfg.logger.info("entryCodeResponse: %s", entryCodeResponse);
                 }
             });
     }
