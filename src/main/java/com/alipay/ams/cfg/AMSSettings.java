@@ -37,7 +37,7 @@ import com.alipay.ams.util.SystemoutLogger;
  */
 public class AMSSettings {
 
-    public static final String sdkVersion                              = "1.0.20191016";
+    public static final String sdkVersion                              = "1.2.0-20200220";
     //from config.properties start
     public String              clientId;
     public String              privateKey;
@@ -61,6 +61,7 @@ public class AMSSettings {
     public int                 maxInquiryCount                         = inquiryInterval.length;
     public int                 maxCancelCount                          = cancelInterval.length;
     public int                 maxOrderCodeRequestCount                = 3;
+    public int                 maxEntryCodeRequestCount                = 3;
 
     public Logger              logger                                  = new SystemoutLogger();
     public long                jobListingDelayInMilliSeconds           = 300;

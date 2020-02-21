@@ -46,6 +46,7 @@ public class PaymentContext implements Serializable {
     private int               inquiryCount;
     private int               cancelCount;
     private int               orderCodeRequestCount;
+    private int               entryCodeRequestCount;
     private Date              lastInquiryTime;
     private String            paymentRequestId;
     private String            agentToken;
@@ -208,5 +209,22 @@ public class PaymentContext implements Serializable {
      */
     public void incrOrderCodeRequestCount() {
         orderCodeRequestCount++;
+    }
+
+    /**
+     * Getter method for property <tt>entryCodeRequestCount</tt>.
+     * 
+     * @return property value of entryCodeRequestCount
+     */
+    public int getEntryCodeRequestCount() {
+        return entryCodeRequestCount;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public void incrEntryCodeRequestCount() {
+        entryCodeRequestCount++;
     }
 }

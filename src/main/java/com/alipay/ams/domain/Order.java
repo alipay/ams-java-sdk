@@ -32,6 +32,7 @@ public class Order {
     private String   orderDescription;
     private Amount   orderAmount;
     private Merchant merchant;
+    private Env      env;
 
     /**
      * Getter method for property <tt>referenceOrderId</tt>.
@@ -103,6 +104,24 @@ public class Order {
      */
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
+    }
+
+    /**
+     * Getter method for property <tt>env</tt>.
+     * 
+     * @return property value of env
+     */
+    public Env getEnv() {
+        return env;
+    }
+
+    /**
+     * Setter method for property <tt>env</tt>.
+     * 
+     * @param env value to be assigned to property env
+     */
+    public void setEnv(Env env) {
+        this.env = env;
     }
 
 }
