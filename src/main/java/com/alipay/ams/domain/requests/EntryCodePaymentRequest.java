@@ -69,8 +69,7 @@ public class EntryCodePaymentRequest extends Request {
      * @param agentToken
      */
     public EntryCodePaymentRequest(AMSSettings settings, String paymentRequestId, Order order,
-                                   Currency currency, Long amountInCents,
-                                   String agentToken) {
+                                   Currency currency, Long amountInCents, String agentToken) {
 
         super("/ams/api/v1/payments/pay", settings);
         this.paymentRequestId = paymentRequestId;

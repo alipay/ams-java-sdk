@@ -172,5 +172,4 @@ public class EntryCodePaymentResponse extends Response {
         this.redirectUrl = redirectUrl;
     }
 
-
 }
