@@ -23,6 +23,7 @@
 package com.alipay.ams.domain.requests;
 
 import java.util.Currency;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
 import com.alipay.ams.domain.Order;
 import com.alipay.ams.domain.Request;
+import com.alipay.ams.util.DateUtil;
 import com.alipay.ams.util.StringUtil;
 
 /**
@@ -47,6 +49,8 @@ public class EntryCodePaymentRequest extends Request {
     private Currency currency;
     private Long     amountInCents;
     private String   paymentNotifyUrl;
+    private String   paymentRedirectUrl;
+    private Date     paymentExpiryTime;
 
     /**
      * @param settings
@@ -92,6 +96,14 @@ public class EntryCodePaymentRequest extends Request {
 
         if (StringUtil.isNotBlank(paymentNotifyUrl)) {
             body.put("paymentNotifyUrl", paymentNotifyUrl);
+        }
+
+        if (StringUtil.isNotBlank(paymentRedirectUrl)) {
+            body.put("paymentRedirectUrl", paymentRedirectUrl);
+        }
+
+        if (paymentExpiryTime != null) {
+            body.put("paymentExpiryTime", DateUtil.getISODateTimeStr(paymentExpiryTime));
         }
 
         if (order != null) {
@@ -219,6 +231,42 @@ public class EntryCodePaymentRequest extends Request {
      */
     public void setPaymentNotifyUrl(String paymentNotifyUrl) {
         this.paymentNotifyUrl = paymentNotifyUrl;
+    }
+
+    /**
+     * Getter method for property <tt>paymentExpiryTime</tt>.
+     * 
+     * @return property value of paymentExpiryTime
+     */
+    public Date getPaymentExpiryTime() {
+        return paymentExpiryTime;
+    }
+
+    /**
+     * Setter method for property <tt>paymentExpiryTime</tt>.
+     * 
+     * @param paymentExpiryTime value to be assigned to property paymentExpiryTime
+     */
+    public void setPaymentExpiryTime(Date paymentExpiryTime) {
+        this.paymentExpiryTime = paymentExpiryTime;
+    }
+
+    /**
+     * Getter method for property <tt>paymentRedirectUrl</tt>.
+     * 
+     * @return property value of paymentRedirectUrl
+     */
+    public String getPaymentRedirectUrl() {
+        return paymentRedirectUrl;
+    }
+
+    /**
+     * Setter method for property <tt>paymentRedirectUrl</tt>.
+     * 
+     * @param paymentRedirectUrl value to be assigned to property paymentRedirectUrl
+     */
+    public void setPaymentRedirectUrl(String paymentRedirectUrl) {
+        this.paymentRedirectUrl = paymentRedirectUrl;
     }
 
 }
