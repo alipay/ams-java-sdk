@@ -24,6 +24,7 @@ package amsSdkDemo;
 
 import java.io.IOException;
 import java.util.Currency;
+import java.util.Date;
 import java.util.Map;
 
 import com.alipay.ams.AMS;
@@ -246,21 +247,24 @@ public class Demo {
         String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
         long amountInCents = 1000l;
 
-        AMS.with(cfg).execute(
-            new EntryCodePaymentRequest(cfg, paymentRequestId, order, currency, amountInCents),
-            new EntryCodePaymentCallback(allInOne) {
+        EntryCodePaymentRequest request = new EntryCodePaymentRequest(cfg, paymentRequestId, order,
+            currency, amountInCents);
+        request.setPaymentRedirectUrl("https://global.alipay.com/some_redirect");
+        request.setPaymentNotifyUrl("https://global.alipay.com/some_notify");
+        request.setPaymentExpiryTime(new Date(System.currentTimeMillis() + 10 * 60 * 1000));
+        AMS.with(cfg).execute(request, new EntryCodePaymentCallback(allInOne) {
 
-                @Override
-                protected void onGetEntryCodeFailed(EntryCodePaymentRequest request,
-                                                    ResponseResult responseResult) {
-                    cfg.logger.info("onGetEntryCodeFailed: %s", responseResult);
+            @Override
+            protected void onGetEntryCodeFailed(EntryCodePaymentRequest request,
+                                                ResponseResult responseResult) {
+                cfg.logger.info("onGetEntryCodeFailed: %s", responseResult);
 
-                }
+            }
 
-                @Override
-                protected void onEntryCodeResponse(EntryCodePaymentResponse entryCodeResponse) {
-                    cfg.logger.info("entryCodeResponse: %s", entryCodeResponse);
-                }
-            });
+            @Override
+            protected void onEntryCodeResponse(EntryCodePaymentResponse entryCodeResponse) {
+                cfg.logger.info("entryCodeResponse: %s", entryCodeResponse);
+            }
+        });
     }
 }
