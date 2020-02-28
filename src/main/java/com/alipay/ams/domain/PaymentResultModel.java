@@ -84,7 +84,11 @@ public class PaymentResultModel {
         this.pspCustomerId = cust.get("pspCustomerId");
         this.pspName = cust.get("pspName");
 
-        this.paymentStatus = PaymentStatusType.valueOf((String) body.get("paymentStatus"));
+        if ("PAYMENT_RESULT".equals(body.get("notifyType")) && body.get("paymentStatus") == null) {
+            this.paymentStatus = PaymentStatusType.SUCCESS;
+        } else {
+            this.paymentStatus = PaymentStatusType.valueOf((String) body.get("paymentStatus"));
+        }
 
         this.extendInfo = (String) body.get("extendInfo");
         this.paymentQuote = Quote.fromMap((Map<String, Object>) body.get("paymentQuote"));
