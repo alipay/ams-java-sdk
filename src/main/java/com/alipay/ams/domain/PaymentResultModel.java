@@ -50,6 +50,10 @@ public class PaymentResultModel {
 
     private PaymentStatusType paymentStatus;
     private Amount            nonGuaranteeCouponAmount;
+
+    private Amount            grossSettlementAmount;
+    private Quote             settlementQuote;
+
     private String            extendInfo;
 
     private Quote             paymentQuote;
@@ -78,6 +82,10 @@ public class PaymentResultModel {
             .get("actualPaymentAmount"));
         this.nonGuaranteeCouponAmount = Amount.fromMap((Map<String, String>) body
             .get("nonGuaranteeCouponAmount"));
+
+        this.grossSettlementAmount = Amount.fromMap((Map<String, String>) body
+            .get("grossSettlementAmount"));
+        this.settlementQuote = Quote.fromMap((Map<String, Object>) body.get("settlementQuote"));
 
         Map<String, String> cust = (Map<String, String>) body.get("pspCustomerInfo");
         this.displayCustomerId = cust.get("displayCustomerId");
@@ -353,6 +361,42 @@ public class PaymentResultModel {
      */
     public void setAgentToken(String agentToken) {
         this.agentToken = agentToken;
+    }
+
+    /**
+     * Getter method for property <tt>grossSettlementAmount</tt>.
+     * 
+     * @return property value of grossSettlementAmount
+     */
+    public Amount getGrossSettlementAmount() {
+        return grossSettlementAmount;
+    }
+
+    /**
+     * Setter method for property <tt>grossSettlementAmount</tt>.
+     * 
+     * @param grossSettlementAmount value to be assigned to property grossSettlementAmount
+     */
+    public void setGrossSettlementAmount(Amount grossSettlementAmount) {
+        this.grossSettlementAmount = grossSettlementAmount;
+    }
+
+    /**
+     * Getter method for property <tt>settlementQuote</tt>.
+     * 
+     * @return property value of settlementQuote
+     */
+    public Quote getSettlementQuote() {
+        return settlementQuote;
+    }
+
+    /**
+     * Setter method for property <tt>settlementQuote</tt>.
+     * 
+     * @param settlementQuote value to be assigned to property settlementQuote
+     */
+    public void setSettlementQuote(Quote settlementQuote) {
+        this.settlementQuote = settlementQuote;
     }
 
 }
