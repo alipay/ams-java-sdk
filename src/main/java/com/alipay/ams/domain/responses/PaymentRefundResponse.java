@@ -27,6 +27,7 @@ import java.util.Map;
 
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.Quote;
 import com.alipay.ams.domain.Response;
 import com.alipay.ams.domain.ResponseHeader;
 
@@ -43,6 +44,9 @@ public class PaymentRefundResponse extends Response {
     private Amount  refundAmount;
     private String  refundTime;
     private boolean isAsyncRefund;
+
+    private Amount  grossSettlementAmount;
+    private Quote   settlementQuote;
 
     /**
      * @param requestURI
@@ -66,6 +70,10 @@ public class PaymentRefundResponse extends Response {
         this.refundRequestId = (String) body.get("refundRequestId");
         this.refundAmount = Amount.fromMap((Map<String, String>) body.get("refundAmount"));
         this.isAsyncRefund = "true".equals((String) body.get("isAsyncRefund"));
+
+        this.grossSettlementAmount = Amount.fromMap((Map<String, String>) body
+            .get("grossSettlementAmount"));
+        this.settlementQuote = Quote.fromMap((Map<String, Object>) body.get("settlementQuote"));
     }
 
     /** 
@@ -182,6 +190,42 @@ public class PaymentRefundResponse extends Response {
      */
     public void setRefundId(String refundId) {
         this.refundId = refundId;
+    }
+
+    /**
+     * Getter method for property <tt>grossSettlementAmount</tt>.
+     * 
+     * @return property value of grossSettlementAmount
+     */
+    public Amount getGrossSettlementAmount() {
+        return grossSettlementAmount;
+    }
+
+    /**
+     * Setter method for property <tt>grossSettlementAmount</tt>.
+     * 
+     * @param grossSettlementAmount value to be assigned to property grossSettlementAmount
+     */
+    public void setGrossSettlementAmount(Amount grossSettlementAmount) {
+        this.grossSettlementAmount = grossSettlementAmount;
+    }
+
+    /**
+     * Getter method for property <tt>settlementQuote</tt>.
+     * 
+     * @return property value of settlementQuote
+     */
+    public Quote getSettlementQuote() {
+        return settlementQuote;
+    }
+
+    /**
+     * Setter method for property <tt>settlementQuote</tt>.
+     * 
+     * @param settlementQuote value to be assigned to property settlementQuote
+     */
+    public void setSettlementQuote(Quote settlementQuote) {
+        this.settlementQuote = settlementQuote;
     }
 
 }
