@@ -37,7 +37,7 @@ import com.alipay.ams.util.SystemoutLogger;
  */
 public class AMSSettings {
 
-    public static final String sdkVersion                              = "1.4.1.20200316";
+    public static final String sdkVersion                              = "2.0.0.20200330";
     //from config.properties start
     public String              clientId;
     public String              privateKey;

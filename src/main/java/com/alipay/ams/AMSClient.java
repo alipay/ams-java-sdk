@@ -74,6 +74,16 @@ public abstract class AMSClient {
     public abstract <R extends Request, P extends Response> void execute(R request,
                                                                          Callback<R, P> callback);
 
+    /**
+     * Upon receiving the Notify request from Alipay, call this method to decode the headers and body content.
+     * Then get the responseHeaders and responseContent to be write back to the Http response to Alipay.  
+     * 
+     * @param requestURI
+     * @param notifyRequestheaders - Request header from Alipay notify
+     * @param bodyContent - Request body from Alipay notify
+     * @param notifyCallback
+     * @return - responseHeaders and responseContent to be write back to the Http response to Alipay.
+     */
     public NotifyResponse onNotify(String requestURI, Map<String, String> notifyRequestheaders,
                                    byte[] bodyContent, NotifyCallback notifyCallback) {
 
@@ -205,7 +215,8 @@ public abstract class AMSClient {
         ResponseResult responseResult = ResponseResult.fromMap((Map<String, String>) body
             .get("result"));
 
-        callback.reportResultStatus(request, responseResult.getResultStatus());
+        callback.getTelemetrySupport()
+            .reportResultStatus(request, responseResult.getResultStatus());
 
         switch (responseResult.getResultStatus()) {
             case F:

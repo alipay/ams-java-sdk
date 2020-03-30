@@ -34,7 +34,7 @@ import com.alipay.ams.domain.ResponseHeader;
 import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.responses.PaymentCancelResponse;
-import com.alipay.ams.domain.telemetry.Call;
+import com.alipay.ams.domain.telemetry.PaymentCancelTelemetrySupport;
 import com.alipay.ams.job.JobExecutor;
 import com.alipay.ams.util.StringUtil;
 
@@ -47,14 +47,17 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
 
     private PaymentStatusUpdateCallback paymentStatusUpdateCallback;
 
+    private PaymentContextSupport       paymentContextSupport;
+
     /**
      * @param paymentContextSupport
      * @param paymentStatusUpdateCallback
      */
     public PaymentCancelCallback(PaymentContextSupport paymentContextSupport,
                                  PaymentStatusUpdateCallback paymentStatusUpdateCallback) {
-        super(paymentContextSupport);
+        super(new PaymentCancelTelemetrySupport(paymentContextSupport));
         this.paymentStatusUpdateCallback = paymentStatusUpdateCallback;
+        this.paymentContextSupport = paymentContextSupport;
     }
 
     /**
@@ -87,9 +90,9 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
      */
     private void retryOrAlarm(AMSClient client, PaymentCancelRequest request) {
 
-        PaymentContext context = getPaymentContextSupport().loadContextByPaymentRequestIdOrDefault(
-            request.getPaymentRequestId(),
-            new PaymentContext(request.getPaymentRequestId(), request.getAgentToken()));
+        PaymentContext context = paymentContextSupport.loadContextByPaymentRequestIdOrDefault(
+            request.getPaymentRequestId(), new PaymentContext(request.getPaymentRequestId(),
+                request.getAgentToken()));
 
         if (needFurtherCancel(context, client.getSettings())) {
 
@@ -98,7 +101,7 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
 
         } else {
 
-            reportPaymentCancelResultUnknown(request.getPaymentRequestId());
+            getTelemetrySupport().reportPaymentCancelResultUnknown(request.getPaymentRequestId());
             paymentStatusUpdateCallback.reportCancelResultUnknown(client, request);
         }
 
@@ -156,7 +159,7 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
         PaymentCancelResponse cancelResponse = new PaymentCancelResponse(requestURI,
             client.getSettings(), responseHeader, body);
 
-        reportPaymentCanceled(request.getPaymentRequestId());
+        getTelemetrySupport().reportPaymentCanceled(request.getPaymentRequestId());
 
         paymentStatusUpdateCallback.onPaymentCancelled(
             StringUtil.defaultIfEmpty(cancelResponse.getPaymentRequestId(),
@@ -173,27 +176,12 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
         return paymentStatusUpdateCallback;
     }
 
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getCurrentCall(com.alipay.ams.domain.PaymentContext)
+    /**
+     * Getter method for property <tt>paymentContextSupport</tt>.
+     * 
+     * @return property value of paymentContextSupport
      */
-    @Override
-    protected Call getCurrentCall(PaymentContext paymentContext) {
-        return paymentContext.getTelemetry().getLatestUnfinishedCancelOrInitOne();
-    }
-
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getPaymentRequestId(com.alipay.ams.domain.Request)
-     */
-    @Override
-    protected String getPaymentRequestId(PaymentCancelRequest request) {
-        return request.getPaymentRequestId();
-    }
-
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getAgentToken(com.alipay.ams.domain.Request)
-     */
-    @Override
-    protected String getAgentToken(PaymentCancelRequest request) {
-        return request.getAgentToken();
+    public PaymentContextSupport getPaymentContextSupport() {
+        return paymentContextSupport;
     }
 }
