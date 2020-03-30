@@ -20,22 +20,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.alipay.ams.domain;
+package com.alipay.ams.domain.telemetry;
+
+import com.alipay.ams.callbacks.TelemetrySupport;
+import com.alipay.ams.domain.PaymentContext;
+import com.alipay.ams.domain.Request;
+import com.alipay.ams.domain.Response;
 
 /**
  * 
  * @author guangling.zgl
- * @version $Id: CallbackWithDumbTelemetry.java, v 0.1 2019年11月4日 下午5:35:41 guangling.zgl Exp $
+ * @version $Id: DummyTelemetrySupport.java, v 0.1 2020年3月27日 下午2:32:07 guangling.zgl Exp $
  */
-public abstract class CallbackWithDumbTelemetry<R extends Request, P extends Response>
-                                                                                       extends
-                                                                                       Callback<R, P> {
+public class DummyTelemetrySupport<R extends Request, P extends Response> extends
+                                                                          TelemetrySupport<R, P> {
 
     /**
      * @param paymentContextSupport
      */
-    public CallbackWithDumbTelemetry() {
+    public DummyTelemetrySupport() {
         super(null);
+    }
+
+    @Override
+    protected Call getCurrentCall(PaymentContext paymentContext) {
+        return null;
+    }
+
+    @Override
+    protected String getPaymentRequestId(R request) {
+        return null;
+    }
+
+    @Override
+    protected String getAgentToken(R request) {
+        return null;
     }
 
 }

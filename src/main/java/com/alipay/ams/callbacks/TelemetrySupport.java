@@ -48,13 +48,28 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
 
     /**
      * 
+     * Extract the current Call object from the paymentContext.
+     * 
      * @param paymentContext 
      * @return
      */
     protected abstract Call getCurrentCall(PaymentContext paymentContext);
 
+    /**
+     * Extract the paymentRequestId from the request.
+     * 
+     * @param request
+     * @return
+     */
     protected abstract String getPaymentRequestId(R request);
 
+    /**
+     * 
+     * Extract the agentToken from the request.
+     * 
+     * @param request
+     * @return
+     */
     protected abstract String getAgentToken(R request);
 
     /**
@@ -63,6 +78,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      * @param requestHeader 
      */
     public void reportRequestStart(R request, RequestHeader requestHeader) {
+
+        if (telemetryNotReady()) {
+            return;
+        }
 
         //1. setRequestStartMs for this payment.
         PaymentContext paymentContext = paymentContextSupport
@@ -112,6 +131,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      */
     public void reportResponseReceived(R request) {
 
+        if (telemetryNotReady()) {
+            return;
+        }
+
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(getPaymentRequestId(request),
                 new PaymentContext(getPaymentRequestId(request), getAgentToken(request)));
@@ -126,6 +149,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      * @param request
      */
     public void reportRequestIOExceptionOrHttpStatusNot200(R request) {
+
+        if (telemetryNotReady()) {
+            return;
+        }
 
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(getPaymentRequestId(request),
@@ -144,6 +171,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      */
     public void reportResultStatus(R request, ResultStatusType resultStatusType) {
 
+        if (telemetryNotReady()) {
+            return;
+        }
+
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(getPaymentRequestId(request),
                 new PaymentContext(getPaymentRequestId(request), getAgentToken(request)));
@@ -160,6 +191,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      */
     public void reportPaymentS(String paymentRequestId) {
 
+        if (telemetryNotReady()) {
+            return;
+        }
+
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(paymentRequestId, null);
 
@@ -174,6 +209,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      * @param resultStatusType
      */
     public void reportPaymentF(String paymentRequestId) {
+
+        if (telemetryNotReady()) {
+            return;
+        }
 
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(paymentRequestId, null);
@@ -190,6 +229,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      */
     public void reportPaymentCanceled(String paymentRequestId) {
 
+        if (telemetryNotReady()) {
+            return;
+        }
+
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(paymentRequestId, null);
 
@@ -205,6 +248,10 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
      */
     public void reportPaymentCancelResultUnknown(String paymentRequestId) {
 
+        if (telemetryNotReady()) {
+            return;
+        }
+
         PaymentContext paymentContext = paymentContextSupport
             .loadContextByPaymentRequestIdOrDefault(paymentRequestId, null);
 
@@ -214,12 +261,13 @@ public abstract class TelemetrySupport<R extends Request, P extends Response> {
     }
 
     /**
-     * Getter method for property <tt>paymentContextSupport</tt>.
      * 
-     * @return property value of paymentContextSupport
+     * If developer is using our callback without the telemetry feature.
+     * 
+     * @return
      */
-    public PaymentContextSupport getPaymentContextSupport() {
-        return paymentContextSupport;
+    private boolean telemetryNotReady() {
+        return this.paymentContextSupport == null;
     }
 
 }

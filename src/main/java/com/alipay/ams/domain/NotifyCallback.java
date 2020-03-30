@@ -109,6 +109,7 @@ public abstract class NotifyCallback {
                                              PaymentResultModel paymentResultModel);
 
     /**
+     * On a new merchant authorization notify in ISV mode.
      * 
      * @param settings
      * @param notifyRequestHeader

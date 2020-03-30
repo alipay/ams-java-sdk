@@ -26,22 +26,36 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import com.alipay.ams.AMSClient;
-import com.alipay.ams.callbacks.PaymentContextSupport;
 import com.alipay.ams.callbacks.TelemetrySupport;
+import com.alipay.ams.domain.telemetry.DummyTelemetrySupport;
 
 /**
  * 
  * @author guangling.zgl
  * @version $Id: Callback.java, v 0.1 2019年10月16日 下午7:48:32 guangling.zgl Exp $
  */
-public abstract class Callback<R extends Request, P extends Response> extends
-                                                                      TelemetrySupport<R, P> {
+public abstract class Callback<R extends Request, P extends Response> {
+
+    private TelemetrySupport<R, P> telemetrySupport;
 
     /**
+     * Use this constructor if you are to use the TelemetrySupport feature.
+     * 
      * @param paymentContextSupport
      */
-    public Callback(PaymentContextSupport paymentContextSupport) {
-        super(paymentContextSupport);
+    public Callback(TelemetrySupport<R, P> telemetrySupport) {
+
+        this.telemetrySupport = telemetrySupport;
+    }
+
+    /**
+     * Use this constructor if you are not to use the TelemetrySupport feature.
+     * 
+     */
+    public Callback() {
+
+        //Use a dummy one.
+        this.telemetrySupport = new DummyTelemetrySupport<R, P>();
     }
 
     /**
@@ -95,5 +109,14 @@ public abstract class Callback<R extends Request, P extends Response> extends
     public abstract void onSstatus(AMSClient client, String requestURI,
                                    ResponseHeader responseHeader, HashMap<String, Object> body,
                                    R request);
+
+    /**
+     * Getter method for property <tt>telemetrySupport</tt>.
+     * 
+     * @return property value of telemetrySupport
+     */
+    public TelemetrySupport<R, P> getTelemetrySupport() {
+        return telemetrySupport;
+    }
 
 }

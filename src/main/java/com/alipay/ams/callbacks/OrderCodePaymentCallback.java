@@ -34,7 +34,7 @@ import com.alipay.ams.domain.ResponseResult;
 import com.alipay.ams.domain.ResultStatusType;
 import com.alipay.ams.domain.requests.OrderCodePaymentRequest;
 import com.alipay.ams.domain.responses.OrderCodePaymentResponse;
-import com.alipay.ams.domain.telemetry.Call;
+import com.alipay.ams.domain.telemetry.OrderCodePaymentTelemetrySupport;
 
 /**
  * 
@@ -45,11 +45,14 @@ public abstract class OrderCodePaymentCallback
                                               extends
                                               Callback<OrderCodePaymentRequest, OrderCodePaymentResponse> {
 
+    private PaymentContextSupport paymentContextSupport;
+
     /**
      * @param paymentContextSupport
      */
     public OrderCodePaymentCallback(PaymentContextSupport paymentContextSupport) {
-        super(paymentContextSupport);
+        super(new OrderCodePaymentTelemetrySupport(paymentContextSupport));
+        this.paymentContextSupport = paymentContextSupport;
     }
 
     /** 
@@ -58,7 +61,7 @@ public abstract class OrderCodePaymentCallback
     @Override
     public void onIOException(IOException e, AMSClient client, OrderCodePaymentRequest request) {
 
-        reportRequestIOExceptionOrHttpStatusNot200(request);
+        getTelemetrySupport().reportRequestIOExceptionOrHttpStatusNot200(request);
 
         retryOrFail(client, request, new ResponseResult("UNKNOWN", ResultStatusType.F,
             "IOException"));
@@ -70,7 +73,7 @@ public abstract class OrderCodePaymentCallback
     @Override
     public void onHttpStatusNot200(AMSClient client, OrderCodePaymentRequest request, int code) {
 
-        reportRequestIOExceptionOrHttpStatusNot200(request);
+        getTelemetrySupport().reportRequestIOExceptionOrHttpStatusNot200(request);
 
         retryOrFail(client, request, new ResponseResult("UNKNOWN", ResultStatusType.F,
             "HttpStatusNot200"));
@@ -83,7 +86,7 @@ public abstract class OrderCodePaymentCallback
     public void onFstatus(AMSClient client, OrderCodePaymentRequest request,
                           ResponseResult responseResult) {
 
-        reportPaymentF(request.getPaymentRequestId());
+        getTelemetrySupport().reportPaymentF(request.getPaymentRequestId());
 
         onGetOrderCodeFailed(request, responseResult);
     }
@@ -115,7 +118,7 @@ public abstract class OrderCodePaymentCallback
                           HashMap<String, Object> body, OrderCodePaymentRequest request) {
 
         //Actually order code generated success. Not a payment success.
-        reportPaymentS(request.getPaymentRequestId());
+        getTelemetrySupport().reportPaymentS(request.getPaymentRequestId());
 
         onOrderCodeResponse(new OrderCodePaymentResponse(requestURI, client.getSettings(),
             responseHeader, body));
@@ -128,14 +131,14 @@ public abstract class OrderCodePaymentCallback
     private void retryOrFail(AMSClient client, OrderCodePaymentRequest request,
                              ResponseResult responseResultOfFail) {
 
-        PaymentContext context = getPaymentContextSupport().loadContextByPaymentRequestIdOrDefault(
-            request.getPaymentRequestId(),
-            new PaymentContext(request.getPaymentRequestId(), request.getAgentToken()));
+        PaymentContext context = paymentContextSupport.loadContextByPaymentRequestIdOrDefault(
+            request.getPaymentRequestId(), new PaymentContext(request.getPaymentRequestId(),
+                request.getAgentToken()));
 
         if (needFurtherRetry(context, client.getSettings())) {
 
             context.incrOrderCodeRequestCount();
-            getPaymentContextSupport().saveContext(context);
+            paymentContextSupport.saveContext(context);
 
             client.execute(request, this);
 
@@ -169,29 +172,5 @@ public abstract class OrderCodePaymentCallback
      * @param orderCodeResponse
      */
     protected abstract void onOrderCodeResponse(OrderCodePaymentResponse orderCodeResponse);
-
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getCurrentCall(com.alipay.ams.domain.PaymentContext)
-     */
-    @Override
-    protected Call getCurrentCall(PaymentContext paymentContext) {
-        return paymentContext.getTelemetry().getPayment();
-    }
-
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getPaymentRequestId(com.alipay.ams.domain.Request)
-     */
-    @Override
-    protected String getPaymentRequestId(OrderCodePaymentRequest request) {
-        return request.getPaymentRequestId();
-    }
-
-    /** 
-     * @see com.alipay.ams.callbacks.TelemetrySupport#getAgentToken(com.alipay.ams.domain.Request)
-     */
-    @Override
-    protected String getAgentToken(OrderCodePaymentRequest request) {
-        return request.getAgentToken();
-    }
 
 }

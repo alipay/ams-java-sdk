@@ -91,7 +91,7 @@ public class ApacheHttpPostAMSClient extends AMSClient implements Closeable {
 
             httpPost.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
 
-            callback.reportRequestStart(request, requestHeader);
+            callback.getTelemetrySupport().reportRequestStart(request, requestHeader);
 
             getSettings().logger.debug("Request[%s][%s]: body->[%s], header->[%s]",
                 request.getBizIdentifier(),
@@ -103,7 +103,7 @@ public class ApacheHttpPostAMSClient extends AMSClient implements Closeable {
 
             response = httpClient.execute(httpPost);
 
-            callback.reportResponseReceived(request);
+            callback.getTelemetrySupport().reportResponseReceived(request);
 
             switch (response.getStatusLine().getStatusCode()) {
 
