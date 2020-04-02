@@ -26,6 +26,7 @@
      * [Integration Best Practice](#integration-best-practice)
      * [Using API Mock](#using-api-mock)
      * [Acceptance testing](#acceptance-testing)
+     * [Use your customized HTTP client instead of com.alipay.ams.ApacheHttpPostAMSClient](#use-your-customized-http-client-instead-of-comalipayamsapachehttppostamsclient)
   * [To get help](#to-get-help)
   * [FAQ](#faq)
      * [What if I only need to use the digital signature feature ?](#what-if-i-only-need-to-use-the-digital-signature-feature-)
@@ -508,6 +509,26 @@ To use this mocking tool:
 ### Acceptance testing
 
 Pass all the acceptance test cases in the Alipay Developer Center to ensure a high quality integration. Especially, test exceptions by using test cases.
+
+### Use your customized HTTP client instead of `com.alipay.ams.ApacheHttpPostAMSClient`
+
+You can use whatever is your choice of HTTP client to initiate the requests by,
+
+1. Provide your own implementation of `com.alipay.ams.AMSClient`, or
+2. Using your own HTTP client that is totally irrelevant to `com.alipay.ams.AMSClient`.
+
+```java
+//To get the body content and http headers to be posted to AMS gateway
+String body = request.buildBody().toString();
+byte[] requestContent = body.getBytes("UTF-8");
+
+RequestHeader requestHeader = request.buildRequestHeader();
+
+//Now construct your specific HTTP request using requestContent as the body content and requestHeader as the HTTP headers.
+//...
+
+
+```
 
 ## To get help
 
