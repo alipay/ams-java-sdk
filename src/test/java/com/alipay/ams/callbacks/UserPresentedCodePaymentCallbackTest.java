@@ -68,6 +68,7 @@ import com.alipay.ams.util.TestUtil;
  * @author guangling.zgl
  * @version $Id: UserPresentedCodePaymentCallbackTest.java, v 0.1 2020年4月3日 下午4:46:23 guangling.zgl Exp $
  */
+@SuppressWarnings("unchecked")
 public class UserPresentedCodePaymentCallbackTest {
     @Test
     public void onIOException() throws Exception {

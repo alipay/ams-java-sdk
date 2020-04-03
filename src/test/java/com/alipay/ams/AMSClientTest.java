@@ -62,6 +62,7 @@ import com.alipay.ams.util.TestUtil;
  * @author guangling.zgl
  * @version $Id: AMSClientTest.java, v 0.1 2020年4月3日 下午2:40:14 guangling.zgl Exp $
  */
+@SuppressWarnings("unchecked")
 public class AMSClientTest {
 
     @Test

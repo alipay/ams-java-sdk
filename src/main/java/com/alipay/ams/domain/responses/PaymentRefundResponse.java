@@ -61,6 +61,7 @@ public class PaymentRefundResponse extends Response {
     /** 
      * @see com.alipay.ams.domain.Response#initBody(java.util.HashMap, com.alipay.ams.domain.ResponseHeader)
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void initBody(HashMap<String, Object> body, ResponseHeader responseHeader) {
 

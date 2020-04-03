@@ -24,6 +24,8 @@
         <maven.gpg.pluign>1.5</maven.gpg.pluign>
         <jacoco.maven.plugin>0.7.9</jacoco.maven.plugin>
         <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
 	<dependencies>
@@ -93,6 +95,7 @@
 					<target>${java.version}</target>
 					<encoding>${project.encoding}</encoding>
 					<showWarnings>false</showWarnings>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
 				</configuration>
 			</plugin>
             <plugin>
