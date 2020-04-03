@@ -277,7 +277,7 @@ see `amsSdkDemo.Demo` for more detailed usage.
                                                int code) {
                 }
 
-            @Override
+                @Override
                 public void onFstatus(AMSClient client, EntryCodePaymentRequest request,
                                       ResponseResult responseResult) {
                 }
@@ -285,9 +285,9 @@ see `amsSdkDemo.Demo` for more detailed usage.
                 @Override
                 public void onUstatus(AMSClient client, EntryCodePaymentRequest request,
                                       ResponseResult responseResult) {
-            }
+                }
 
-            @Override
+                @Override
                 public void onSstatus(AMSClient client, String requestURI,
                                       ResponseHeader responseHeader, HashMap<String, Object> body,
                                       EntryCodePaymentRequest request) {
@@ -296,8 +296,8 @@ see `amsSdkDemo.Demo` for more detailed usage.
                     String redirectUrl = entryCodePaymentResponse.getRedirectUrl();
                     //Now redirect the buyer to `redirectUrl` and proceed with the payment.
                     //...
-            }
-        });
+                }
+            });
 
     }
     
@@ -442,6 +442,7 @@ see `amsSdkDemo.Demo` for more detailed usage.
 
                 /** 
                  * On a new merchant authorization notify in ISV mode.
+                 * Just leave this method body empty if your solution has nothing to do with ISV mode.
                  */
                 @Override
                 protected void onAuthNotify(AMSSettings settings,
