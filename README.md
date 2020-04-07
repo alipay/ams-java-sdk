@@ -27,6 +27,7 @@
      * [Using API Mock](#using-api-mock)
      * [Acceptance testing](#acceptance-testing)
      * [Use your customized HTTP client instead of com.alipay.ams.ApacheHttpPostAMSClient](#use-your-customized-http-client-instead-of-comalipayamsapachehttppostamsclient)
+     * [Overwrite default settings in com.alipay.ams.cfg.AMSSettings](#overwrite-default-settings-in-comalipayamscfgamssettings)
   * [To get help](#to-get-help)
   * [FAQ](#faq)
      * [What if I only need to use the digital signature feature ?](#what-if-i-only-need-to-use-the-digital-signature-feature-)
@@ -530,6 +531,36 @@ RequestHeader requestHeader = request.buildRequestHeader();
 
 
 ```
+
+### Overwrite default settings in `com.alipay.ams.cfg.AMSSettings`
+
+```java
+AMSSettings cfg = new AMSSettings() {
+    {
+        super.maxInquiryCount = 5;
+        super.inquiryInterval = new int[] { 2, 3, 3, 5, 5 };
+    }
+
+    /** 
+     * @see com.alipay.ams.cfg.AMSSettings#isDevMode()
+     */
+    @Override
+    public boolean isDevMode() {
+        return true;
+    }
+};
+```   
+
+or,
+
+
+```java
+AMSSettings cfg = new AMSSettings();
+cfg.maxInquiryCount = 5;
+cfg.inquiryInterval = new int[] { 2, 3, 3, 5, 5 };
+```   
+
+
 
 ## To get help
 
