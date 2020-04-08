@@ -1,0 +1,7 @@
+{
+    "result": {
+        "resultCode": "PROCESS_FAIL",
+        "resultMessage": "order not exist",
+        "resultStatus": "F"
+    }
+}

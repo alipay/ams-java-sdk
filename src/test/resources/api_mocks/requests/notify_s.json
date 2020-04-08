@@ -1,0 +1,30 @@
+{
+    "actualPaymentAmount": {
+        "currency": "CNY",
+        "value": "1292"
+    },
+    "notifyType": "PAYMENT_RESULT",
+    "paymentAmount": {
+        "currency": "JPY",
+        "value": "200"
+    },
+    "paymentCreateTime": "2020-03-02T19:11:19-08:00",
+    "paymentId": "202003021940108001001885I0204368838",
+    "paymentQuote": {
+        "guaranteed": false,
+        "quoteCurrencyPair": "392/156",
+        "quotePrice": 0.064622
+    },
+    "paymentRequestId": "20200303074500020000036648",
+    "paymentTime": "2020-03-02T19:12:11-08:00",
+    "pspCustomerInfo": {
+        "displayCustomerId": "buy*@alitest.com",
+        "pspCustomerId": "20885028136924G7",
+        "pspName": "ALIPAYCN"
+    },
+    "result": {
+        "resultCode": "SUCCESS",
+        "resultMessage": "success.",
+        "resultStatus": "S"
+    }
+}

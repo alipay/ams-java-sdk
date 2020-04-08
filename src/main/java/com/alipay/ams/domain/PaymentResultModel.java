@@ -88,9 +88,11 @@ public class PaymentResultModel {
         this.settlementQuote = Quote.fromMap((Map<String, Object>) body.get("settlementQuote"));
 
         Map<String, String> cust = (Map<String, String>) body.get("pspCustomerInfo");
-        this.displayCustomerId = cust.get("displayCustomerId");
-        this.pspCustomerId = cust.get("pspCustomerId");
-        this.pspName = cust.get("pspName");
+        if (cust != null) {
+            this.displayCustomerId = cust.get("displayCustomerId");
+            this.pspCustomerId = cust.get("pspCustomerId");
+            this.pspName = cust.get("pspName");
+        }
 
         if ("PAYMENT_RESULT".equals(body.get("notifyType")) && body.get("paymentStatus") == null) {
             this.paymentStatus = PaymentStatusType.SUCCESS;

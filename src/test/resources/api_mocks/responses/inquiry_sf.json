@@ -1,0 +1,12 @@
+{
+    "paymentId": "202004061940108001001888H0204595319",
+    "paymentRequestId": "d76b5643-976e-4889-9dff-36df9d704470",
+    "paymentResultCode": "UNKNOWN_EXCEPTION",
+    "paymentResultMessage": "unknown exception",
+    "paymentStatus": "FAIL",
+    "result": {
+        "resultCode": "SUCCESS",
+        "resultMessage": "success.",
+        "resultStatus": "S"
+    }
+}
