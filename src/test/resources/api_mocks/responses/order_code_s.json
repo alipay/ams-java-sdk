@@ -1,0 +1,23 @@
+{
+    "orderCodeForm": {
+        "codeDetails": [
+            {
+                "codeValue": "https://gqr.alipay.com/281017040012rqWv0ch7G7Q5AZ5AZJOv4Igf",
+                "codeValueType": "QRCODE",
+                "displayType": "TEXT"
+            }
+        ]
+    },
+    "paymentAmount": {
+        "currency": "USD",
+        "value": "1"
+    },
+    "paymentCreateTime": "2020-04-07T11:40:05-07:00",
+    "paymentId": "20200407114010800100181370262670248",
+    "paymentRequestId": "297553622016800595",
+    "result": {
+        "resultCode": "SUCCESS",
+        "resultMessage": "success.",
+        "resultStatus": "S"
+    }
+}

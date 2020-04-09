@@ -46,8 +46,14 @@ import com.alipay.ams.callbacks.PaymentStatusUpdateCallback;
 import com.alipay.ams.callbacks.TelemetrySupport;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.PaymentContext;
+import com.alipay.ams.domain.requests.EntryCodePaymentRequest;
+import com.alipay.ams.domain.requests.OrderCodePaymentRequest;
+import com.alipay.ams.domain.requests.PaymentCancelRequest;
 import com.alipay.ams.domain.requests.PaymentInquiryRequest;
 import com.alipay.ams.domain.requests.UserPresentedCodePaymentRequest;
+import com.alipay.ams.domain.responses.EntryCodePaymentResponse;
+import com.alipay.ams.domain.responses.OrderCodePaymentResponse;
+import com.alipay.ams.domain.responses.PaymentCancelResponse;
 import com.alipay.ams.domain.responses.PaymentInquiryResponse;
 import com.alipay.ams.domain.responses.UserPresentedCodePaymentResponse;
 import com.alipay.ams.job.Job;
@@ -62,23 +68,26 @@ import com.alipay.ams.job.JobExecutor;
 public abstract class MockSetup {
 
     //The mocks
-    protected CloseableHttpClient                                                                 closeableHttpClient            = mock(CloseableHttpClient.class);
-    protected TelemetrySupport<PaymentInquiryRequest, PaymentInquiryResponse>                     telemetrySupportPaymentInquiry = mock(TelemetrySupport.class);
-    protected CloseableHttpResponse                                                               closeableHttpResponse          = mock(CloseableHttpResponse.class);
-    protected HttpEntity                                                                          entity                         = mock(HttpEntity.class);
-    protected PaymentCancelCallback                                                               paymentCancelCallback          = mock(PaymentCancelCallback.class);
-    protected PaymentContextSupport                                                               paymentContextSupport          = mock(PaymentContextSupport.class);
-    protected PaymentContext                                                                      context                        = mock(PaymentContext.class);
-    protected JobSupport                                                                          jobSupport                     = mock(JobSupport.class);
-    protected PaymentStatusUpdateCallback                                                         paymentStatusUpdateCallback    = mock(PaymentStatusUpdateCallback.class);
-    protected TelemetrySupport<UserPresentedCodePaymentRequest, UserPresentedCodePaymentResponse> telemetrySupportPaymentUPCP    = mock(TelemetrySupport.class);
-    protected PaymentInquiryCallback                                                              paymentInquiryCallback         = mock(PaymentInquiryCallback.class);
+    protected CloseableHttpClient                                                                 closeableHttpClient              = mock(CloseableHttpClient.class);
+    protected TelemetrySupport<PaymentInquiryRequest, PaymentInquiryResponse>                     telemetrySupportPaymentInquiry   = mock(TelemetrySupport.class);
+    protected TelemetrySupport<PaymentCancelRequest, PaymentCancelResponse>                       telemetrySupportPaymentCancel    = mock(TelemetrySupport.class);
+    protected TelemetrySupport<OrderCodePaymentRequest, OrderCodePaymentResponse>                 telemetrySupportPaymentOrderCode = mock(TelemetrySupport.class);
+    protected TelemetrySupport<EntryCodePaymentRequest, EntryCodePaymentResponse>                 telemetrySupportPaymentEntryCode = mock(TelemetrySupport.class);
+    protected CloseableHttpResponse                                                               closeableHttpResponse            = mock(CloseableHttpResponse.class);
+    protected HttpEntity                                                                          entity                           = mock(HttpEntity.class);
+    protected PaymentCancelCallback                                                               paymentCancelCallback            = mock(PaymentCancelCallback.class);
+    protected PaymentContextSupport                                                               paymentContextSupport            = mock(PaymentContextSupport.class);
+    protected PaymentContext                                                                      context                          = mock(PaymentContext.class);
+    protected JobSupport                                                                          jobSupport                       = mock(JobSupport.class);
+    protected PaymentStatusUpdateCallback                                                         paymentStatusUpdateCallback      = mock(PaymentStatusUpdateCallback.class);
+    protected TelemetrySupport<UserPresentedCodePaymentRequest, UserPresentedCodePaymentResponse> telemetrySupportPaymentUPCP      = mock(TelemetrySupport.class);
+    protected PaymentInquiryCallback                                                              paymentInquiryCallback           = mock(PaymentInquiryCallback.class);
 
     //The ArgumentCaptors
-    protected ArgumentCaptor<HttpPost>                                                            httpPostArgumentCaptor         = ArgumentCaptor
-                                                                                                                                     .forClass(HttpPost.class);
-    protected ArgumentCaptor<Job>                                                                 jobCaptor                      = ArgumentCaptor
-                                                                                                                                     .forClass(Job.class);
+    protected ArgumentCaptor<HttpPost>                                                            httpPostArgumentCaptor           = ArgumentCaptor
+                                                                                                                                       .forClass(HttpPost.class);
+    protected ArgumentCaptor<Job>                                                                 jobCaptor                        = ArgumentCaptor
+                                                                                                                                       .forClass(Job.class);
 
     //The settings
     protected AMSSettings                                                                         cfg;
@@ -366,6 +375,51 @@ public abstract class MockSetup {
      */
     public void setCloseableHttpResponse(CloseableHttpResponse closeableHttpResponse) {
         this.closeableHttpResponse = closeableHttpResponse;
+    }
+
+    /**
+     * Getter method for property <tt>paymentContextSupport</tt>.
+     * 
+     * @return property value of paymentContextSupport
+     */
+    public PaymentContextSupport getPaymentContextSupport() {
+        return paymentContextSupport;
+    }
+
+    /**
+     * Getter method for property <tt>telemetrySupportPaymentCancel</tt>.
+     * 
+     * @return property value of telemetrySupportPaymentCancel
+     */
+    public TelemetrySupport<PaymentCancelRequest, PaymentCancelResponse> getTelemetrySupportPaymentCancel() {
+        return telemetrySupportPaymentCancel;
+    }
+
+    /**
+     * Setter method for property <tt>telemetrySupportPaymentCancel</tt>.
+     * 
+     * @param telemetrySupportPaymentCancel value to be assigned to property telemetrySupportPaymentCancel
+     */
+    public void setTelemetrySupportPaymentCancel(TelemetrySupport<PaymentCancelRequest, PaymentCancelResponse> telemetrySupportPaymentCancel) {
+        this.telemetrySupportPaymentCancel = telemetrySupportPaymentCancel;
+    }
+
+    /**
+     * Getter method for property <tt>telemetrySupportPaymentOrderCode</tt>.
+     * 
+     * @return property value of telemetrySupportPaymentOrderCode
+     */
+    public TelemetrySupport<OrderCodePaymentRequest, OrderCodePaymentResponse> getTelemetrySupportPaymentOrderCode() {
+        return telemetrySupportPaymentOrderCode;
+    }
+
+    /**
+     * Getter method for property <tt>telemetrySupportPaymentEntryCode</tt>.
+     * 
+     * @return property value of telemetrySupportPaymentEntryCode
+     */
+    public TelemetrySupport<EntryCodePaymentRequest, EntryCodePaymentResponse> getTelemetrySupportPaymentEntryCode() {
+        return telemetrySupportPaymentEntryCode;
     }
 
 }

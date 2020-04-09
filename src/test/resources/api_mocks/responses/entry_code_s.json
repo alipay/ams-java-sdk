@@ -1,0 +1,18 @@
+{
+    "paymentAmount": {
+        "currency": "USD",
+        "value": "1"
+    },
+    "paymentCreateTime": "2020-04-07T11:07:57-07:00",
+    "paymentId": "20200407114010800100181310262619658",
+    "paymentRequestId": "297553622014869512",
+    "redirectActionForm": {
+        "method": "SCAN",
+        "redirectUrl": "alipays://platformapi/startApp?appId=10000007&actionType=route&qrcode=https://gqr.alipay.com/281017040018Z1SHzSfQx9h8zk0a3s7v476G"
+    },
+    "result": {
+        "resultCode": "SUCCESS",
+        "resultMessage": "success.",
+        "resultStatus": "S"
+    }
+}

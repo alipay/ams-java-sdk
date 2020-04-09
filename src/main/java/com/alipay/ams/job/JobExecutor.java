@@ -213,4 +213,13 @@ public class JobExecutor {
         this.jobSupport = jobSupport;
     }
 
+    /**
+     * Setter method for property <tt>executor</tt>.
+     * 
+     * @param executor value to be assigned to property executor
+     */
+    public void setExecutor(ScheduledThreadPoolExecutor executor) {
+        this.executor = executor;
+    }
+
 }

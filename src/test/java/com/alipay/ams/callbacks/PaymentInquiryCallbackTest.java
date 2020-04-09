@@ -310,6 +310,10 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
         assertEquals(Type.INQUIRY, job.getType());
         assertEquals("some_id", job.getPaymentRequestId());
 
+        //11. No cancel initiated.
+        verify(mockSetup.getPaymentCancelCallback(), never()).scheduleALaterCancel(
+            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+
     }
 
     @Test
