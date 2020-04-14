@@ -27,6 +27,7 @@
      * [Using API Mock](#using-api-mock)
      * [Acceptance testing](#acceptance-testing)
      * [Use your customized HTTP client instead of com.alipay.ams.ApacheHttpPostAMSClient](#use-your-customized-http-client-instead-of-comalipayamsapachehttppostamsclient)
+     * [Overwrite default settings in com.alipay.ams.cfg.AMSSettings](#overwrite-default-settings-in-comalipayamscfgamssettings)
   * [To get help](#to-get-help)
   * [FAQ](#faq)
      * [What if I only need to use the digital signature feature ?](#what-if-i-only-need-to-use-the-digital-signature-feature-)
@@ -277,7 +278,7 @@ see `amsSdkDemo.Demo` for more detailed usage.
                                                int code) {
                 }
 
-            @Override
+                @Override
                 public void onFstatus(AMSClient client, EntryCodePaymentRequest request,
                                       ResponseResult responseResult) {
                 }
@@ -285,9 +286,9 @@ see `amsSdkDemo.Demo` for more detailed usage.
                 @Override
                 public void onUstatus(AMSClient client, EntryCodePaymentRequest request,
                                       ResponseResult responseResult) {
-            }
+                }
 
-            @Override
+                @Override
                 public void onSstatus(AMSClient client, String requestURI,
                                       ResponseHeader responseHeader, HashMap<String, Object> body,
                                       EntryCodePaymentRequest request) {
@@ -296,8 +297,8 @@ see `amsSdkDemo.Demo` for more detailed usage.
                     String redirectUrl = entryCodePaymentResponse.getRedirectUrl();
                     //Now redirect the buyer to `redirectUrl` and proceed with the payment.
                     //...
-            }
-        });
+                }
+            });
 
     }
     
@@ -442,6 +443,7 @@ see `amsSdkDemo.Demo` for more detailed usage.
 
                 /** 
                  * On a new merchant authorization notify in ISV mode.
+                 * Just leave this method body empty if your solution has nothing to do with ISV mode.
                  */
                 @Override
                 protected void onAuthNotify(AMSSettings settings,
@@ -529,6 +531,36 @@ RequestHeader requestHeader = request.buildRequestHeader();
 
 
 ```
+
+### Overwrite default settings in `com.alipay.ams.cfg.AMSSettings`
+
+```java
+AMSSettings cfg = new AMSSettings() {
+    {
+        super.maxInquiryCount = 5;
+        super.inquiryInterval = new int[] { 2, 3, 3, 5, 5 };
+    }
+
+    /** 
+     * @see com.alipay.ams.cfg.AMSSettings#isDevMode()
+     */
+    @Override
+    public boolean isDevMode() {
+        return true;
+    }
+};
+```   
+
+or,
+
+
+```java
+AMSSettings cfg = new AMSSettings();
+cfg.maxInquiryCount = 5;
+cfg.inquiryInterval = new int[] { 2, 3, 3, 5, 5 };
+```   
+
+
 
 ## To get help
 

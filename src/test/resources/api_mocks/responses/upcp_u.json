@@ -1,0 +1,7 @@
+{
+    "result": {
+        "resultCode": "UNKNOWN_EXCEPTION",
+        "resultMessage": "API failed due to unknown reason.",
+        "resultStatus": "U"
+    }
+}

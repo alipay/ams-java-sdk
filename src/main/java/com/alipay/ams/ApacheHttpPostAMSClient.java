@@ -150,4 +150,22 @@ public class ApacheHttpPostAMSClient extends AMSClient implements Closeable {
     public void close() throws IOException {
         httpClient.close();
     }
+
+    /**
+     * Setter method for property <tt>httpClient</tt>.
+     * 
+     * @param httpClient value to be assigned to property httpClient
+     */
+    public void setHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    /**
+     * Getter method for property <tt>httpClient</tt>.
+     * 
+     * @return property value of httpClient
+     */
+    public CloseableHttpClient getHttpClient() {
+        return httpClient;
+    }
 }

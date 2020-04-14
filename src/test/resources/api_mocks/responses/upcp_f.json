@@ -1,0 +1,7 @@
+{
+    "result": {
+        "resultCode": "ORDER_NOT_EXIST",
+        "resultMessage": "order not exist",
+        "resultStatus": "F"
+    }
+}

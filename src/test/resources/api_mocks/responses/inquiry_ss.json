@@ -1,0 +1,40 @@
+{
+  "actualPaymentAmount": {
+    "currency": "CNY",
+    "value": "88"
+  },
+  "grossSettlementAmount": {
+    "currency": "HKD",
+    "value": "98"
+  },
+  "paymentAmount": {
+    "currency": "MOP",
+    "value": "100"
+  },
+  "paymentId": "202003151940108001001881I0204295953",
+  "paymentQuote": {
+    "guaranteed": false,
+    "quoteCurrencyPair": "446/156",
+    "quotePrice": 0.88156063
+  },
+  "paymentRequestId": "Kai202003163001",
+  "paymentResultCode": "SUCCESS",
+  "paymentResultMessage": "success",
+  "paymentStatus": "SUCCESS",
+  "paymentTime": "2020-03-15T20:06:02-07:00",
+  "pspCustomerInfo": {
+    "displayCustomerId": "san***@mock.com",
+    "pspCustomerId": "20882027863621B1",
+    "pspName": "ALIPAYCN"
+  },
+  "result": {
+    "resultCode": "SUCCESS",
+    "resultMessage": "success.",
+    "resultStatus": "S"
+  },
+  "settlementQuote": {
+    "guaranteed": false,
+    "quoteCurrencyPair": "344/446",
+    "quotePrice": 1.02487562
+  }
+}

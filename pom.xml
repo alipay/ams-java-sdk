@@ -24,6 +24,8 @@
         <maven.gpg.pluign>1.5</maven.gpg.pluign>
         <jacoco.maven.plugin>0.7.9</jacoco.maven.plugin>
         <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
 	<dependencies>
@@ -52,6 +54,18 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.9</version>
+            <scope>test</scope>
+         </dependency>
     </dependencies>
 
 	<build>
@@ -81,6 +95,7 @@
 					<target>${java.version}</target>
 					<encoding>${project.encoding}</encoding>
 					<showWarnings>false</showWarnings>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
 				</configuration>
 			</plugin>
             <plugin>
@@ -166,6 +181,18 @@
 	              </execution>
 	            </executions>
 	        </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <check />
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 	<distributionManagement>

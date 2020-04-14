@@ -119,4 +119,13 @@ public abstract class Callback<R extends Request, P extends Response> {
         return telemetrySupport;
     }
 
+    /**
+     * Setter method for property <tt>telemetrySupport</tt>.
+     * 
+     * @param telemetrySupport value to be assigned to property telemetrySupport
+     */
+    public void setTelemetrySupport(TelemetrySupport<R, P> telemetrySupport) {
+        this.telemetrySupport = telemetrySupport;
+    }
+
 }
