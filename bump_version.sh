@@ -22,6 +22,9 @@ fi
 sed "/<project /,/<name>/ s/<version>.*<\/version>/<version>$1<\/version>/" pom.xml
 echo "DONE: pom.xml"
 
-sed "s/sdkVersion                              = \".*\";/sdkVersion                              = \"$1\";/" src/main/java/com/alipay/ams/cfg/AMSSettings.java
+sed "s/sdkVersion                              = \".*\";/sdkVersion                              = \"$1.`date "+%Y%m%d"`\";/" src/main/java/com/alipay/ams/cfg/AMSSettings.java
 echo "DONE: ./src/main/java/com/alipay/ams/cfg/AMSSettings.java"
 
+sed "s/<version>.*<\/version>/<version>$1<\/version>/" README.md
+sed "s/\"com.alipay.ams:ams-java:.*\"/\"com.alipay.ams:ams-java:$1\"/" README.md
+echo "DONE: README.md"

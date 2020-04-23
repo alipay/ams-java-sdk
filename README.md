@@ -64,7 +64,7 @@ and dependency:
 <dependency>
   <groupId>com.alipay.ams</groupId>
   <artifactId>ams-java</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ and dependency:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation "com.alipay.ams:ams-java:2.0.0"
+implementation "com.alipay.ams:ams-java:2.0.1"
 ```
 
 ## Documentation

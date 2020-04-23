@@ -35,7 +35,7 @@ public abstract class CallbackWithDumbTelemetry<R extends Request, P extends Res
      * @param paymentContextSupport
      */
     public CallbackWithDumbTelemetry() {
-        super(null);
+        super();
     }
 
 }
