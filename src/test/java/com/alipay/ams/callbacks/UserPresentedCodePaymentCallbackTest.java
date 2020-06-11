@@ -44,6 +44,7 @@ import com.alipay.ams.ApacheHttpPostAMSClient;
 import com.alipay.ams.BaseAMSTest;
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
+import com.alipay.ams.domain.Env;
 import com.alipay.ams.domain.Merchant;
 import com.alipay.ams.domain.NotifyCallback;
 import com.alipay.ams.domain.NotifyRequestHeader;
@@ -630,6 +631,10 @@ public class UserPresentedCodePaymentCallbackTest extends BaseAMSTest {
         order.setReferenceOrderId("0000000001");
         order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
             "Some_store", "store231117459", "7011")));
+
+        order.setEnv(new Env());
+        order.getEnv().setStoreTerminalId("some_setStoreTerminalId");
+        order.getEnv().setStoreTerminalRequestTime("2020-06-11T13:35:02+08:00");
 
         String paymentRequestId = "PR20190000000001_";
         String buyerPaymentCode = "288888888888888888";
