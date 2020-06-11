@@ -112,6 +112,10 @@ public class Demo {
         order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
             "Some_store", "store231117459", "7011")));
 
+        order.setEnv(new Env());
+        order.getEnv().setStoreTerminalId("some_setStoreTerminalId");
+        order.getEnv().setStoreTerminalRequestTime("2020-06-11T13:35:02+08:00");
+
         String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
         String buyerPaymentCode = "288888888888888888";
 
@@ -160,8 +164,9 @@ public class Demo {
                 }
             });
 
-        AMS.with(cfg)
-            .execute(request, new UserPresentedCodePaymentCallback(paymentInquiryCallback));
+        //or you can just use the predefined `UserPresentedCodePaymentCallback`
+        //AMS.with(cfg)
+        //    .execute(request, new UserPresentedCodePaymentCallback(paymentInquiryCallback));
     }
 
     /**

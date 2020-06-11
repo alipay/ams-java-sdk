@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.util.Asserts;
+
 import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.domain.Amount;
 import com.alipay.ams.domain.Body;
@@ -84,6 +86,28 @@ public class UserPresentedCodePaymentRequest extends Request {
      */
     @Override
     protected boolean extValidate() {
+        Asserts.notNull(order, "order required.");
+        Asserts.notNull(order.getMerchant(), "order.merchant required.");
+        Asserts.notNull(order.getOrderAmount(), "order.orderAmount required.");
+        Asserts.notNull(order.getOrderDescription(), "order.orderDescription required.");
+        Asserts.notNull(order.getMerchant().getReferenceMerchantId(),
+            "order.merchant.referenceMerchantId required.");
+        Asserts.notNull(order.getMerchant().getMerchantMCC(),
+            "order.merchant.merchantMcc required.");
+        Asserts.notNull(order.getMerchant().getMerchantName(),
+            "order.merchant.merchantName required.");
+        Asserts.notNull(order.getMerchant().getStore(), "order.merchant.store required.");
+        Asserts.notNull(order.getMerchant().getStore().getReferenceStoreId(),
+            "order.merchant.store.referenceStoreId required.");
+        Asserts.notNull(order.getMerchant().getStore().getStoreName(),
+            "order.merchant.store.storeName required.");
+        Asserts.notNull(order.getMerchant().getStore().getStoreMCC(),
+            "order.merchant.store.storeMcc required.");
+        Asserts.notNull(order.getEnv(), "order.env required.");
+        Asserts.notNull(order.getEnv().getStoreTerminalId(), "order.env.storeTerminalId required.");
+        Asserts.notNull(order.getEnv().getStoreTerminalRequestTime(),
+            "order.env.storeTerminalRequestTime required.");
+
         return true;
     }
 

@@ -64,7 +64,7 @@ and dependency:
 <dependency>
   <groupId>com.alipay.ams</groupId>
   <artifactId>ams-java</artifactId>
-  <version>2.0.1</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ and dependency:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation "com.alipay.ams:ams-java:2.0.1"
+implementation "com.alipay.ams:ams-java:2.1.0"
 ```
 
 ## Documentation
@@ -118,6 +118,10 @@ see `amsSdkDemo.Demo` for more detailed usage.
         order.setReferenceOrderId("0000000001");
         order.setMerchant(new Merchant("Some_Mer", "seller231117459", "7011", new Store(
             "Some_store", "store231117459", "7011")));
+
+        order.setEnv(new Env());
+        order.getEnv().setStoreTerminalId("some_setStoreTerminalId");
+        order.getEnv().setStoreTerminalRequestTime("2020-06-11T13:35:02+08:00");
 
         String paymentRequestId = "PR20190000000001_" + System.currentTimeMillis();
         String buyerPaymentCode = "288888888888888888";
@@ -591,6 +595,7 @@ com.alipay.ams.util.SignatureUtil.verify(String requestURI, String clientId, Str
 
 |Date|Version|Content|Backward compatible?|
 |---|---|---|---|
+|2020/06/11|2.1.0|(1) Add new attributes in com.alipay.ams.domain.Env; (2) UserPresentedCodePaymentRequest.extValidate() now validates required parameters. |YES|
 |2020/03/30|2.0.0|Re-designed Callback to enable simple use mode of sdk. |NO|
 |2020/03/16|1.4.1|Add support for grossSettlementAmount and settlementQuote|YES|
 |2020/02/25|1.3.0|Add request parameters: paymentRedirectUrl, paymentExpiryTime|YES|
