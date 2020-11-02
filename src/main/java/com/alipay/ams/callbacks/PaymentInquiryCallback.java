@@ -63,12 +63,12 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
      * @param context 
      * 
      */
-    public void scheduleALaterInquiry(final AMSClient client, final PaymentContext context) {
+    public void scheduleALaterInquiry(AMSSettings settings, final PaymentContext context) {
 
         int inquiryCount = context.getInquiryCount();
 
         JobExecutor.instance.scheduleInquiryJob(context.getPaymentRequestId(),
-            client.getSettings().inquiryInterval[inquiryCount], TimeUnit.SECONDS);
+            settings.inquiryInterval[inquiryCount], TimeUnit.SECONDS, settings);
 
     }
 
@@ -78,7 +78,7 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
     @Override
     public void onIOException(IOException e, AMSClient client,
                               PaymentInquiryRequest paymentInquiryRequest) {
-        retryOrCancel(client, paymentInquiryRequest);
+        retryOrCancel(paymentInquiryRequest);
     }
 
     /** 
@@ -87,7 +87,7 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
     @Override
     public void onHttpStatusNot200(AMSClient client, PaymentInquiryRequest paymentInquiryRequest,
                                    int code) {
-        retryOrCancel(client, paymentInquiryRequest);
+        retryOrCancel(paymentInquiryRequest);
     }
 
     /** 
@@ -98,16 +98,16 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
                           ResponseResult responseResult) {
 
         if ("ORDER_NOT_EXIST".equals(responseResult.getResultCode())) {
-            retryOrCancel(client, paymentInquiryRequest);
+            retryOrCancel(paymentInquiryRequest);
         } else {
-            cancel(client, paymentInquiryRequest);
+            cancel(paymentInquiryRequest);
         }
     }
 
     /**
      * 
      */
-    private void cancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
+    private void cancel(PaymentInquiryRequest paymentInquiryRequest) {
 
         PaymentContext context = paymentCancelCallback.getPaymentContextSupport()
             .loadContextByPaymentRequestIdOrDefault(
@@ -115,14 +115,14 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
                 new PaymentContext(paymentInquiryRequest.getPaymentRequestId(),
                     paymentInquiryRequest.getAgentToken()));
 
-        paymentCancelCallback.scheduleALaterCancel(client, context);
+        paymentCancelCallback.scheduleALaterCancel(paymentInquiryRequest.getSettings(), context);
     }
 
     /**
      * @param client 
      * 
      */
-    private void retryOrCancel(AMSClient client, PaymentInquiryRequest paymentInquiryRequest) {
+    private void retryOrCancel(PaymentInquiryRequest paymentInquiryRequest) {
 
         PaymentContext context = paymentCancelCallback.getPaymentContextSupport()
             .loadContextByPaymentRequestIdOrDefault(
@@ -130,13 +130,13 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
                 new PaymentContext(paymentInquiryRequest.getPaymentRequestId(),
                     paymentInquiryRequest.getAgentToken()));
 
-        if (needFurtherInquiry(context, client.getSettings())) {
+        if (needFurtherInquiry(context, paymentInquiryRequest.getSettings())) {
 
             //schedule a later Inquiry
-            scheduleALaterInquiry(client, context);
+            scheduleALaterInquiry(paymentInquiryRequest.getSettings(), context);
 
         } else {
-            cancel(client, paymentInquiryRequest);
+            cancel(paymentInquiryRequest);
         }
 
     }
@@ -163,7 +163,7 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
     @Override
     public void onUstatus(AMSClient client, PaymentInquiryRequest paymentInquiryRequest,
                           ResponseResult responseResult) {
-        retryOrCancel(client, paymentInquiryRequest);
+        retryOrCancel(paymentInquiryRequest);
     }
 
     /** 
@@ -206,7 +206,7 @@ public class PaymentInquiryCallback extends Callback<PaymentInquiryRequest, Paym
 
             case PROCESSING:
 
-                retryOrCancel(client, paymentInquiryRequest);
+                retryOrCancel(paymentInquiryRequest);
                 break;
 
             default:

@@ -64,7 +64,7 @@ and dependency:
 <dependency>
   <groupId>com.alipay.ams</groupId>
   <artifactId>ams-java</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ and dependency:
 Add this dependency to your project's build file:
 
 ```groovy
-implementation "com.alipay.ams:ams-java:2.1.0"
+implementation "com.alipay.ams:ams-java:2.2.0"
 ```
 
 ## Documentation
@@ -480,7 +480,7 @@ Also, for user-presented mode In-store payment, we provide a reference implement
 
 //Enable the backend JobExecutor
 {
-    JobExecutor.instance.setClient(AMS.with(cfg));
+    JobExecutor.instance.setSettings(cfg);
     JobExecutor.instance.setJobSupport(jobSupport);
     JobExecutor.instance.setPaymentInquiryCallback(paymentInquiryCallback);
 
@@ -595,6 +595,7 @@ com.alipay.ams.util.SignatureUtil.verify(String requestURI, String clientId, Str
 
 |Date|Version|Content|Backward compatible?|
 |---|---|---|---|
+|2020/11/02|2.2.0|Re-designed JobExecutor: Add com.alipay.ams.job.Job.settings to support Job level config (this makes it possible to schedule jobs for transactions of multiple client-ids)|NO|
 |2020/06/11|2.1.0|(1) Add new attributes in com.alipay.ams.domain.Env; (2) UserPresentedCodePaymentRequest.extValidate() now validates required parameters. |YES|
 |2020/03/30|2.0.0|Re-designed Callback to enable simple use mode of sdk. |NO|
 |2020/03/16|1.4.1|Add support for grossSettlementAmount and settlementQuote|YES|

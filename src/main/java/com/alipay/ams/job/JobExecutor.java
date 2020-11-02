@@ -26,9 +26,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.alipay.ams.AMSClient;
+import com.alipay.ams.AMS;
 import com.alipay.ams.callbacks.JobSupport;
 import com.alipay.ams.callbacks.PaymentInquiryCallback;
+import com.alipay.ams.cfg.AMSSettings;
 import com.alipay.ams.job.Job.Type;
 
 /**
@@ -40,7 +41,9 @@ public class JobExecutor {
 
     private JobSupport                  jobSupport;
     private PaymentInquiryCallback      paymentInquiryCallback;
-    private AMSClient                   client;
+
+    //The default settings. Use Job level settings first wherever available. 
+    private AMSSettings                 settings;
 
     private ScheduledThreadPoolExecutor executor;
 
@@ -61,21 +64,21 @@ public class JobExecutor {
 
         if (jobExecutorStarted.get()) {
 
-            client.getSettings().logger.warn("jobExecutor has already been started. ");
+            settings.logger.warn("jobExecutor has already been started. ");
             return false;
 
         } else {
 
-            if (this.client == null || this.jobSupport == null
+            if (this.settings == null || this.jobSupport == null
                 || this.paymentInquiryCallback == null) {
                 throw new IllegalStateException(
-                    "JobExecutor not ready to start. paymentCancelCallback, paymentContextCallback and paymentInquiryCallback required.");
+                    "JobExecutor not ready to start. settings, jobSupport and paymentInquiryCallback required.");
             }
 
             if (jobExecutorStarted.compareAndSet(false, true)) {
 
                 this.executor = new ScheduledThreadPoolExecutor(
-                    this.client.getSettings().corePoolSizeOfJobExecutor);
+                    this.settings.corePoolSizeOfJobExecutor);
 
                 this.executor.scheduleWithFixedDelay(new Runnable() {
 
@@ -96,21 +99,20 @@ public class JobExecutor {
                             }
 
                         } catch (Exception e) {
-                            client.getSettings().logger.warn(
-                                "Exception when doing listJobs: %s. Ignored.", e);
+                            settings.logger.warn("Exception when doing listJobs: %s. Ignored.", e);
                         }
 
                     }
-                }, 300, client.getSettings().jobListingDelayInMilliSeconds, TimeUnit.MILLISECONDS);
+                }, 300, settings.jobListingDelayInMilliSeconds, TimeUnit.MILLISECONDS);
 
-                client.getSettings().logger.info(
+                settings.logger.info(
                     "jobExecutor started. scheduleWithFixedDelay=[%s] MILLISECONDS",
-                    client.getSettings().jobListingDelayInMilliSeconds);
+                    settings.jobListingDelayInMilliSeconds);
 
                 return true;
 
             } else {
-                client.getSettings().logger.warn("jobExecutor has already been started. ");
+                settings.logger.warn("jobExecutor has already been started. ");
                 return false;
             }
 
@@ -123,12 +125,13 @@ public class JobExecutor {
         switch (job.getType()) {
             case INQUIRY:
 
-                return new InquiryTask(jobSupport, job, paymentInquiryCallback, client);
+                return new InquiryTask(jobSupport, job, paymentInquiryCallback, AMS.with(job
+                    .getSettings()));
 
             case CANCEL:
 
                 return new CancelTask(jobSupport, job,
-                    paymentInquiryCallback.getPaymentCancelCallback(), client);
+                    paymentInquiryCallback.getPaymentCancelCallback(), AMS.with(job.getSettings()));
 
             default:
                 return null;
@@ -142,9 +145,10 @@ public class JobExecutor {
      * @param delay
      * @param unit
      */
-    public void scheduleInquiryJob(String paymentRequestId, int delay, TimeUnit unit) {
+    public void scheduleInquiryJob(String paymentRequestId, int delay, TimeUnit unit,
+                                   AMSSettings settings) {
 
-        jobSupport.insertNewJob(new Job(Type.INQUIRY, paymentRequestId, delay, unit));
+        jobSupport.insertNewJob(new Job(Type.INQUIRY, paymentRequestId, delay, unit, settings));
     }
 
     /**
@@ -153,9 +157,10 @@ public class JobExecutor {
      * @param delay
      * @param unit
      */
-    public void scheduleCancelJob(String paymentRequestId, int delay, TimeUnit unit) {
+    public void scheduleCancelJob(String paymentRequestId, int delay, TimeUnit unit,
+                                  AMSSettings settings) {
 
-        jobSupport.insertNewJob(new Job(Type.CANCEL, paymentRequestId, delay, unit));
+        jobSupport.insertNewJob(new Job(Type.CANCEL, paymentRequestId, delay, unit, settings));
     }
 
     /**
@@ -187,24 +192,6 @@ public class JobExecutor {
     }
 
     /**
-     * Getter method for property <tt>client</tt>.
-     * 
-     * @return property value of client
-     */
-    public AMSClient getClient() {
-        return client;
-    }
-
-    /**
-     * Setter method for property <tt>client</tt>.
-     * 
-     * @param client value to be assigned to property client
-     */
-    public void setClient(AMSClient client) {
-        this.client = client;
-    }
-
-    /**
      * Setter method for property <tt>jobSupport</tt>.
      * 
      * @param jobSupport value to be assigned to property jobSupport
@@ -220,6 +207,24 @@ public class JobExecutor {
      */
     public void setExecutor(ScheduledThreadPoolExecutor executor) {
         this.executor = executor;
+    }
+
+    /**
+     * Getter method for property <tt>settings</tt>.
+     * 
+     * @return property value of settings
+     */
+    public AMSSettings getSettings() {
+        return settings;
+    }
+
+    /**
+     * Setter method for property <tt>settings</tt>.
+     * 
+     * @param settings value to be assigned to property settings
+     */
+    public void setSettings(AMSSettings settings) {
+        this.settings = settings;
     }
 
 }

@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.alipay.ams.cfg.AMSSettings;
+
 /**
  * 
  * @author guangling.zgl
@@ -48,20 +50,24 @@ public class Job implements Serializable {
     }
 
     /** The time the Job is enabled to execute in nanoTime units */
-    private long   time;
-    private String paymentRequestId;
-    private Type   type;
+    private long        time;
+    private String      paymentRequestId;
+    private Type        type;
+
+    private AMSSettings settings;
 
     /**
-     * @param type 
-     * @param paymentContext
+     * @param type
+     * @param paymentRequestId
      * @param delay
-     * @param seconds
+     * @param unit
+     * @param settings - specify a settings instead of the default one.
      */
-    public Job(Type type, String paymentRequestId, int delay, TimeUnit unit) {
+    public Job(Type type, String paymentRequestId, int delay, TimeUnit unit, AMSSettings settings) {
         this.paymentRequestId = paymentRequestId;
         this.time = triggerTime(delay, unit);
         this.type = type;
+        this.settings = settings;
     }
 
     /**
@@ -137,6 +143,24 @@ public class Job implements Serializable {
      */
     public void setType(Type type) {
         this.type = type;
+    }
+
+    /**
+     * Getter method for property <tt>settings</tt>.
+     * 
+     * @return property value of settings
+     */
+    public AMSSettings getSettings() {
+        return settings;
+    }
+
+    /**
+     * Setter method for property <tt>settings</tt>.
+     * 
+     * @param settings value to be assigned to property settings
+     */
+    public void setSettings(AMSSettings settings) {
+        this.settings = settings;
     }
 
     /** 

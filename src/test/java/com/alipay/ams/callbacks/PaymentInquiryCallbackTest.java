@@ -155,7 +155,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. A cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), times(1)).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
     }
 
@@ -312,7 +312,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. No cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), never()).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
     }
 
@@ -362,7 +362,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. A cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), times(1)).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
     }
 
@@ -412,7 +412,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. No cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), never()).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
         //12 reportPaymentS
         verify(mockSetup.getTelemetrySupportPaymentInquiry(), times(1)).reportPaymentS(
@@ -469,7 +469,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. No cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), never()).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
         //12 No reportPaymentS
         verify(mockSetup.getTelemetrySupportPaymentInquiry(), never())
@@ -534,7 +534,7 @@ public class PaymentInquiryCallbackTest extends BaseAMSTest {
 
         //11. No cancel initiated.
         verify(mockSetup.getPaymentCancelCallback(), never()).scheduleALaterCancel(
-            eq(mockSetup.getAmsClient()), any(PaymentContext.class));
+            eq(mockSetup.getAmsClient().getSettings()), any(PaymentContext.class));
 
         //12 No reportPaymentS
         verify(mockSetup.getTelemetrySupportPaymentInquiry(), never())
