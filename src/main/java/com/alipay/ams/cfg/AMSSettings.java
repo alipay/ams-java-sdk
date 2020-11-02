@@ -25,6 +25,7 @@ package com.alipay.ams.cfg;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Properties;
 
 import com.alipay.ams.util.Logger;
@@ -35,9 +36,12 @@ import com.alipay.ams.util.SystemoutLogger;
  * @author guangling.zgl
  * @version $Id: AMSSettings.java, v 0.1 2019年8月26日 下午6:32:56 guangling.zgl Exp $
  */
-public class AMSSettings {
+public class AMSSettings implements Serializable {
 
-    public static final String sdkVersion                              = "2.1.0.20200611";
+    /**  */
+    private static final long  serialVersionUID                        = -628578313361694675L;
+
+    public static final String sdkVersion                              = "2.2.0.20201102";
     //from config.properties start
     public String              clientId;
     public String              privateKey;

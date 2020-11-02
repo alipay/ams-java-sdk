@@ -64,15 +64,15 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
      * 
      * A solution with data persistent feature like Redis would be strongly recommended.
      * 
-     * @param context
      * @param settings
+     * @param context
      */
-    protected void scheduleALaterCancel(final AMSClient client, final PaymentContext context) {
+    protected void scheduleALaterCancel(AMSSettings settings, final PaymentContext context) {
 
         final int cancelCount = context.getCancelCount();
 
         JobExecutor.instance.scheduleCancelJob(context.getPaymentRequestId(),
-            client.getSettings().cancelInterval[cancelCount], TimeUnit.SECONDS);
+            settings.cancelInterval[cancelCount], TimeUnit.SECONDS, settings);
     }
 
     /** 
@@ -97,7 +97,7 @@ public class PaymentCancelCallback extends Callback<PaymentCancelRequest, Paymen
         if (needFurtherCancel(context, client.getSettings())) {
 
             //schedule a later Inquiry
-            scheduleALaterCancel(client, context);
+            scheduleALaterCancel(request.getSettings(), context);
 
         } else {
 
